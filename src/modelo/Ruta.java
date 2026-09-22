@@ -1,18 +1,18 @@
 package modelo;
 
 public class Ruta {
-	private int peso;
+	private int distancia;
 	
-	public Ruta(int peso) {
-		this.peso = peso;
+	public Ruta(int distancia) {
+		this.distancia = distancia;
 	}
 	
 	public int devolverPeso() {
-		return peso;
+		return distancia;
 	}
-	public boolean cambiarPeso(int nuevoPeso) {
-		if (nuevoPeso > 0) {
-			peso = nuevoPeso;
+	public boolean cambiarDistancia(int nuevaDistancia) {
+		if (nuevaDistancia > 0) {
+			this.distancia = nuevaDistancia;
 			return true;
 		}
 		return false;

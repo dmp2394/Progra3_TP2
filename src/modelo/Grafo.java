@@ -12,11 +12,38 @@ public class Grafo {
 	private Provincia vertice;
 	private Ruta arista;
 	private HashMap<Provincia, HashMap<Provincia, Ruta>> adyacencia;
+	
+	
 	// La cantidad de vertices esta predeterminada desde el constructor
 	public Grafo(int vertices) {
 		AP = new Integer[vertices][vertices];
 	}
-
+	
+	public Grafo() {
+		adyacencia = new HashMap<>();
+	}
+	
+	public void agregarVertice(Provincia provincia) {
+		if (provincia == null) {
+	        throw new IllegalArgumentException("La provincia no puede ser nula.");
+	    }
+	    if (adyacencia.containsKey(provincia)) {
+	        throw new IllegalArgumentException("Error: La provincia '" + provincia + "' ya existe en el grafo.");
+	    }
+		adyacencia.putIfAbsent(provincia, new HashMap<>());
+	}
+	
+	public void agregarArista(Provincia origen, Provincia destino, int distancia) {
+		Ruta ruta = new Ruta(distancia);
+		adyacencia.get(origen).put(destino, ruta);
+		adyacencia.get(destino).put(origen, ruta);
+		}
+	
+	public void eliminarArista(Provincia origen, Provincia destino) {
+		adyacencia.get(origen).remove(destino);
+		adyacencia.get(destino).remove(origen);
+	} 
+	
 	// Agregado de aristas
 	public void agregarAristaConPeso(int i, int j, int peso) {
 		verificarVertice(i);
