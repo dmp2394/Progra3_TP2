@@ -1,54 +1,51 @@
 package modelo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Grafo<V> {
 
-  
-    private Integer[][] AP;
+	private Integer[][] AP;
 
- 
-    private Map<V, List<V>> adyacencia;
+	private Map<V, List<V>> adyacencia;
 
-    
-    public Grafo(int vertices) {
-        AP = new Integer[vertices][vertices];
-        adyacencia = new HashMap<>();
-    }
+	public Grafo(int vertices) {
+		AP = new Integer[vertices][vertices];
+		adyacencia = new HashMap<>();
+	}
 
- 
-    public Grafo() {
-        adyacencia = new HashMap<>();
-    }
+	public Grafo() {
+		adyacencia = new HashMap<>();
+	}
 
-    public void agregarVertice(V vertice) {
-        if (vertice == null) {
-            throw new IllegalArgumentException("El vértice no puede ser nulo.");
-        }
-        if (adyacencia.containsKey(vertice)) {
-            throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
-        }
-        // Crear la lista de adyacencia vacía para ese vértice
-        adyacencia.put(vertice, new ArrayList<>());
-    }
-      
-    public void agregarArista(V a, V b) {
-        if (!adyacencia.containsKey(a) || !adyacencia.containsKey(b)) {
-            throw new IllegalArgumentException("Ambos vértices deben existir.");
-        }
-        adyacencia.get(a).add(b);
-        adyacencia.get(b).add(a);
-    }
+	public void agregarVertice(V vertice) {
+		if (vertice == null) {
+			throw new IllegalArgumentException("El vértice no puede ser nulo.");
+		}
+		if (adyacencia.containsKey(vertice)) {
+			throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
+		}
+		// Crear la lista de adyacencia vacía para ese vértice
+		adyacencia.put(vertice, new ArrayList<>());
+	}
 
-	
+	public void agregarArista(V a, V b) {
+		if (!adyacencia.containsKey(a) || !adyacencia.containsKey(b)) {
+			throw new IllegalArgumentException("Ambos vértices deben existir.");
+		}
+		adyacencia.get(a).add(b);
+		adyacencia.get(b).add(a);
+	}
+
 	public void eliminarArista(V origen, V destino) {
 		adyacencia.get(origen).remove(destino);
 		adyacencia.get(destino).remove(origen);
-	} 
-	
+	}
+
 	// Agregado de aristas
 	public void agregarAristaConPeso(int i, int j, int peso) {
 		verificarVertice(i);
