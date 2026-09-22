@@ -1,45 +1,50 @@
 package modelo;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Grafo {
-	// Grafo con aristas con pesos, se implementa con matriz de adyacencia con
-	// pesos, donde si una celda tiene un nro != null, hay vertice y tiene ese peso.
-	// Se implementa con Integer para que los vertices sin arista valgan null
-	private Integer[][] AP;
-	private Provincia vertice;
-	private Ruta arista;
-	private HashMap<Provincia, HashMap<Provincia, Ruta>> adyacencia;
+public class Grafo<V> {
+
+  
+    private Integer[][] AP;
+
+ 
+    private Map<V, List<V>> adyacencia;
+
+    
+    public Grafo(int vertices) {
+        AP = new Integer[vertices][vertices];
+        adyacencia = new HashMap<>();
+    }
+
+ 
+    public Grafo() {
+        adyacencia = new HashMap<>();
+    }
+
+    public void agregarVertice(V vertice) {
+        if (vertice == null) {
+            throw new IllegalArgumentException("El vértice no puede ser nulo.");
+        }
+        if (adyacencia.containsKey(vertice)) {
+            throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
+        }
+        // Crear la lista de adyacencia vacía para ese vértice
+        adyacencia.put(vertice, new ArrayList<>());
+    }
+      
+    public void agregarArista(V a, V b) {
+        if (!adyacencia.containsKey(a) || !adyacencia.containsKey(b)) {
+            throw new IllegalArgumentException("Ambos vértices deben existir.");
+        }
+        adyacencia.get(a).add(b);
+        adyacencia.get(b).add(a);
+    }
+
 	
-	
-	// La cantidad de vertices esta predeterminada desde el constructor
-	public Grafo(int vertices) {
-		AP = new Integer[vertices][vertices];
-	}
-	
-	public Grafo() {
-		adyacencia = new HashMap<>();
-	}
-	
-	public void agregarVertice(Provincia provincia) {
-		if (provincia == null) {
-	        throw new IllegalArgumentException("La provincia no puede ser nula.");
-	    }
-	    if (adyacencia.containsKey(provincia)) {
-	        throw new IllegalArgumentException("Error: La provincia '" + provincia + "' ya existe en el grafo.");
-	    }
-		adyacencia.putIfAbsent(provincia, new HashMap<>());
-	}
-	
-	public void agregarArista(Provincia origen, Provincia destino, int distancia) {
-		Ruta ruta = new Ruta(distancia);
-		adyacencia.get(origen).put(destino, ruta);
-		adyacencia.get(destino).put(origen, ruta);
-		}
-	
-	public void eliminarArista(Provincia origen, Provincia destino) {
+	public void eliminarArista(V origen, V destino) {
 		adyacencia.get(origen).remove(destino);
 		adyacencia.get(destino).remove(origen);
 	} 
