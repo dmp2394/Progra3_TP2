@@ -1,11 +1,11 @@
 package modelo;
 
-public class DiseñoRegiones {
+public class DisenioRegiones {
 
 	private Grafo grafoDeProvinciasYSimilaridades;
 	private Grafo agmDeProvinciasYSimilaridades;
 
-	public DiseñoRegiones() {
+	public DisenioRegiones() {
 		// no se que sentido tiene un constructor vacio, pero seria la clase principal
 	}
 

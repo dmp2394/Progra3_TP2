@@ -4,23 +4,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Grafo {
-	// Grafo con aristas con pesos. Matriz de adyacencia de boolean + el dato del
-	// peso + y el nombre de las provincias?
-	private boolean[][] A;
+	// Grafo con aristas con pesos, se implementa con matriz de adyacencia con
+	// pesos, donde si una celda tiene un nro != null, hay vertice y tiene ese peso.
+	// Se implementa con Integer para que los vertices sin arista valgan null
+	private Integer[][] AP;
 
 	// La cantidad de vertices esta predeterminada desde el constructor
 	public Grafo(int vertices) {
-		A = new boolean[vertices][vertices];
+		AP = new Integer[vertices][vertices];
 	}
 
 	// Agregado de aristas
-	public void agregarArista(int i, int j) {
+	public void agregarAristaConPeso(int i, int j, int peso) {
 		verificarVertice(i);
 		verificarVertice(j);
 		verificarDistintos(i, j);
 
-		A[i][j] = true;
-		A[j][i] = true;
+		AP[i][j] = peso;
+		AP[j][i] = peso;
 	}
 
 	// Eliminacion de aristas
@@ -29,8 +30,8 @@ public class Grafo {
 		verificarVertice(j);
 		verificarDistintos(i, j);
 
-		A[i][j] = false;
-		A[j][i] = false;
+		AP[i][j] = null;
+		AP[j][i] = null;
 	}
 
 	// Informa si existe la arista especificada
@@ -39,12 +40,12 @@ public class Grafo {
 		verificarVertice(j);
 		verificarDistintos(i, j);
 
-		return A[i][j];
+		return AP[i][j] != null;
 	}
 
 	// Cantidad de vertices
 	public int tamano() {
-		return A.length;
+		return AP.length;
 	}
 
 	// Vecinos de un vertice
@@ -66,7 +67,7 @@ public class Grafo {
 		if (i < 0)
 			throw new IllegalArgumentException("El vertice no puede ser negativo: " + i);
 
-		if (i >= A.length)
+		if (i >= AP.length)
 			throw new IllegalArgumentException("Los vertices deben estar entre 0 y |V|-1: " + i);
 	}
 
