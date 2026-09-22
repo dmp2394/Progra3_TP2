@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Grafo<V> {
+public class Grafo<V,A> {
 
 	private Integer[][] AP;
 
-	private Map<V, List<V>> adyacencia;
+	private Map<V, Map<V,A>> adyacencia;
 
 	public Grafo(int vertices) {
 		AP = new Integer[vertices][vertices];
@@ -30,16 +30,23 @@ public class Grafo<V> {
 			throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
 		}
 		// Crear la lista de adyacencia vacía para ese vértice
-		adyacencia.put(vertice, new ArrayList<>());
+		adyacencia.put(vertice, new HashMap<>());
 	}
 
-	public void agregarArista(V a, V b) {
-		if (!adyacencia.containsKey(a) || !adyacencia.containsKey(b)) {
-			throw new IllegalArgumentException("Ambos vértices deben existir.");
+	public void agregarArista(V origen, V destino, A arista) {
+		if (!adyacencia.containsKey(origen) || !adyacencia.containsKey(destino)) {
+			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
 		}
-		adyacencia.get(a).add(b);
-		adyacencia.get(b).add(a);
-	}
+		if (origen.equals(destino)) {
+			throw new IllegalArgumentException("Error: No se permiten loops (aristas de un vértice a sí mismo).");	
+		}
+		if (adyacencia.get(origen).containsKey(destino)) {
+			throw new IllegalArgumentException("Error: La arista ya existe en el grafo.");
+		}
+		adyacencia.get(origen).put(destino, arista);
+		adyacencia.get(destino).put(origen, arista);
+		}
+	
 
 	public void eliminarArista(V origen, V destino) {
 		adyacencia.get(origen).remove(destino);
