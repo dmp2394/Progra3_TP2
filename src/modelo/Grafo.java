@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +9,9 @@ public class Grafo {
 	// pesos, donde si una celda tiene un nro != null, hay vertice y tiene ese peso.
 	// Se implementa con Integer para que los vertices sin arista valgan null
 	private Integer[][] AP;
-
+	private Provincia vertice;
+	private Ruta arista;
+	private HashMap<Provincia, HashMap<Provincia, Ruta>> adyacencia;
 	// La cantidad de vertices esta predeterminada desde el constructor
 	public Grafo(int vertices) {
 		AP = new Integer[vertices][vertices];
