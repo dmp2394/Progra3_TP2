@@ -17,6 +17,7 @@ public class Grafo<V,A> {
 		AP = new Integer[vertices][vertices];
 		adyacencia = new HashMap<>();
 	}
+	
 
 	public Grafo() {
 		adyacencia = new HashMap<>();
@@ -99,6 +100,9 @@ public class Grafo<V,A> {
 			}
 
 		return ret;
+	}
+	public boolean existeVertice(Provincia provincia) {
+		return adyacencia.containsKey(provincia);
 	}
 
 	// Verifica que sea un vertice valido
