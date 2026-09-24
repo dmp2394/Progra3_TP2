@@ -18,4 +18,12 @@ public class Ruta {
 		return false;
 	}
 	
+	//lo hizo eclipse no se si esta bien 
+	 public boolean equals(Object obj) {
+	        if (this == obj) return true;
+	        if (obj == null || getClass() != obj.getClass()) return false;
+	        Ruta ruta = (Ruta) obj;
+	        return distancia == ruta.distancia;
+	    }
+	
 }

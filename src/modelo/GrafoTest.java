@@ -53,6 +53,7 @@ public class GrafoTest {
 		grafo.agregarArista(provincia1, provincia2, ruta);
 		grafo.agregarArista(provincia1, provincia2, ruta);
 	}
+
 	
 
 }

@@ -50,6 +50,12 @@ public class Grafo<V,A> {
 	
 
 	public void eliminarArista(V origen, V destino) {
+		if (!adyacencia.containsKey(origen) || !adyacencia.containsKey(destino)) {
+			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
+		}
+		if (!adyacencia.get(origen).containsKey(destino)) {
+			throw new IllegalArgumentException("Error: La arista no existe en el grafo.");
+		}
 		adyacencia.get(origen).remove(destino);
 		adyacencia.get(destino).remove(origen);
 	}
@@ -82,6 +88,10 @@ public class Grafo<V,A> {
 
 		return AP[i][j] != null;
 	}
+	/*public boolean existeArista(V vertice, A arista) {
+		
+		return adyacencia.get(origen).containsKey(destino);
+	}*/
 
 	// Cantidad de vertices
 	public int tamano() {
