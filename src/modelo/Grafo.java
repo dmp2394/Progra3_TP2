@@ -11,7 +11,7 @@ public class Grafo<V,A> {
 
 	private Integer[][] AP;
 
-	private Map<V, Map<V,A>> adyacencia;
+	private Map<V, Set<A>> adyacencia;
 
 	public Grafo(int vertices) {
 		AP = new Integer[vertices][vertices];
@@ -23,7 +23,7 @@ public class Grafo<V,A> {
 		adyacencia = new HashMap<>();
 	}
 
-	public void agregarVertice(V vertice) {
+	public void agregarVertice1(V vertice) {
 		if (vertice == null) {
 			throw new IllegalArgumentException("El vértice no puede ser nulo.");
 		}
@@ -31,8 +31,9 @@ public class Grafo<V,A> {
 			throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
 		}
 		// Crear la lista de adyacencia vacía para ese vértice
-		adyacencia.put(vertice, new HashMap<>());
+		adyacencia.put(vertice, new HashSet<>());
 	}
+	
 
 	public void agregarArista(V origen, V destino, A arista) {
 		if (!adyacencia.containsKey(origen) || !adyacencia.containsKey(destino)) {
@@ -49,15 +50,16 @@ public class Grafo<V,A> {
 		}
 	
 
-	public void eliminarArista(V origen, V destino) {
-		if (!adyacencia.containsKey(origen) || !adyacencia.containsKey(destino)) {
-			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
-		}
-		if (!adyacencia.get(origen).containsKey(destino)) {
-			throw new IllegalArgumentException("Error: La arista no existe en el grafo.");
-		}
-		adyacencia.get(origen).remove(destino);
-		adyacencia.get(destino).remove(origen);
+	public void eliminarArista(Provincia origen, Provincia destino) {
+		Map aristasOrigen = adyacencia.get(origen);
+	    Map aristasDestino = adyacencia.get(destino);
+	    if (aristasOrigen == null || aristasDestino == null) {
+	        throw new IllegalArgumentException("Error: Una o ambas provincias no existen en el grafo.");
+	    }
+	    if (aristasOrigen.remove(destino) == null) {
+	        throw new IllegalArgumentException("Error: La arista no existe entre estas provincias.");
+	    }
+	    aristasDestino.remove(origen);
 	}
 
 	// Agregado de aristas
@@ -88,10 +90,10 @@ public class Grafo<V,A> {
 
 		return AP[i][j] != null;
 	}
-	/*public boolean existeArista(V vertice, A arista) {
+	public boolean existeArista(V provincia1, V provincia2) {
 		
-		return adyacencia.get(origen).containsKey(destino);
-	}*/
+		return adyacencia.get(provincia1).containsKey(provincia2);
+	}
 
 	// Cantidad de vertices
 	public int tamano() {

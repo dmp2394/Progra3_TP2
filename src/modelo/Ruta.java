@@ -1,10 +1,14 @@
  package modelo;
 
-public class Ruta {
+public class Ruta implements Comparable <Ruta>{
+	private Provincia origen;
+	private Provincia destino;
 	private int distancia;
 	
-	public Ruta(int distancia) {
+	public Ruta(Provincia origen, Provincia destino, int distancia) {
 		this.distancia = distancia;
+		this.origen = origen;
+		this.destino = destino;
 	}
 	
 	public int devolverPeso() {
@@ -18,6 +22,12 @@ public class Ruta {
 		return false;
 	}
 	
+	@Override
+	public int compareTo(Ruta otraRuta) {
+		return Integer.compare(this.distancia, otraRuta.distancia);
+	}
+	
+	
 	//lo hizo eclipse no se si esta bien 
 	 public boolean equals(Object obj) {
 	        if (this == obj) return true;
@@ -25,5 +35,7 @@ public class Ruta {
 	        Ruta ruta = (Ruta) obj;
 	        return distancia == ruta.distancia;
 	    }
+
+	
 	
 }
