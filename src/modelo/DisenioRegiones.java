@@ -2,8 +2,8 @@ package modelo;
 
 public class DisenioRegiones {
 
-	private Grafo grafoDeProvinciasYSimilaridades;
-	private Grafo agmDeProvinciasYSimilaridades;
+	private GrafoConPesos GrafoConPesosDeProvinciasYSimilaridades;
+	private GrafoConPesos agmDeProvinciasYSimilaridades;
 
 	public DisenioRegiones() {
 		// no se que sentido tiene un constructor vacio, pero seria la clase principal
@@ -11,7 +11,7 @@ public class DisenioRegiones {
 
 	public void separarEnRegionesConexas(int cantidadRegionesConexas) {
 
-		crearAGM(this.grafoDeProvinciasYSimilaridades);
+		crearAGM(this.GrafoConPesosDeProvinciasYSimilaridades);
 
 		eliminarAristasDeMayorPeso(cantidadRegionesConexas - 1);
 
@@ -22,14 +22,14 @@ public class DisenioRegiones {
 
 	}
 
-	private void crearAGM(Grafo grafo) {
+	private void crearAGM(GrafoConPesos GrafoConPesos) {
 		// TODO Auto-generated method stub
 		this.agmDeProvinciasYSimilaridades = null;
 	}
 
-	public void crearGrafoDeProvinciasYSimilaridades() {
+	public void crearGrafoConPesosDeProvinciasYSimilaridades() {
 
-		this.grafoDeProvinciasYSimilaridades = null;
+		this.GrafoConPesosDeProvinciasYSimilaridades = null;
 	}
 
 }
