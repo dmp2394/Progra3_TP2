@@ -1,14 +1,14 @@
  package modelo;
 
 public class Ruta implements Comparable <Ruta>{
-	private Provincia origen;
-	private Provincia destino;
+	private Provincia extremo1;
+	private Provincia extremo2;
 	private int distancia;
 	
-	public Ruta(Provincia origen, Provincia destino, int distancia) {
+	public Ruta(Provincia extremo1, Provincia extremo2, int distancia) {
 		this.distancia = distancia;
-		this.origen = origen;
-		this.destino = destino;
+		this.extremo1= extremo1;
+		this.extremo2 = extremo2;
 	}
 	
 	public int devolverPeso() {
@@ -20,6 +20,16 @@ public class Ruta implements Comparable <Ruta>{
 			return true;
 		}
 		return false;
+	}
+	
+	public Provincia obtenerExtremoDestino(Provincia origen) {
+		if (origen.equals(extremo1)) {
+			return extremo2;
+		} else if (origen.equals(extremo2)) {
+			return extremo1;
+		} else {
+			throw new IllegalArgumentException("La provincia de origen no es un extremo de la ruta.");
+		}
 	}
 	
 	@Override
