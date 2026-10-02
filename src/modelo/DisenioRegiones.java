@@ -2,9 +2,9 @@ package modelo;
 
 public class DisenioRegiones {
 
-	private GrafoConPesos provinciasYSimilaridades;
-	private GrafoConPesos agmProvinciasYSimilaridades;
-	private GrafoConPesos disenioRegiones;
+	private GrafoConPesos<String> provinciasYSimilaridades;
+	private GrafoConPesos<String> agmProvinciasYSimilaridades;
+	private GrafoConPesos<String> disenioRegiones;
 
 	public DisenioRegiones(GrafoConPesos<String> grafo) {
 		this.provinciasYSimilaridades = grafo;
@@ -14,14 +14,14 @@ public class DisenioRegiones {
 
 	public void separarEnRegionesConexas(int cantidadRegionesConexas) {
 
-		crearAGM(this.provinciasYSimilaridades);
+		crearArbolGeneradorMinimo(this.provinciasYSimilaridades);
 
 		eliminarAristasDeMayorPeso(cantidadRegionesConexas - 1);
 
 	}
 
-	private void crearAGM(GrafoConPesos GrafoConPesos) {
-		this.agmProvinciasYSimilaridades = null;
+	private void crearArbolGeneradorMinimo(GrafoConPesos<String> GrafoConPesos) {
+		this.agmProvinciasYSimilaridades = Kruskal.crearArbolGeneradorMinimo(provinciasYSimilaridades);
 	}
 
 	private void eliminarAristasDeMayorPeso(int cantidad) {
