@@ -33,9 +33,6 @@ public class GrafoConPesos<V> {
 		if (vertice1.equals(vertice2))
 			throw new IllegalArgumentException("No se permiten loops (aristas de un vértice a sí mismo).");
 
-		if (listaDeVecinosConPeso.get(vertice1).containsKey(vertice2))
-			throw new IllegalArgumentException("Ya existe una arista entre estos dos vertices.");
-
 		listaDeVecinosConPeso.get(vertice1).put(vertice2, peso);
 		listaDeVecinosConPeso.get(vertice2).put(vertice1, peso);
 	}

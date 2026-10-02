@@ -1,10 +1,10 @@
 package modelo;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-public class ArbolGeneradorMinimoTest {
+public class KruskalTest {
 
 	@Test
 	public void test() {

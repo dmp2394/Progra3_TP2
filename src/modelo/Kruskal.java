@@ -3,15 +3,11 @@ package modelo;
 import java.util.Map;
 import java.util.Set;
 
-public class ArbolGeneradorMinimo<V, A> {
+public class Kruskal<V, A> {
 	// Implementación del algoritmo de Kruskal para encontrar el árbol generador
 	// mínimo
 	// Este es un ejemplo simple y no funcional, solo para ilustrar la estructura de
 	// la clase.
-
-	public ArbolGeneradorMinimo() {
-		// Constructor
-	}
 
 	public GrafoConPesos generarArbol(GrafoConPesos GrafoConPesos) {
 		Map<V, Set<A>> listaDeVecinosConPeso = GrafoConPesos.obtenerlistaDeVecinosConPeso();

@@ -1,12 +1,13 @@
 package modelo;
 
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 public class DisenioRegionesTest {
 
 	@Test
-	public void agregarProvinciaYConsultarSiExiste(String nombreProvincia) {
-		// etc
+	public void test() {
+		fail("Not yet implemented");
 	}
-
 }

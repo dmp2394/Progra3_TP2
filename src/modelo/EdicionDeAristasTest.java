@@ -3,92 +3,145 @@ package modelo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class EdicionDeAristasTest {
-	@Test(expected = IllegalArgumentException.class)
-	public void primerVerticeNegativoTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(-1, 3, 1);
+
+	private GrafoConPesos<String> grafo;
+	private String provincia1;
+	private String provincia2;
+	private String provincia3;
+
+	@Before
+	public void inicializar() {
+		grafo = new GrafoConPesos<>();
+
+		provincia1 = "Buenos Aires";
+		provincia2 = "Córdoba";
+		provincia3 = "Santa Fé";
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void primerVerticeExcedidoTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(5, 2, 1);
+	public void agregarAristaPrimerVerticeNuloTest() {
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista(null, provincia2, 100);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void segundoVerticeNegativoTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, -1, 1);
+	public void agregarAristaPesoCeroTest() {
+
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista(provincia1, provincia2, 0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void segundoVerticeExcedidoTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 5, 1);
+	public void agregarAristaPesoNegativoTest() {
+
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista(provincia1, provincia2, -5);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void agregarAristaPrimerVerticeInexistenteTest() {
+
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista("Salta", provincia2, 100);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void agregarAristaSegundoVerticeNuloTest() {
+
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista(provincia1, null, 100);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void agregarAristaSegundoVerticeInexistenteTest() {
+
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista(provincia1, "Salta", 100);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void agregarLoopTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 2, 1);
+		grafo.agregarVertice(provincia1);
+		grafo.agregarArista(provincia1, provincia1, 100);
 	}
 
 	@Test
 	public void aristaExistenteTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 3, 1);
-		assertTrue(GrafoConPesos.existeArista(2, 3));
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+		grafo.agregarArista(provincia1, provincia2, 100);
+
+		assertTrue(grafo.existeArista(provincia1, provincia2));
 	}
 
 	@Test
-	public void aristaOpuestaTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 3, 1);
-		assertTrue(GrafoConPesos.existeArista(3, 2));
+	public void existeAristaOpuestaTest() {
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.agregarArista(provincia1, provincia2, 100);
+
+		assertTrue(grafo.existeArista(provincia2, provincia1));
 	}
 
 	@Test
 	public void aristaInexistenteTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 3, 1);
-		assertFalse(GrafoConPesos.existeArista(1, 4));
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+		grafo.agregarVertice(provincia3);
+
+		grafo.agregarArista(provincia1, provincia2, 100);
+
+		grafo.existeArista(provincia1, provincia3);
 	}
 
 	@Test
 	public void agregarAristaDosVecesTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 3, 1);
-		GrafoConPesos.agregarAristaConPeso(2, 3, 1);
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
 
-		assertTrue(GrafoConPesos.existeArista(2, 3));
+		grafo.agregarArista(provincia1, provincia2, 100);
+		grafo.agregarArista(provincia1, provincia2, 100);
 	}
 
 	@Test
 	public void eliminarAristaExistenteTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 4, 1);
 
-		GrafoConPesos.eliminarArista(2, 4);
-		assertFalse(GrafoConPesos.existeArista(2, 4));
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.eliminarArista(provincia1, provincia2);
+
+		assertFalse(grafo.existeArista(provincia1, provincia2));
 	}
 
 	@Test
 	public void eliminarAristaInexistenteTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.eliminarArista(2, 4);
-		assertFalse(GrafoConPesos.existeArista(2, 4));
+		grafo.agregarVertice(provincia1);
+		grafo.agregarVertice(provincia2);
+
+		grafo.eliminarArista(provincia1, provincia2);
 	}
 
 	@Test
 	public void eliminarAristaDosVecesTest() {
-		GrafoConPesos GrafoConPesos = new GrafoConPesos(5);
-		GrafoConPesos.agregarAristaConPeso(2, 4, 1);
 
-		GrafoConPesos.eliminarArista(2, 4);
-		GrafoConPesos.eliminarArista(2, 4);
-		assertFalse(GrafoConPesos.existeArista(2, 4));
 	}
 }
