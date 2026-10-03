@@ -37,10 +37,7 @@ public class ArbolGeneradorMinimo <V,A>  {
 		
 		
 	
-	public Set<V> guardarVertices( , Grafo destinoVertices) {
-		
-		return null;
-	}}
+
 	
 	
 }
