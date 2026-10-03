@@ -1,11 +1,14 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 public class VentanaConfiguracion {
 
@@ -33,6 +36,10 @@ public class VentanaConfiguracion {
 				new BorderLayout()
 		);
 
+		// =========================
+		// TITULO
+		// =========================
+
 		JLabel lblTitulo =
 				new JLabel("Configuración de regiones");
 
@@ -45,7 +52,47 @@ public class VentanaConfiguracion {
 				BorderLayout.NORTH
 		);
 
-		// BOTÓN VOLVER
+		// =========================
+		// PANEL CENTRAL
+		// =========================
+
+		JPanel panelCentral = new JPanel();
+
+		frame.getContentPane().add(
+				panelCentral,
+				BorderLayout.CENTER
+		);
+
+		panelCentral.setLayout(
+				new GridLayout(1, 2, 10, 0)
+		);
+
+		// =========================
+		// PANEL IZQUIERDO
+		// =========================
+
+		JPanel panelIzquierdo = new JPanel();
+
+		panelCentral.add(panelIzquierdo);
+
+		panelIzquierdo.setLayout(
+				new BorderLayout(0, 10)
+		);
+
+		panelIzquierdo.setBorder(
+				new TitledBorder("Configuración")
+		);
+
+		// =========================
+		// PANEL DE NAVEGACION
+		// =========================
+
+		JPanel panelNavegacion = new JPanel();
+
+		frame.getContentPane().add(
+				panelNavegacion,
+				BorderLayout.SOUTH
+		);
 
 		JButton btnVolver =
 				new JButton("← Volver");
@@ -57,10 +104,7 @@ public class VentanaConfiguracion {
 			ventanaAnterior.mostrar();
 		});
 
-		frame.getContentPane().add(
-				btnVolver,
-				BorderLayout.SOUTH
-		);
+		panelNavegacion.add(btnVolver);
 	}
 
 	public void mostrar() {
