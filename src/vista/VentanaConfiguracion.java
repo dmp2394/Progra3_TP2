@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class VentanaConfiguracion {
 
@@ -83,6 +85,47 @@ public class VentanaConfiguracion {
 				new TitledBorder("Configuración")
 		);
 
+		// =========================
+		// CONFIGURACIÓN DE K
+		// =========================
+
+		JPanel panelConfig = new JPanel();
+
+		panelIzquierdo.add(
+				panelConfig,
+				BorderLayout.NORTH
+		);
+
+		panelConfig.setLayout(
+				new GridLayout(3, 1, 0, 8)
+		);
+
+		// Etiqueta
+		JLabel lblK =
+				new JLabel("Cantidad de regiones K:");
+
+		panelConfig.add(lblK);
+
+		// Spinner
+		JSpinner spinnerK =
+				new JSpinner(
+						new SpinnerNumberModel(
+								1,
+								1,
+								Integer.MAX_VALUE,
+								1
+						)
+				);
+
+		panelConfig.add(spinnerK);
+
+		// Botón generar
+		JButton btnGenerarRegiones =
+				new JButton("Generar regiones");
+
+		panelConfig.add(btnGenerarRegiones);
+		
+		
 		// =========================
 		// PANEL DE NAVEGACION
 		// =========================
