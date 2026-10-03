@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -317,4 +318,35 @@ public class VentanaPrincipal {
 			}
 		});
 	}
+
+	public ArrayList<String> obtenerProvinciasOrigenDeConexiones() {
+		ArrayList<String> provinciasOrigen = new ArrayList<>();
+		for (int fila = 0; fila < modeloTablaConexiones.getRowCount(); fila++) {
+			String provinciaOrigen = (String) modeloTablaConexiones.getValueAt(fila, 0);
+			provinciasOrigen.add(provinciaOrigen);
+		}
+
+		return provinciasOrigen;
+	}
+
+	public ArrayList<String> obtenerProvinciasDestinoDeConexiones() {
+		ArrayList<String> provinciasDestino = new ArrayList<>();
+		for (int fila = 0; fila < modeloTablaConexiones.getRowCount(); fila++) {
+			String provinciaDestino = (String) modeloTablaConexiones.getValueAt(fila, 1);
+			provinciasDestino.add(provinciaDestino);
+		}
+
+		return provinciasDestino;
+	}
+
+	public ArrayList<Integer> obtenerSimilaridadDeConexiones() {
+		ArrayList<Integer> similaridades = new ArrayList<>();
+		for (int fila = 0; fila < modeloTablaConexiones.getRowCount(); fila++) {
+			Integer similaridad = (Integer) modeloTablaConexiones.getValueAt(fila, 2);
+			similaridades.add(similaridad);
+		}
+
+		return similaridades;
+	}
+
 }

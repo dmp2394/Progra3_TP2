@@ -30,4 +30,9 @@ public class DisenioRegiones {
 
 	}
 
+	public void agregarConexion(String provinciaOrigen, String provinciaDestino, Integer similaridad) {
+		// TODO: Agregar al grafo
+
+	}
+
 }
