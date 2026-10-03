@@ -1,13 +1,12 @@
 package modelo;
 
 
-public class Arista implements Comparable <Arista> {
-	private Vertice extremo1;
-	private Vertice extremo2;
+public class Arista <V> implements Comparable <Arista<V>> {
+	private V extremo1;
+	private V extremo2;
 	private int peso;
 	
-	public Arista(Vertice extremo1, Vertice extremo2, int distancia) {
-		this.peso = distancia;
+	public Arista(V extremo1, V extremo2, int distancia) {
 		this.extremo1= extremo1;
 		this.extremo2 = extremo2;
 	}
@@ -25,11 +24,11 @@ public class Arista implements Comparable <Arista> {
 		return false;
 	}
 	
-	public Vertice obtenerExtremo1() {
+	public V obtenerExtremo1() {
 		return extremo1;		}
 	
 	
-	public Vertice obtenerExtremo2() {
+	public V obtenerExtremo2() {
 		return extremo2;
 	}
 	
@@ -40,13 +39,25 @@ public class Arista implements Comparable <Arista> {
 	}
 	
 	
-	//lo hizo eclipse no se si esta bien 
-	 public boolean equals(Object obj) {
-	        if (this == obj) return true;
-	        if (obj == null || getClass() != obj.getClass()) return false;
-	        Arista ruta = (Arista) obj;
-	        return peso == ruta.peso;
-	    }
+
+	@Override
+	public boolean equals(Object objeto) {
+		if (this == objeto) {
+			return true;
+		}
+	
+		if (objeto == null || getClass() != objeto.getClass()) {
+			return false;
+		}
+	
+	Arista<?> otra = (Arista<?>) objeto;
+	
+	boolean extremosEnOrden = extremo1.equals(otra.extremo1) && extremo2.equals(otra.extremo2);
+	
+	boolean extremosAlReves =extremo1.equals(otra.extremo2) && extremo2.equals(otra.extremo1);
+	
+	return extremosEnOrden || extremosAlReves;
+	}
 
 	
 	

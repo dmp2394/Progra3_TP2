@@ -1,21 +1,23 @@
 package modelo;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 
-public class Grafo<V,A> {
+public class Grafo<V> {
 
-	private Map<V, Set<A>> adyacencia;
-	private Set<A> aristas;
-	private Set<V> vertices;
+	private Map<V, Set<Arista<V>>> adyacencia;
+	private ArrayList<Arista<V>> aristas;
+
 
 	public Grafo() {
-		adyacencia = new HashMap<>();
-		aristas = new HashSet<>();
-		vertices = new HashSet<>();
+		this.adyacencia = new HashMap<>();
+		this.aristas= new ArrayList<>();
+		
 	}
 
 	
@@ -31,25 +33,26 @@ public class Grafo<V,A> {
 	}
 	
 
-	public void agregarArista(V vertice1, V vertice2, A arista) {
+	public void agregarArista(V vertice1, V vertice2, Arista<V> arista) {
 		if (!adyacencia.containsKey(vertice1) || !adyacencia.containsKey(vertice2)) {
 			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
 		}
 		if (vertice1.equals(vertice2)) {
 			throw new IllegalArgumentException("Error: No se permiten loops (aristas de un vértice a sí mismo).");	
 		}
-		for (A aristaExistente : adyacencia.get(vertice1)) {
+		for (Arista<V> aristaExistente : adyacencia.get(vertice1)) {
 			if (aristaExistente.equals(arista)) {
 				throw new IllegalArgumentException("Error: La arista ya existe entre estos vértices.");
 			}}
 			adyacencia.get(vertice1).add(arista);
 			adyacencia.get(vertice2).add(arista);
 			aristas.add(arista);
+			aristas.sort(Comparator.comparingInt(Arista::devolverPeso));
 			
 		}
 	
 	
-	public void eliminarArista(V vertice1, V vertice2, A arista) {
+	public void eliminarArista(V vertice1, V vertice2, Arista<V> arista) {
 	    if (!adyacencia.containsKey(vertice1) || !adyacencia.containsKey(vertice2)) {
 	        throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
 	    }
@@ -60,15 +63,15 @@ public class Grafo<V,A> {
 	    adyacencia.get(vertice1).remove(arista);
 	    adyacencia.get(vertice2).remove(arista);
 	}
-	 public Map<V, Set<A>> obtenerAdyacencia() {
+	 public Map<V, Set<Arista<V>>> obtenerAdyacencia() {
 	        return adyacencia;
 	    }
 	 
-	 public Set<V> obtenerVertices() {
-	        return vertices;
-	    }
+//	 public Set<V> obtenerVertices() {
+//	        return vertices;
+//	    }
 	 
-	 public Set<A> obtenerAristas() {
+	 public ArrayList<Arista<V>> obtenerAristas() {
 	        return aristas;
 	    }
 
@@ -77,7 +80,14 @@ public class Grafo<V,A> {
 		
 		return adyacencia.get(provincia1).containsKey(provincia2);
 	}*/
-
+	  public ArrayList<V>obtenerVertices() {
+	      
+	        ArrayList<V> verticesAdyacentes = new ArrayList<>();
+	        for (V vertice : adyacencia.keySet()) {
+	            verticesAdyacentes.add(vertice);
+	        }
+	        return verticesAdyacentes;
+	    }
 	
 	public boolean existeVertice(V vertice) {
 		return adyacencia.containsKey(vertice);
