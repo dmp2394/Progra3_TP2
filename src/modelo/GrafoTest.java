@@ -15,7 +15,7 @@ public class GrafoTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void agregarVerticeRepetest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
+		Vertice provincia1 = new Vertice("Buenos Aires");
 		grafo.agregarVertice(provincia1);
 		grafo.agregarVertice(provincia1);
 	}
@@ -23,7 +23,7 @@ public class GrafoTest {
 	@Test
 	public void agregarVerticeExitosotest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
+		Vertice provincia1 = new Vertice("Buenos Aires");
 		grafo.agregarVertice(provincia1);
 		assertTrue(grafo.existeVertice(provincia1));
 	}
@@ -31,25 +31,25 @@ public class GrafoTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void agregarSinProvinciasParaAristatest() {
 		Grafo grafo = new Grafo();
-		grafo.agregarArista(null, null, new Ruta(100));
+		grafo.agregarArista(null, null, new Arista(100));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void agregarBucletest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
+		Vertice provincia1 = new Vertice("Buenos Aires");
 		grafo.agregarVertice(provincia1);
-		grafo.agregarArista(provincia1, provincia1, new Ruta(100));
+		grafo.agregarArista(provincia1, provincia1, new Arista(100));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void agregarAristaMultipletest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
-		Provincia provincia2 = new Provincia("Córdoba");
+		Vertice provincia1 = new Vertice("Buenos Aires");
+		Vertice provincia2 = new Vertice("Córdoba");
 		grafo.agregarVertice(provincia1);
 		grafo.agregarVertice(provincia2);
-		Ruta ruta = new Ruta(100);
+		Arista ruta = new Arista(100);
 		grafo.agregarArista(provincia1, provincia2, ruta);
 		grafo.agregarArista(provincia1, provincia2, ruta);
 	}
@@ -57,11 +57,11 @@ public class GrafoTest {
 	@Test
 	public void agregarAristaExitosotest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
-		Provincia provincia2 = new Provincia("Córdoba");
+		Vertice provincia1 = new Vertice("Buenos Aires");
+		Vertice provincia2 = new Vertice("Córdoba");
 		grafo.agregarVertice(provincia1);
 		grafo.agregarVertice(provincia2);
-		Ruta ruta = new Ruta(100);
+		Arista ruta = new Arista(100);
 		grafo.agregarArista(provincia1, provincia2, ruta);
 		assertTrue(grafo.existeArista(provincia1, provincia2));
 	}
@@ -71,8 +71,8 @@ public class GrafoTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void eliminarAristaConFaltaDeVerticetest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
-		Provincia provincia2 = new Provincia("Córdoba");
+		Vertice provincia1 = new Vertice("Buenos Aires");
+		Vertice provincia2 = new Vertice("Córdoba");
 		grafo.agregarVertice(provincia1);
 		grafo.eliminarArista(provincia1, provincia2);
 	}
@@ -80,8 +80,8 @@ public class GrafoTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void eliminarAristaInexistentest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
-		Provincia provincia2 = new Provincia("Córdoba");
+		Vertice provincia1 = new Vertice("Buenos Aires");
+		Vertice provincia2 = new Vertice("Córdoba");
 		grafo.agregarVertice(provincia1);
 		grafo.agregarVertice(provincia2);
 		grafo.eliminarArista(provincia1, provincia2);
@@ -90,11 +90,11 @@ public class GrafoTest {
 	@Test
 	public void eliminarAristaExitosotest() {
 		Grafo grafo = new Grafo();
-		Provincia provincia1 = new Provincia("Buenos Aires");
-		Provincia provincia2 = new Provincia("Córdoba");
+		Vertice provincia1 = new Vertice("Buenos Aires");
+		Vertice provincia2 = new Vertice("Córdoba");
 		grafo.agregarVertice(provincia1);
 		grafo.agregarVertice(provincia2);
-		Ruta ruta = new Ruta(100);
+		Arista ruta = new Arista(100);
 		grafo.agregarArista(provincia1, provincia2, ruta);
 		grafo.eliminarArista(provincia1, provincia2);
 		assertFalse(grafo.existeArista(provincia1, provincia2));

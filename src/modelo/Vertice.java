@@ -1,9 +1,9 @@
 package modelo;
 
-public class Provincia {
+public class Vertice {
 	private String nombre;
 	
-	public Provincia(String nombre) {
+	public Vertice(String nombre) {
 		this.nombre = nombre;
 	}
 	

@@ -4,15 +4,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class Grafo<V,A> {
 
 	private Map<V, Set<A>> adyacencia;
+	private Set<A> aristas;
+	private Set<V> vertices;
 
 	public Grafo() {
 		adyacencia = new HashMap<>();
+		aristas = new HashSet<>();
+		vertices = new HashSet<>();
 	}
 
 	
@@ -41,6 +44,8 @@ public class Grafo<V,A> {
 			}}
 			adyacencia.get(vertice1).add(arista);
 			adyacencia.get(vertice2).add(arista);
+			aristas.add(arista);
+			
 		}
 	
 	
@@ -57,6 +62,14 @@ public class Grafo<V,A> {
 	}
 	 public Map<V, Set<A>> obtenerAdyacencia() {
 	        return adyacencia;
+	    }
+	 
+	 public Set<V> obtenerVertices() {
+	        return vertices;
+	    }
+	 
+	 public Set<A> obtenerAristas() {
+	        return aristas;
 	    }
 
 	
