@@ -6,8 +6,8 @@ public class DisenioRegiones {
 	private GrafoConPesos<String> agmProvinciasYSimilaridades;
 	private GrafoConPesos<String> disenioRegiones;
 
-	public DisenioRegiones(GrafoConPesos<String> grafo) {
-		this.provinciasYSimilaridades = grafo;
+	public DisenioRegiones() {
+		this.provinciasYSimilaridades = null;
 		this.agmProvinciasYSimilaridades = null;
 		this.disenioRegiones = null;
 	}
