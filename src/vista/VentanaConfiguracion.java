@@ -92,36 +92,46 @@ public class VentanaConfiguracion {
 		JPanel panelConfig = new JPanel();
 
 		panelIzquierdo.add(
-				panelConfig,
-				BorderLayout.NORTH
+		        panelConfig,
+		        BorderLayout.NORTH
 		);
 
 		panelConfig.setLayout(
-				new GridLayout(3, 1, 0, 8)
+		        new GridLayout(3, 1, 0, 8)
 		);
 
 		// Etiqueta
 		JLabel lblK =
-				new JLabel("Cantidad de regiones K:");
+		        new JLabel("Cantidad de regiones K:");
 
 		panelConfig.add(lblK);
 
 		// Spinner
 		JSpinner spinnerK =
-				new JSpinner(
-						new SpinnerNumberModel(
-								1,
-								1,
-								Integer.MAX_VALUE,
-								1
-						)
-				);
+		        new JSpinner(
+		                new SpinnerNumberModel(
+		                        1,
+		                        1,
+		                        Integer.MAX_VALUE,
+		                        1
+		                )
+		        );
 
 		panelConfig.add(spinnerK);
 
 		// Botón generar
 		JButton btnGenerarRegiones =
-				new JButton("Generar regiones");
+		        new JButton("Generar regiones");
+
+		btnGenerarRegiones.addActionListener(e -> {
+
+		    VentanaResultado ventanaResultado =
+		            new VentanaResultado(this);
+
+		    ventanaResultado.mostrar();
+
+		    frame.setVisible(false);
+		});
 
 		panelConfig.add(btnGenerarRegiones);
 		
@@ -131,14 +141,15 @@ public class VentanaConfiguracion {
 		// =========================
 
 		JPanel panelNavegacion = new JPanel();
+		panelNavegacion.setLayout(new BorderLayout());
 
 		frame.getContentPane().add(
 				panelNavegacion,
 				BorderLayout.SOUTH
 		);
 
-		JButton btnVolver =
-				new JButton("← Volver");
+		// VOLVER
+		JButton btnVolver = new JButton("← Volver");
 
 		btnVolver.addActionListener(e -> {
 
@@ -147,7 +158,13 @@ public class VentanaConfiguracion {
 			ventanaAnterior.mostrar();
 		});
 
-		panelNavegacion.add(btnVolver);
+		panelNavegacion.add(
+				btnVolver,
+				BorderLayout.WEST
+		);
+
+		
+		
 	}
 
 	public void mostrar() {
