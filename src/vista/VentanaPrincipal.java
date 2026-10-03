@@ -3,8 +3,8 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -66,6 +66,10 @@ public class VentanaPrincipal {
 	// =========================
 
 	private JButton btnContinuar;
+
+	public void mostrar() {
+		frame.setVisible(true);
+	}
 
 	/**
 	 * Launch the application.
@@ -306,18 +310,31 @@ public class VentanaPrincipal {
 		contentPanel.add(panelNavegacion, BorderLayout.SOUTH);
 
 		btnContinuar = new JButton("Continuar →");
-		cargarMapaAlClickear(btnContinuar);
 
-		panelNavegacion.add(btnContinuar, BorderLayout.EAST);
-	}
+		btnContinuar.addActionListener(e -> {
 
-	private void cargarMapaAlClickear(JButton btnContinuar) {
-		btnContinuar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				presentador.cargarMapa();
-			}
+			// Primero le avisamos al presentador que cargue
+			// la información del mapa/grafo.
+			presentador.cargarMapa();
+
+			// Creamos la segunda ventana y le pasamos
+			// ESTA misma VentanaPrincipal.
+			VentanaConfiguracion ventanaConfiguracion =
+					new VentanaConfiguracion(this);
+
+			// Mostramos paso 2.
+			ventanaConfiguracion.mostrar();
+
+			// Ocultamos paso 1, pero NO lo destruimos.
+			frame.setVisible(false);
 		});
+
+		panelNavegacion.add(
+				btnContinuar,
+				BorderLayout.EAST
+		);
 	}
+
 
 	public ArrayList<String> obtenerProvinciasOrigenDeConexiones() {
 		ArrayList<String> provinciasOrigen = new ArrayList<>();
