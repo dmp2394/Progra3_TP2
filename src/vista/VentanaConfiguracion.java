@@ -11,6 +11,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 
 public class VentanaConfiguracion {
@@ -64,6 +66,13 @@ public class VentanaConfiguracion {
 
 		panelCentral.setLayout(
 				new GridLayout(1, 2, 10, 0));
+
+		mapa = new JMapViewer();
+		mapa.setDisplayPosition(new Coordinate(-34.52, -58.70), 5);
+
+		JPanel panelMapa = new JPanel(new BorderLayout());
+		panelMapa.add(mapa, BorderLayout.CENTER);
+		panelCentral.add(panelMapa);
 
 		// =========================
 		// PANEL IZQUIERDO
