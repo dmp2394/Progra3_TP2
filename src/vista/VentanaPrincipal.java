@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
 
-
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -189,6 +188,17 @@ public class VentanaPrincipal {
 
 		panelCargaProvincia.add(btnAgregarProvincia);
 
+		btnAgregarProvincia.addActionListener(e -> {
+			String nombre = txtProvincia.getText().trim();
+
+			if (!nombre.isEmpty() && !modeloListaProvincias.contains(nombre)) {
+				modeloListaProvincias.addElement(nombre);
+				comboProvincia1.addItem(nombre);
+				comboProvincia2.addItem(nombre);
+				txtProvincia.setText("");
+			}
+		});
+
 		// -----------------------------------------------------
 		// Lista de provincias
 		// -----------------------------------------------------
@@ -319,8 +329,7 @@ public class VentanaPrincipal {
 
 			// Creamos la segunda ventana y le pasamos
 			// ESTA misma VentanaPrincipal.
-			VentanaConfiguracion ventanaConfiguracion =
-					new VentanaConfiguracion(this);
+			VentanaConfiguracion ventanaConfiguracion = new VentanaConfiguracion(this);
 
 			// Mostramos paso 2.
 			ventanaConfiguracion.mostrar();
@@ -331,10 +340,8 @@ public class VentanaPrincipal {
 
 		panelNavegacion.add(
 				btnContinuar,
-				BorderLayout.EAST
-		);
+				BorderLayout.EAST);
 	}
-
 
 	public ArrayList<String> obtenerProvinciasOrigenDeConexiones() {
 		ArrayList<String> provinciasOrigen = new ArrayList<>();
