@@ -1,14 +1,11 @@
 package modelo;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.Map;
 
 public class Kruskal <V>  {
-	// Implementación del algoritmo de Prim o Kruskal para encontrar el árbol generador mínimo
-	// Este es un ejemplo simple y no funcional, solo para ilustrar la estructura de la clase.
-	
-
 	
 	
 	
@@ -106,4 +103,5 @@ public class Kruskal <V>  {
 
 	
 	
+
 

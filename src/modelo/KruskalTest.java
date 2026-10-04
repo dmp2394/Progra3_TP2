@@ -2,11 +2,15 @@ package modelo;
 
 import static org.junit.Assert.*;
 
+import static org.junit.Assert.fail;
+
+
 import org.junit.Test;
 
 public class KruskalTest {
 
 	@Test
+
 	public void testKruskal()
 	{
 		Grafo<String> grafo =creacionDeGrafo();
@@ -32,4 +36,9 @@ public class KruskalTest {
 	}
 	
 	
+
+	public void test() {
+		fail("Not yet implemented");
+	}
+
 }
