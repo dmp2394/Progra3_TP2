@@ -16,6 +16,7 @@ public class VentanaConfiguracion {
 
 	private JFrame frame;
 	private VentanaPrincipal ventanaAnterior;
+	private JMapViewer mapa;
 
 	public VentanaConfiguracion(VentanaPrincipal ventanaAnterior) {
 
@@ -35,24 +36,20 @@ public class VentanaConfiguracion {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.getContentPane().setLayout(
-				new BorderLayout()
-		);
+				new BorderLayout());
 
 		// =========================
 		// TITULO
 		// =========================
 
-		JLabel lblTitulo =
-				new JLabel("Configuración de regiones");
+		JLabel lblTitulo = new JLabel("Configuración de regiones");
 
 		lblTitulo.setHorizontalAlignment(
-				SwingConstants.CENTER
-		);
+				SwingConstants.CENTER);
 
 		frame.getContentPane().add(
 				lblTitulo,
-				BorderLayout.NORTH
-		);
+				BorderLayout.NORTH);
 
 		// =========================
 		// PANEL CENTRAL
@@ -62,12 +59,10 @@ public class VentanaConfiguracion {
 
 		frame.getContentPane().add(
 				panelCentral,
-				BorderLayout.CENTER
-		);
+				BorderLayout.CENTER);
 
 		panelCentral.setLayout(
-				new GridLayout(1, 2, 10, 0)
-		);
+				new GridLayout(1, 2, 10, 0));
 
 		// =========================
 		// PANEL IZQUIERDO
@@ -78,12 +73,10 @@ public class VentanaConfiguracion {
 		panelCentral.add(panelIzquierdo);
 
 		panelIzquierdo.setLayout(
-				new BorderLayout(0, 10)
-		);
+				new BorderLayout(0, 10));
 
 		panelIzquierdo.setBorder(
-				new TitledBorder("Configuración")
-		);
+				new TitledBorder("Configuración"));
 
 		// =========================
 		// CONFIGURACIÓN DE K
@@ -92,50 +85,41 @@ public class VentanaConfiguracion {
 		JPanel panelConfig = new JPanel();
 
 		panelIzquierdo.add(
-		        panelConfig,
-		        BorderLayout.NORTH
-		);
+				panelConfig,
+				BorderLayout.NORTH);
 
 		panelConfig.setLayout(
-		        new GridLayout(3, 1, 0, 8)
-		);
+				new GridLayout(3, 1, 0, 8));
 
 		// Etiqueta
-		JLabel lblK =
-		        new JLabel("Cantidad de regiones K:");
+		JLabel lblK = new JLabel("Cantidad de regiones K:");
 
 		panelConfig.add(lblK);
 
 		// Spinner
-		JSpinner spinnerK =
-		        new JSpinner(
-		                new SpinnerNumberModel(
-		                        1,
-		                        1,
-		                        Integer.MAX_VALUE,
-		                        1
-		                )
-		        );
+		JSpinner spinnerK = new JSpinner(
+				new SpinnerNumberModel(
+						1,
+						1,
+						Integer.MAX_VALUE,
+						1));
 
 		panelConfig.add(spinnerK);
 
 		// Botón generar
-		JButton btnGenerarRegiones =
-		        new JButton("Generar regiones");
+		JButton btnGenerarRegiones = new JButton("Generar regiones");
 
 		btnGenerarRegiones.addActionListener(e -> {
 
-		    VentanaResultado ventanaResultado =
-		            new VentanaResultado(this);
+			VentanaResultado ventanaResultado = new VentanaResultado(this);
 
-		    ventanaResultado.mostrar();
+			ventanaResultado.mostrar();
 
-		    frame.setVisible(false);
+			frame.setVisible(false);
 		});
 
 		panelConfig.add(btnGenerarRegiones);
-		
-		
+
 		// =========================
 		// PANEL DE NAVEGACION
 		// =========================
@@ -145,8 +129,7 @@ public class VentanaConfiguracion {
 
 		frame.getContentPane().add(
 				panelNavegacion,
-				BorderLayout.SOUTH
-		);
+				BorderLayout.SOUTH);
 
 		// VOLVER
 		JButton btnVolver = new JButton("← Volver");
@@ -160,11 +143,8 @@ public class VentanaConfiguracion {
 
 		panelNavegacion.add(
 				btnVolver,
-				BorderLayout.WEST
-		);
+				BorderLayout.WEST);
 
-		
-		
 	}
 
 	public void mostrar() {
