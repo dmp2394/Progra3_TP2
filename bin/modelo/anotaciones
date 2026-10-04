@@ -1,0 +1,21 @@
+
+CREACION DE LA VARIABLE MAP
+Declarar la variable como Map obedece al principio de diseño de programar hacia una interfaz,
+ no hacia una implementación. Esto minimiza el acoplamiento estructural y te permite cambiar el motor subyacente en el 
+ futuro (por ejemplo, cambiar a un TreeMap o ConcurrentHashMap) sin alterar ni romper el resto del código que interactúa
+ con esa variable.
+ 
+ CAMBIOS EN RUTAS
+ Para cumplir con tu algoritmo, necesitas sacar todas las rutas del grafo, agruparlas en una lista general y 
+ ordenarlas para eliminar las más largas. Si la ruta solo guardara la distancia (por ejemplo, "700"), 
+ al extraerla de la estructura del mapa perdería su contexto espacial. Tendrías 
+ el valor numérico de la ruta más pesada, pero sería matemáticamente imposible saber qué par de provincias debes desconectar.
+ Al agregar origen y destino dentro de la propia clase Ruta, cada conexión se vuelve autónoma. 
+ Cuando extraigas la ruta más pesada de tu lista ordenada, el objeto mismo contendrá la información exacta de cuáles 
+ son las dos provincias a las que pertenece, permitiendo que el algoritmo ejecute la separación correctamente.
+ 
+ GRAFO:
+ los "obtener" devuelven copias de los atributos, no los atributos
+ 
+ ARISTAS:
+ miembros son final tal que nadie pueda editar las aristas por fuera
