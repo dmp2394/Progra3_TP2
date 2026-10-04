@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import org.openstreetmap.gui.jmapviewer.JMapViewer;
 
 public class VentanaConfiguracion {
 
