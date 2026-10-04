@@ -9,7 +9,6 @@ public class Presentador {
 
 	// Todos estos metodos los ejecuta la vista para hacer lo que quiera hacer
 
-	// Clase principal, todo opera sobre este
 	private DisenioRegiones disenioRegiones;
 	private VentanaPrincipal ventanaPrincipal;
 
@@ -17,6 +16,10 @@ public class Presentador {
 	public Presentador(VentanaPrincipal ventanaPrincipal) {
 		this.disenioRegiones = new DisenioRegiones();
 		this.ventanaPrincipal = ventanaPrincipal;
+	}
+
+	public void ejecutarAlgoritmo(int k) {
+		this.disenioRegiones.separarEnRegionesConexas(k);
 	}
 
 	// Carga el grafo en memoria
@@ -38,9 +41,4 @@ public class Presentador {
 		}
 
 	}
-
-	public void ejecutarAlgoritmo(int k) {
-		this.disenioRegiones.separarEnRegionesConexas(k);
-	}
-
 }

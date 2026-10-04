@@ -13,3 +13,9 @@ Declarar la variable como Map obedece al principio de diseño de programar hacia
  Al agregar origen y destino dentro de la propia clase Ruta, cada conexión se vuelve autónoma. 
  Cuando extraigas la ruta más pesada de tu lista ordenada, el objeto mismo contendrá la información exacta de cuáles 
  son las dos provincias a las que pertenece, permitiendo que el algoritmo ejecute la separación correctamente.
+ 
+ GRAFO:
+ los "obtener" devuelven copias de los atributos, no los atributos
+ 
+ ARISTAS:
+ miembros son final tal que nadie pueda editar las aristas por fuera

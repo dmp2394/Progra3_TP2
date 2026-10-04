@@ -2,9 +2,9 @@ package modelo;
 
 public class DisenioRegiones {
 
-	private GrafoConPesos<String> provinciasYSimilaridades;
-	private GrafoConPesos<String> agmProvinciasYSimilaridades;
-	private GrafoConPesos<String> disenioRegiones;
+	private Grafo<String> provinciasYSimilaridades;
+	private Grafo<String> agmProvinciasYSimilaridades;
+	private Grafo<String> disenioRegiones;
 
 	public DisenioRegiones() {
 		this.provinciasYSimilaridades = null;
@@ -20,7 +20,7 @@ public class DisenioRegiones {
 
 	}
 
-	private void crearArbolGeneradorMinimo(GrafoConPesos<String> GrafoConPesos) {
+	private void crearArbolGeneradorMinimo(Grafo<String> GrafoConPesos) {
 		this.agmProvinciasYSimilaridades = Kruskal.crearArbolGeneradorMinimo(provinciasYSimilaridades);
 	}
 
