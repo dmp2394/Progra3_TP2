@@ -32,7 +32,7 @@ import modelo.Arista;
 import modelo.Provincia;
 import presentador.Presentador;
 
-public class VentanaPrincipal {
+public class ventanaConfgGrafo {
 
     private JFrame frame;
     private final Presentador presentador;
@@ -58,7 +58,7 @@ public class VentanaPrincipal {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    VentanaPrincipal ventana = new VentanaPrincipal();
+                    ventanaConfgGrafo ventana = new ventanaConfgGrafo();
                     ventana.mostrar();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -67,7 +67,7 @@ public class VentanaPrincipal {
         });
     }
 
-    public VentanaPrincipal() {
+    public ventanaConfgGrafo() {
         presentador = new Presentador();
         initialize();
     }

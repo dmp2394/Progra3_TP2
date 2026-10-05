@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 public class VentanaBienvenida {
 
     private JFrame frame;
-    private VentanaPrincipal ventanaPrincipal;
+    private ventanaConfgGrafo ventanaPrincipal;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -90,7 +90,7 @@ public class VentanaBienvenida {
 
         btnComenzar.addActionListener(e -> {
             if (ventanaPrincipal == null) {
-                ventanaPrincipal = new VentanaPrincipal();
+                ventanaPrincipal = new ventanaConfgGrafo();
             }
 
             ventanaPrincipal.mostrar();

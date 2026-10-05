@@ -18,10 +18,10 @@ import org.openstreetmap.gui.jmapviewer.JMapViewer;
 public class VentanaConfiguracion {
 
 	private JFrame frame;
-	private VentanaPrincipal ventanaAnterior;
+	private ventanaConfgGrafo ventanaAnterior;
 	private JMapViewer mapa;
 
-	public VentanaConfiguracion(VentanaPrincipal ventanaAnterior) {
+	public VentanaConfiguracion(ventanaConfgGrafo ventanaAnterior) {
 
 		this.ventanaAnterior = ventanaAnterior;
 

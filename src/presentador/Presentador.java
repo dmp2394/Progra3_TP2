@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import modelo.Arista;
 import modelo.DisenioRegiones;
 import modelo.Provincia;
-import vista.VentanaPrincipal;
+import vista.ventanaConfgGrafo;
 
 public class Presentador {
 
@@ -16,7 +16,7 @@ public class Presentador {
     }
 
     // Constructor temporal para que la ventana actual siga compilando.
-    public Presentador(VentanaPrincipal ventanaPrincipal) {
+    public Presentador(ventanaConfgGrafo ventanaPrincipal) {
         this();
     }
 
