@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -304,12 +305,53 @@ public class VentanaPrincipal {
 		panelConexiones.add(scrollConexiones, BorderLayout.CENTER);
 
 		// -----------------------------------------------------
+		// Agregar conexión
+		// -----------------------------------------------------
+
+		btnAgregarConexion.addActionListener(e -> {
+			String provincia1 = (String) comboProvincia1.getSelectedItem();
+			String provincia2 = (String) comboProvincia2.getSelectedItem();
+
+			if (provincia1 == null || provincia2 == null) {
+				JOptionPane.showMessageDialog(frame, "Agregá y seleccioná dos provincias.");
+				return;
+			}
+
+			if (provincia1.equals(provincia2)) {
+				JOptionPane.showMessageDialog(frame, "Las provincias deben ser distintas.");
+				return;
+			}
+
+			int peso = ((Number) spinnerPeso.getValue()).intValue();
+
+			modeloTablaConexiones.addRow(
+					new Object[] { provincia1, provincia2, peso });
+		});
+
+		// -----------------------------------------------------
 		// Eliminar conexión
 		// -----------------------------------------------------
 
 		btnEliminarConexion = new JButton("Eliminar conexión");
 
 		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
+
+		btnEliminarConexion = new JButton("Eliminar conexión");
+		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
+
+		btnEliminarConexion.addActionListener(e -> {
+			int filaVista = tablaConexiones.getSelectedRow();
+
+			if (filaVista == -1) {
+				JOptionPane.showMessageDialog(
+						frame,
+						"Seleccioná una conexión de la tabla.");
+				return;
+			}
+
+			int filaModelo = tablaConexiones.convertRowIndexToModel(filaVista);
+			modeloTablaConexiones.removeRow(filaModelo);
+		});
 
 		// =====================================================
 		// NAVEGACION
