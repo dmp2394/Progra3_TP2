@@ -413,4 +413,74 @@ public class GrafoTest {
 
 		assertFalse(grafo.esVacio());
 	}
+	
+	// Comprueba que eliminar un vértice inexistente lance
+	// una IllegalArgumentException.
+	@Test(expected = IllegalArgumentException.class)
+	public void eliminarVerticeInexistenteTest() {
+	    grafo.eliminarVertice(provincia1);
+	}
+
+	// Comprueba que se pueda eliminar un vértice sin conexiones
+	// y que el grafo quede vacío si era su único vértice.
+	@Test
+	public void eliminarVerticeAisladoTest() {
+	    grafo.agregarVertice(provincia1);
+
+	    grafo.eliminarVertice(provincia1);
+
+	    assertFalse(grafo.existeVertice(provincia1));
+	    assertTrue(grafo.esVacio());
+	}
+
+	// Comprueba que eliminar un vértice quite todas sus aristas
+	// de la lista general y de los conjuntos de sus vecinos,
+	// conservando los demás vértices.
+	@Test
+	public void eliminarVerticeEliminaSusAristasTest() {
+	    grafo.agregarVertice(provincia1);
+	    grafo.agregarVertice(provincia2);
+	    grafo.agregarVertice(provincia3);
+
+	    grafo.agregarArista(provincia1, provincia2, 4);
+	    grafo.agregarArista(provincia3, provincia1, 7);
+
+	    grafo.eliminarVertice(provincia1);
+
+	    assertFalse(grafo.existeVertice(provincia1));
+	    assertTrue(grafo.existeVertice(provincia2));
+	    assertTrue(grafo.existeVertice(provincia3));
+
+	    assertTrue(grafo.obtenerAristas().isEmpty());
+	    assertTrue(
+	            grafo.obtenerlistaDeVecinos().get(provincia2).isEmpty());
+	    assertTrue(
+	            grafo.obtenerlistaDeVecinos().get(provincia3).isEmpty());
+	}
+
+	// Comprueba que eliminar un vértice conserve las conexiones
+	// entre los otros vértices y que el peso total se actualice.
+	@Test
+	public void eliminarVerticeNoAfectaOtrasConexionesTest() {
+	    grafo.agregarVertice(provincia1);
+	    grafo.agregarVertice(provincia2);
+	    grafo.agregarVertice(provincia3);
+
+	    grafo.agregarArista(provincia1, provincia2, 4);
+	    grafo.agregarArista(provincia2, provincia3, 8);
+
+	    grafo.eliminarVertice(provincia1);
+
+	    assertEquals(2, grafo.obtenerVertices().size());
+	    assertEquals(1, grafo.obtenerAristas().size());
+	    assertTrue(grafo.existeArista(provincia2, provincia3));
+	    assertEquals(8, grafo.pesoTotal());
+
+	    assertEquals(
+	            1, grafo.obtenerlistaDeVecinos().get(provincia2).size());
+	    assertEquals(
+	            1, grafo.obtenerlistaDeVecinos().get(provincia3).size());
+	}
+	
+
 }

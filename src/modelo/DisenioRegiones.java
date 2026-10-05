@@ -1,38 +1,123 @@
 package modelo;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class DisenioRegiones {
 
-	private Grafo<String> provinciasYSimilaridades;
-	private Grafo<String> agmProvinciasYSimilaridades;
-	private Grafo<String> disenioRegiones;
+    private Grafo<String> provinciasYSimilaridades;
+    private Map<String, Provincia> provincias;
 
-	public DisenioRegiones() {
-		this.provinciasYSimilaridades = null;
-		this.agmProvinciasYSimilaridades = null;
-		this.disenioRegiones = null;
-	}
+    public DisenioRegiones() {
+        provinciasYSimilaridades = new Grafo<>();
+        provincias = new LinkedHashMap<>();
+    }
 
-	public void separarEnRegionesConexas(int cantidadRegionesConexas) {
+    // Agrega los datos de la provincia y su vértice en el grafo.
+    public void agregarProvincia(String nombre, int x, int y) {
+        Provincia provincia = new Provincia(nombre, x, y);
+        String nombreProvincia = provincia.getNombre();
 
-		crearArbolGeneradorMinimo(this.provinciasYSimilaridades);
+        if (provincias.containsKey(nombreProvincia)) {
+            throw new IllegalArgumentException(
+                    "La provincia ya existe.");
+        }
 
-		eliminarAristasDeMayorPeso(cantidadRegionesConexas - 1);
+        provinciasYSimilaridades.agregarVertice(nombreProvincia);
+        provincias.put(nombreProvincia, provincia);
+    }
 
-	}
+    // Elimina la provincia, su posición y todas sus conexiones.
+    public void eliminarProvincia(String nombre) {
+        Provincia provincia = getProvincia(nombre);
+        String nombreProvincia = provincia.getNombre();
 
-	private void crearArbolGeneradorMinimo(Grafo<String> GrafoConPesos) {
-		this.agmProvinciasYSimilaridades = Kruskal.crearArbolGeneradorMinimo(provinciasYSimilaridades);
-	}
+        provinciasYSimilaridades.eliminarVertice(nombreProvincia);
+        provincias.remove(nombreProvincia);
+    }
 
-	private void eliminarAristasDeMayorPeso(int cantidad) {
-		// opera directamente sobre el atributo agmProvinciasYSimilaridades, nose si
-		// esta bien esto
+    // Reemplaza la posición conservando el nombre y las conexiones.
+    public void setPosicionProvincia(String nombre, int x, int y) {
+        Provincia provinciaActual = getProvincia(nombre);
 
-	}
+        Provincia provinciaActualizada = new Provincia(
+                provinciaActual.getNombre(), x, y);
 
-	public void agregarConexion(String provinciaOrigen, String provinciaDestino, Integer similaridad) {
-		// TODO: Agregar al grafo
+        provincias.put(
+                provinciaActualizada.getNombre(),
+                provinciaActualizada);
+    }
 
-	}
+    // Devuelve los datos de una provincia existente.
+    public Provincia getProvincia(String nombre) {
+        String nombreProvincia = validarNombre(nombre);
+        Provincia provincia = provincias.get(nombreProvincia);
 
+        if (provincia == null) {
+            throw new IllegalArgumentException(
+                    "La provincia no existe.");
+        }
+
+        return provincia;
+    }
+
+    // Devuelve una copia de la colección de provincias.
+    public ArrayList<Provincia> getProvincias() {
+        return new ArrayList<>(provincias.values());
+    }
+
+    // Agrega una conexión entre dos provincias existentes.
+    public void agregarConexion(
+            String provinciaOrigen,
+            String provinciaDestino,
+            Integer similaridad) {
+
+        if (similaridad == null) {
+            throw new IllegalArgumentException(
+                    "El peso de la conexión no puede ser nulo.");
+        }
+
+        Provincia origen = getProvincia(provinciaOrigen);
+        Provincia destino = getProvincia(provinciaDestino);
+
+        provinciasYSimilaridades.agregarArista(
+                origen.getNombre(),
+                destino.getNombre(),
+                similaridad);
+    }
+
+    // Elimina la conexión entre dos provincias existentes.
+    public void eliminarConexion(
+            String provinciaOrigen,
+            String provinciaDestino) {
+
+        Provincia origen = getProvincia(provinciaOrigen);
+        Provincia destino = getProvincia(provinciaDestino);
+
+        provinciasYSimilaridades.eliminarArista(
+                origen.getNombre(),
+                destino.getNombre());
+    }
+
+    // Devuelve una copia de las conexiones del grafo.
+    public ArrayList<Arista<String>> getConexiones() {
+        return provinciasYSimilaridades.obtenerAristas();
+    }
+
+    // Pendiente de completar en la etapa de integración con Kruskal.
+    public void separarEnRegionesConexas(int cantidadRegionesConexas) {
+        throw new UnsupportedOperationException(
+                "La generación de regiones todavía no está implementada.");
+    }
+
+    // Valida el nombre y elimina espacios al principio y al final.
+    private String validarNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El nombre de la provincia no puede estar vacío.");
+        }
+
+        return nombre.trim();
+    }
 }
