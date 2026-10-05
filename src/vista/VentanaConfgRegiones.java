@@ -13,14 +13,11 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.JMapViewer;
-
 public class VentanaConfgRegiones {
 
 	private JFrame frame;
 	private ventanaConfgGrafo ventanaAnterior;
-	private JMapViewer mapa;
+	private PanelGrafo panelGrafo;
 
 	public VentanaConfgRegiones(ventanaConfgGrafo ventanaAnterior) {
 
@@ -68,11 +65,16 @@ public class VentanaConfgRegiones {
 		panelCentral.setLayout(
 				new GridLayout(1, 2, 10, 0));
 
-		mapa = new JMapViewer();
-		mapa.setDisplayPosition(new Coordinate(-34.52, -58.70), 5);
+		panelGrafo = new PanelGrafo();
+		panelGrafo.setBorder(new TitledBorder("Mapa y conexiones"));
+
+		panelGrafo.setImagen(ventanaAnterior.getImagen());
+		panelGrafo.setDatos(
+				ventanaAnterior.getPresentador().getProvincias(),
+				ventanaAnterior.getPresentador().getConexiones());
 
 		JPanel panelMapa = new JPanel(new BorderLayout());
-		panelMapa.add(mapa, BorderLayout.CENTER);
+		panelMapa.add(panelGrafo, BorderLayout.CENTER);
 		panelCentral.add(panelMapa);
 
 		// =========================
