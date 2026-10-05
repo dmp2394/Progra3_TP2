@@ -11,10 +11,10 @@ import javax.swing.SwingConstants;
 public class VentanaResultado {
 
     private JFrame frame;
-    private VentanaConfiguracion ventanaAnterior;
+    private VentanaConfgRegiones ventanaAnterior;
 
     public VentanaResultado(
-            VentanaConfiguracion ventanaAnterior) {
+            VentanaConfgRegiones ventanaAnterior) {
 
         this.ventanaAnterior = ventanaAnterior;
 

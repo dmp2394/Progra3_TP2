@@ -15,13 +15,13 @@ import javax.swing.SpinnerNumberModel;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 
-public class VentanaConfiguracion {
+public class VentanaConfgRegiones {
 
 	private JFrame frame;
 	private ventanaConfgGrafo ventanaAnterior;
 	private JMapViewer mapa;
 
-	public VentanaConfiguracion(ventanaConfgGrafo ventanaAnterior) {
+	public VentanaConfgRegiones(ventanaConfgGrafo ventanaAnterior) {
 
 		this.ventanaAnterior = ventanaAnterior;
 

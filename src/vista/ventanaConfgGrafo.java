@@ -402,8 +402,8 @@ public class ventanaConfgGrafo {
             return;
         }
 
-        VentanaConfiguracion ventana =
-                new VentanaConfiguracion(this);
+        VentanaConfgRegiones ventana =
+                new VentanaConfgRegiones(this);
 
         ventana.mostrar();
         frame.setVisible(false);
