@@ -3,6 +3,10 @@ package modelo;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
 
 public class AristaTest {
 
@@ -106,17 +110,37 @@ public class AristaTest {
 	// hashCode excepciones y casos borde
 	@Test
 	public void hashCodeExtremosAlRevesTest() {
-		fail("Sin implementar");
+	    Arista<String> arista1 = new Arista<>("A", "B", 4);
+	    Arista<String> arista2 = new Arista<>("B", "A", 4);
+
+	    assertEquals(arista1.hashCode(), arista2.hashCode());
 	}
 
 	// hashCode happy path
 	@Test
 	public void hashCodeAristasIgualesTest() {
-		fail("Sin implementar");
+	    Arista<String> arista1 = new Arista<>("A", "B", 4);
+	    Arista<String> arista2 = new Arista<>("A", "B", 9);
+
+	    assertEquals(arista1, arista2);
+	    assertEquals(arista1.hashCode(), arista2.hashCode());
 	}
 
 	@Test
 	public void hashCodeContainsEnHashSetTest() {
-		fail("Sin implementar");
+	    HashSet<Arista<String>> aristas = new HashSet<>();
+
+	    Arista<String> arista1 = new Arista<>("A", "B", 4);
+	    Arista<String> arista2 = new Arista<>("B", "A", 9);
+
+	    aristas.add(arista1);
+
+	    assertTrue(aristas.contains(arista2));
+
+	    aristas.add(arista2);
+
+	    assertEquals(1, aristas.size());
 	}
+	
+	
 }

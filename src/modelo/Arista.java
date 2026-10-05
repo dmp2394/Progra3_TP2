@@ -1,5 +1,7 @@
 package modelo;
 
+import java.util.Objects;
+
 public class Arista<V> implements Comparable<Arista<V>> {
 
 	private final V extremo1;
@@ -47,5 +49,11 @@ public class Arista<V> implements Comparable<Arista<V>> {
 
 		return extremosEnOrden || extremosAlReves;
 	}
+	
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(extremo1)
+                + Objects.hashCode(extremo2);
+    }
 
 }
