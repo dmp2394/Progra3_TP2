@@ -2,43 +2,90 @@ package presentador;
 
 import java.util.ArrayList;
 
+import modelo.Arista;
 import modelo.DisenioRegiones;
+import modelo.Provincia;
 import vista.VentanaPrincipal;
 
 public class Presentador {
 
-	// Todos estos metodos los ejecuta la vista para hacer lo que quiera hacer
+    private final DisenioRegiones disenioRegiones;
 
-	private DisenioRegiones disenioRegiones;
-	private VentanaPrincipal ventanaPrincipal;
+    public Presentador() {
+        disenioRegiones = new DisenioRegiones();
+    }
 
-	// Constructor
-	public Presentador(VentanaPrincipal ventanaPrincipal) {
-		this.disenioRegiones = new DisenioRegiones();
-		this.ventanaPrincipal = ventanaPrincipal;
-	}
+    // Constructor temporal para que la ventana actual siga compilando.
+    public Presentador(VentanaPrincipal ventanaPrincipal) {
+        this();
+    }
 
-	public void ejecutarAlgoritmo(int k) {
-		this.disenioRegiones.separarEnRegionesConexas(k);
-	}
+    // Solicita al modelo agregar una provincia con su posición.
+    public void agregarProvincia(String nombre, int x, int y) {
+        disenioRegiones.agregarProvincia(nombre, x, y);
+    }
 
-	// Carga el grafo en memoria
-	public void cargarMapa() {
-		leerYCargarConexiones();
-	}
+    // Solicita eliminar la provincia y sus conexiones.
+    public void eliminarProvincia(String nombre) {
+        disenioRegiones.eliminarProvincia(nombre);
+    }
 
-	private void leerYCargarConexiones() {
-		// Lee los vertices y aristas cargados en la vista y los carga en la clase ppal
-		// leer y cargar en un for
-		ArrayList<String> provinciasOrigen = ventanaPrincipal.obtenerProvinciasOrigenDeConexiones();
-		ArrayList<String> provinciasDestino = ventanaPrincipal.obtenerProvinciasDestinoDeConexiones();
-		ArrayList<Integer> similaridadesOrigen = ventanaPrincipal.obtenerSimilaridadDeConexiones();
+    // Solicita cambiar la posición de una provincia.
+    public void setPosicionProvincia(String nombre, int x, int y) {
+        disenioRegiones.setPosicionProvincia(nombre, x, y);
+    }
 
-		// ciclo por todas las filas y voy agregando la conexion
-		for (int i = 0; i < provinciasOrigen.size(); i++) {
-			this.disenioRegiones.agregarConexion(provinciasOrigen.get(i), provinciasDestino.get(i),
-					similaridadesOrigen.get(i));
-		}
+    // Devuelve los datos de una provincia.
+    public Provincia getProvincia(String nombre) {
+        return disenioRegiones.getProvincia(nombre);
+    }
 
-	}
+    // Devuelve las provincias para que la vista pueda mostrarlas.
+    public ArrayList<Provincia> getProvincias() {
+        return disenioRegiones.getProvincias();
+    }
+
+    // Solicita agregar una conexión.
+    public void agregarConexion(
+            String provinciaOrigen,
+            String provinciaDestino,
+            Integer peso) {
+
+        disenioRegiones.agregarConexion(
+                provinciaOrigen,
+                provinciaDestino,
+                peso);
+    }
+
+    // Solicita eliminar una conexión.
+    public void eliminarConexion(
+            String provinciaOrigen,
+            String provinciaDestino) {
+
+        disenioRegiones.eliminarConexion(
+                provinciaOrigen,
+                provinciaDestino);
+    }
+
+    // Devuelve las conexiones para que la vista pueda mostrarlas.
+    public ArrayList<Arista<String>> getConexiones() {
+        return disenioRegiones.getConexiones();
+    }
+
+    // Permite conocer el máximo de regiones que podrá elegirse.
+    public int getCantidadProvincias() {
+        return disenioRegiones.getProvincias().size();
+    }
+
+    // La generación se completará en la etapa 5.
+    public void ejecutarAlgoritmo(int k) {
+        disenioRegiones.separarEnRegionesConexas(k);
+    }
+
+    // Método temporal: la vista actual todavía utiliza esta llamada.
+    public void cargarMapa() {
+        throw new UnsupportedOperationException(
+                "La carga desde la tabla anterior será reemplazada "
+                + "por las acciones de la nueva interfaz.");
+    }
 }
