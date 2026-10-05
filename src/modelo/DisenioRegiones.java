@@ -3,6 +3,10 @@ package modelo;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class DisenioRegiones {
 
@@ -105,10 +109,76 @@ public class DisenioRegiones {
         return provinciasYSimilaridades.obtenerAristas();
     }
 
-    // Pendiente de completar en la etapa de integración con Kruskal.
-    public void separarEnRegionesConexas(int cantidadRegionesConexas) {
-        throw new UnsupportedOperationException(
-                "La generación de regiones todavía no está implementada.");
+    // Separa el grafo en k regiones conexas y las guarda internamente.
+
+    private List<List<String>> regiones = new ArrayList<>();
+
+    public void separarEnRegionesConexas(int k) {
+        int cantidadProvincias = provinciasYSimilaridades.obtenerVertices().size();
+
+        if (k < 1 || k > cantidadProvincias) {
+            throw new IllegalArgumentException(
+                    "K debe estar entre 1 y la cantidad de provincias.");
+        }
+
+        Grafo<String> agm = Kruskal.crearArbolGeneradorMinimo(provinciasYSimilaridades);
+
+        List<Arista<String>> aristas = agm.obtenerAristas();
+
+        // Las aristas están ordenadas de menor a mayor peso.
+        for (int i = aristas.size() - 1; i >= aristas.size() - (k - 1); i--) {
+            Arista<String> arista = aristas.get(i);
+            agm.eliminarArista(
+                    arista.obtenerExtremo1(),
+                    arista.obtenerExtremo2());
+        }
+
+        regiones = buscarComponentes(agm);
+    }
+
+    private List<List<String>> buscarComponentes(Grafo<String> grafo) {
+        var adyacencia = grafo.obtenerlistaDeVecinos();
+        Set<String> visitadas = new HashSet<>();
+        List<List<String>> resultado = new ArrayList<>();
+
+        for (String inicio : adyacencia.keySet()) {
+            if (!visitadas.add(inicio)) {
+                continue;
+            }
+
+            List<String> region = new ArrayList<>();
+            ArrayDeque<String> pendientes = new ArrayDeque<>();
+            pendientes.add(inicio);
+
+            while (!pendientes.isEmpty()) {
+                String actual = pendientes.remove();
+                region.add(actual);
+
+                for (Arista<String> arista : adyacencia.get(actual)) {
+                    String vecino = arista.obtenerExtremo1().equals(actual)
+                            ? arista.obtenerExtremo2()
+                            : arista.obtenerExtremo1();
+
+                    if (visitadas.add(vecino)) {
+                        pendientes.add(vecino);
+                    }
+                }
+            }
+
+            resultado.add(region);
+        }
+
+        return resultado;
+    }
+
+    public List<List<String>> getRegiones() {
+        List<List<String>> copia = new ArrayList<>();
+
+        for (List<String> region : regiones) {
+            copia.add(new ArrayList<>(region));
+        }
+
+        return copia;
     }
 
     // Valida el nombre y elimina espacios al principio y al final.

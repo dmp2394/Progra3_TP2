@@ -6,6 +6,7 @@ import modelo.Arista;
 import modelo.DisenioRegiones;
 import modelo.Provincia;
 import vista.ventanaConfgGrafo;
+import java.util.List;
 
 public class Presentador {
 
@@ -86,6 +87,11 @@ public class Presentador {
     public void cargarMapa() {
         throw new UnsupportedOperationException(
                 "La carga desde la tabla anterior será reemplazada "
-                + "por las acciones de la nueva interfaz.");
+                        + "por las acciones de la nueva interfaz.");
+    }
+
+    // Devuelve las regiones generadas por el algoritmo.
+    public List<List<String>> getRegiones() {
+        return disenioRegiones.getRegiones();
     }
 }

@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.JOptionPane;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
@@ -120,12 +121,23 @@ public class VentanaConfgRegiones {
 		JButton btnGenerarRegiones = new JButton("Generar regiones");
 
 		btnGenerarRegiones.addActionListener(e -> {
+			try {
+				int k = ((Number) spinnerK.getValue()).intValue();
+				var presentador = ventanaAnterior.getPresentador();
 
-			VentanaResultado ventanaResultado = new VentanaResultado(this);
+				presentador.ejecutarAlgoritmo(k);
 
-			ventanaResultado.mostrar();
+				VentanaResultado resultado = new VentanaResultado(this, presentador.getRegiones());
 
-			frame.setVisible(false);
+				resultado.mostrar();
+				frame.setVisible(false);
+			} catch (IllegalArgumentException | IllegalStateException ex) {
+				JOptionPane.showMessageDialog(
+						frame,
+						ex.getMessage(),
+						"No se pudieron generar las regiones",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		});
 
 		panelConfig.add(btnGenerarRegiones);
