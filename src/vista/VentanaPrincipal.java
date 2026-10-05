@@ -1,14 +1,18 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-import java.util.ArrayList;
-
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -19,400 +23,407 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import modelo.Arista;
+import modelo.Provincia;
 import presentador.Presentador;
 
 public class VentanaPrincipal {
 
-	// Presentador para MVP
-	// Esta vista solo le pide cosas al presentador
-	private Presentador presentador;
+    private JFrame frame;
+    private final Presentador presentador;
+
+    private BufferedImage imagen;
+    private PanelGrafo panelGrafo;
+
+    private JTextField txtProvincia;
+    private JLabel lblEstado;
+    private String provinciaPendiente;
+
+    private DefaultListModel<String> modeloProvincias;
+    private JList<String> listaProvincias;
 
-	private JFrame frame;
+    private JComboBox<String> comboProvincia1;
+    private JComboBox<String> comboProvincia2;
+    private JSpinner spinnerPeso;
+
+    private DefaultTableModel modeloConexiones;
+    private JTable tablaConexiones;
 
-	// =========================
-	// PROVINCIAS
-	// =========================
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    VentanaPrincipal ventana = new VentanaPrincipal();
+                    ventana.mostrar();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-	private JTextField txtProvincia;
+    public VentanaPrincipal() {
+        presentador = new Presentador();
+        initialize();
+    }
 
-	private JButton btnAgregarProvincia;
-	private JButton btnEliminarProvincia;
+    private void initialize() {
+        frame = new JFrame();
+        frame.setTitle("Carga del mapa y del grafo");
+        frame.setBounds(100, 100, 1150, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	private JList<String> listaProvincias;
-	private DefaultListModel<String> modeloListaProvincias;
+        JPanel panelContenido = new JPanel();
+        panelContenido.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelContenido.setLayout(new BorderLayout(10, 10));
+        frame.setContentPane(panelContenido);
 
-	// =========================
-	// CONEXIONES
-	// =========================
+        JPanel panelSuperior = new JPanel(new BorderLayout(10, 0));
+        panelContenido.add(panelSuperior, BorderLayout.NORTH);
 
-	private JComboBox<String> comboProvincia1;
-	private JComboBox<String> comboProvincia2;
+        JButton btnCargarMapa = new JButton("Cargar mapa PNG/JPG");
+        panelSuperior.add(btnCargarMapa, BorderLayout.WEST);
+        btnCargarMapa.addActionListener(e -> cargarImagen());
 
-	private JSpinner spinnerPeso;
+        lblEstado = new JLabel("Cargá una imagen para comenzar.");
+        panelSuperior.add(lblEstado, BorderLayout.CENTER);
 
-	private JButton btnAgregarConexion;
-	private JButton btnEliminarConexion;
+        JPanel panelControles = new JPanel(new GridLayout(2, 1, 0, 10));
+        panelControles.setPreferredSize(new Dimension(350, 500));
+        panelContenido.add(panelControles, BorderLayout.WEST);
 
-	private JTable tablaConexiones;
-	private DefaultTableModel modeloTablaConexiones;
+        // PROVINCIAS
 
-	// =========================
-	// NAVEGACION
-	// =========================
+        JPanel panelProvincias = new JPanel(new BorderLayout(0, 8));
+        panelProvincias.setBorder(new TitledBorder("Provincias"));
+        panelControles.add(panelProvincias);
 
-	private JButton btnContinuar;
+        JPanel panelCargaProvincia = new JPanel(
+                new GridLayout(3, 1, 0, 5));
+        panelProvincias.add(panelCargaProvincia, BorderLayout.NORTH);
 
-	public void mostrar() {
-		frame.setVisible(true);
-	}
+        panelCargaProvincia.add(new JLabel("Nombre de provincia:"));
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+        txtProvincia = new JTextField();
+        panelCargaProvincia.add(txtProvincia);
 
-		EventQueue.invokeLater(new Runnable() {
+        JButton btnUbicar = new JButton("Ubicar en mapa");
+        panelCargaProvincia.add(btnUbicar);
+        btnUbicar.addActionListener(e -> prepararUbicacion());
 
-			public void run() {
+        modeloProvincias = new DefaultListModel<>();
+        listaProvincias = new JList<>(modeloProvincias);
 
-				try {
+        panelProvincias.add(
+                new JScrollPane(listaProvincias),
+                BorderLayout.CENTER);
 
-					VentanaPrincipal window = new VentanaPrincipal();
+        JButton btnEliminarProvincia = new JButton("Eliminar provincia");
+        panelProvincias.add(btnEliminarProvincia, BorderLayout.SOUTH);
+        btnEliminarProvincia.addActionListener(e -> eliminarProvincia());
 
-					window.frame.setVisible(true);
+        // CONEXIONES
 
-				} catch (Exception e) {
+        JPanel panelConexiones = new JPanel(new BorderLayout(0, 8));
+        panelConexiones.setBorder(new TitledBorder("Conexiones"));
+        panelControles.add(panelConexiones);
 
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+        JPanel panelCargaConexion = new JPanel(
+                new GridLayout(4, 2, 5, 5));
+        panelConexiones.add(panelCargaConexion, BorderLayout.NORTH);
 
-	/**
-	 * Create the application.
-	 */
-	public VentanaPrincipal() {
+        panelCargaConexion.add(new JLabel("Provincia 1:"));
+        comboProvincia1 = new JComboBox<>();
+        panelCargaConexion.add(comboProvincia1);
 
-		initialize();
+        panelCargaConexion.add(new JLabel("Provincia 2:"));
+        comboProvincia2 = new JComboBox<>();
+        panelCargaConexion.add(comboProvincia2);
 
-		presentador = new Presentador(this);
+        panelCargaConexion.add(new JLabel("Peso:"));
+        spinnerPeso = new JSpinner(
+                new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+        panelCargaConexion.add(spinnerPeso);
 
-	}
+        panelCargaConexion.add(new JLabel());
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-
-		// =====================================================
-		// VENTANA
-		// =====================================================
-
-		frame = new JFrame();
-
-		frame.setTitle("Diseño de regiones");
-
-		frame.setBounds(100, 100, 1000, 650);
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		frame.getContentPane().setLayout(new BorderLayout(10, 10));
-
-		// Margen general de la ventana
-
-		JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
-
-		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-		frame.getContentPane().add(contentPanel, BorderLayout.CENTER);
-
-		// =====================================================
-		// TITULO
-		// =====================================================
-
-		JLabel lblTitulo = new JLabel("Diseño de regiones");
-
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-
-		contentPanel.add(lblTitulo, BorderLayout.NORTH);
-
-		// =====================================================
-		// PANEL PRINCIPAL
-		// =====================================================
-
-		JPanel panelPrincipal = new JPanel();
-
-		panelPrincipal.setLayout(new GridLayout(1, 2, 10, 0));
-
-		contentPanel.add(panelPrincipal, BorderLayout.CENTER);
-
-		// =====================================================
-		// PANEL IZQUIERDO
-		// PROVINCIAS
-		// =====================================================
-
-		JPanel panelProvincias = new JPanel();
-
-		panelProvincias.setLayout(new BorderLayout(0, 10));
-
-		panelProvincias.setBorder(new TitledBorder("Provincias"));
-
-		panelPrincipal.add(panelProvincias);
-
-		// -----------------------------------------------------
-		// Parte superior
-		// -----------------------------------------------------
-
-		JPanel panelCargaProvincia = new JPanel();
-
-		panelCargaProvincia.setLayout(new GridLayout(3, 1, 0, 5));
-
-		panelProvincias.add(panelCargaProvincia, BorderLayout.NORTH);
-
-		JLabel lblProvincia = new JLabel("Nombre de provincia:");
-
-		panelCargaProvincia.add(lblProvincia);
-
-		txtProvincia = new JTextField();
-
-		txtProvincia.setColumns(10);
-
-		panelCargaProvincia.add(txtProvincia);
-
-		btnAgregarProvincia = new JButton("Agregar provincia");
-
-		panelCargaProvincia.add(btnAgregarProvincia);
-
-		btnAgregarProvincia.addActionListener(e -> {
-			String nombre = txtProvincia.getText().trim();
-
-			if (!nombre.isEmpty() && !modeloListaProvincias.contains(nombre)) {
-				modeloListaProvincias.addElement(nombre);
-				comboProvincia1.addItem(nombre);
-				comboProvincia2.addItem(nombre);
-				txtProvincia.setText("");
-			}
-		});
-
-		// -----------------------------------------------------
-		// Lista de provincias
-		// -----------------------------------------------------
-
-		modeloListaProvincias = new DefaultListModel<>();
-
-		listaProvincias = new JList<>(modeloListaProvincias);
-
-		JScrollPane scrollProvincias = new JScrollPane(listaProvincias);
-
-		panelProvincias.add(scrollProvincias, BorderLayout.CENTER);
-
-		// -----------------------------------------------------
-		// Eliminar provincia
-		// -----------------------------------------------------
-
-		btnEliminarProvincia = new JButton("Eliminar provincia");
-
-		panelProvincias.add(btnEliminarProvincia, BorderLayout.SOUTH);
-
-		// =====================================================
-		// PANEL DERECHO
-		// CONEXIONES
-		// =====================================================
-
-		JPanel panelConexiones = new JPanel();
-
-		panelConexiones.setLayout(new BorderLayout(0, 10));
-
-		panelConexiones.setBorder(new TitledBorder("Conexiones"));
-
-		panelPrincipal.add(panelConexiones);
-
-		// -----------------------------------------------------
-		// Parte superior
-		// -----------------------------------------------------
-
-		JPanel panelCargaConexion = new JPanel();
-
-		panelCargaConexion.setLayout(new GridLayout(7, 1, 0, 5));
-
-		panelConexiones.add(panelCargaConexion, BorderLayout.NORTH);
-
-		// Provincia 1
-
-		JLabel lblProvincia1 = new JLabel("Provincia 1:");
-
-		panelCargaConexion.add(lblProvincia1);
-
-		comboProvincia1 = new JComboBox<>();
-
-		panelCargaConexion.add(comboProvincia1);
-
-		// Provincia 2
-
-		JLabel lblProvincia2 = new JLabel("Provincia 2:");
-
-		panelCargaConexion.add(lblProvincia2);
-
-		comboProvincia2 = new JComboBox<>();
-
-		panelCargaConexion.add(comboProvincia2);
-
-		// Peso
-
-		JLabel lblPeso = new JLabel("Peso:");
-
-		panelCargaConexion.add(lblPeso);
-
-		spinnerPeso = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
-
-		panelCargaConexion.add(spinnerPeso);
-
-		// Agregar conexión
-
-		btnAgregarConexion = new JButton("Agregar conexión");
-
-		panelCargaConexion.add(btnAgregarConexion);
-
-		// -----------------------------------------------------
-		// Tabla de conexiones
-		// -----------------------------------------------------
-
-		String[] columnas = { "Provincia 1", "Provincia 2", "Peso" };
-
-		modeloTablaConexiones = new DefaultTableModel(columnas, 0) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int row, int column) {
-
-				return false;
-			}
-		};
-
-		tablaConexiones = new JTable(modeloTablaConexiones);
-
-		tablaConexiones.setFillsViewportHeight(true);
-
-		JScrollPane scrollConexiones = new JScrollPane(tablaConexiones);
-
-		panelConexiones.add(scrollConexiones, BorderLayout.CENTER);
-
-		// -----------------------------------------------------
-		// Agregar conexión
-		// -----------------------------------------------------
-
-		btnAgregarConexion.addActionListener(e -> {
-			String provincia1 = (String) comboProvincia1.getSelectedItem();
-			String provincia2 = (String) comboProvincia2.getSelectedItem();
-
-			if (provincia1 == null || provincia2 == null) {
-				JOptionPane.showMessageDialog(frame, "Agregá y seleccioná dos provincias.");
-				return;
-			}
-
-			if (provincia1.equals(provincia2)) {
-				JOptionPane.showMessageDialog(frame, "Las provincias deben ser distintas.");
-				return;
-			}
-
-			int peso = ((Number) spinnerPeso.getValue()).intValue();
-
-			modeloTablaConexiones.addRow(
-					new Object[] { provincia1, provincia2, peso });
-		});
-
-		// -----------------------------------------------------
-		// Eliminar conexión
-		// -----------------------------------------------------
-
-		btnEliminarConexion = new JButton("Eliminar conexión");
-
-		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
-
-		btnEliminarConexion = new JButton("Eliminar conexión");
-		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
-
-		btnEliminarConexion.addActionListener(e -> {
-			int filaVista = tablaConexiones.getSelectedRow();
-
-			if (filaVista == -1) {
-				JOptionPane.showMessageDialog(
-						frame,
-						"Seleccioná una conexión de la tabla.");
-				return;
-			}
-
-			int filaModelo = tablaConexiones.convertRowIndexToModel(filaVista);
-			modeloTablaConexiones.removeRow(filaModelo);
-		});
-
-		// =====================================================
-		// NAVEGACION
-		// =====================================================
-
-		JPanel panelNavegacion = new JPanel(new BorderLayout());
-
-		contentPanel.add(panelNavegacion, BorderLayout.SOUTH);
-
-		btnContinuar = new JButton("Continuar →");
-
-		btnContinuar.addActionListener(e -> {
-
-			// Primero le avisamos al presentador que cargue
-			// la información del mapa/grafo.
-			presentador.cargarMapa();
-
-			// Creamos la segunda ventana y le pasamos
-			// ESTA misma VentanaPrincipal.
-			VentanaConfiguracion ventanaConfiguracion = new VentanaConfiguracion(this);
-
-			// Mostramos paso 2.
-			ventanaConfiguracion.mostrar();
-
-			// Ocultamos paso 1, pero NO lo destruimos.
-			frame.setVisible(false);
-		});
-
-		panelNavegacion.add(
-				btnContinuar,
-				BorderLayout.EAST);
-	}
-
-	public ArrayList<String> obtenerProvinciasOrigenDeConexiones() {
-		ArrayList<String> provinciasOrigen = new ArrayList<>();
-		for (int fila = 0; fila < modeloTablaConexiones.getRowCount(); fila++) {
-			String provinciaOrigen = (String) modeloTablaConexiones.getValueAt(fila, 0);
-			provinciasOrigen.add(provinciaOrigen);
-		}
-
-		return provinciasOrigen;
-	}
-
-	public ArrayList<String> obtenerProvinciasDestinoDeConexiones() {
-		ArrayList<String> provinciasDestino = new ArrayList<>();
-		for (int fila = 0; fila < modeloTablaConexiones.getRowCount(); fila++) {
-			String provinciaDestino = (String) modeloTablaConexiones.getValueAt(fila, 1);
-			provinciasDestino.add(provinciaDestino);
-		}
-
-		return provinciasDestino;
-	}
-
-	public ArrayList<Integer> obtenerSimilaridadDeConexiones() {
-		ArrayList<Integer> similaridades = new ArrayList<>();
-		for (int fila = 0; fila < modeloTablaConexiones.getRowCount(); fila++) {
-			Integer similaridad = (Integer) modeloTablaConexiones.getValueAt(fila, 2);
-			similaridades.add(similaridad);
-		}
-
-		return similaridades;
-	}
-
+        JButton btnAgregarConexion = new JButton("Agregar conexión");
+        panelCargaConexion.add(btnAgregarConexion);
+        btnAgregarConexion.addActionListener(e -> agregarConexion());
+
+        modeloConexiones = new DefaultTableModel(
+                new String[] { "Provincia 1", "Provincia 2", "Peso" }, 0) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        };
+
+        tablaConexiones = new JTable(modeloConexiones);
+        tablaConexiones.setFillsViewportHeight(true);
+
+        panelConexiones.add(
+                new JScrollPane(tablaConexiones),
+                BorderLayout.CENTER);
+
+        JButton btnEliminarConexion = new JButton("Eliminar conexión");
+        panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
+        btnEliminarConexion.addActionListener(e -> eliminarConexion());
+
+        // MAPA
+
+        panelGrafo = new PanelGrafo();
+        panelGrafo.setBorder(new TitledBorder("Mapa"));
+        panelContenido.add(panelGrafo, BorderLayout.CENTER);
+
+        panelGrafo.setAccionClick((x, y) -> ubicarProvincia(x, y));
+
+        // NAVEGACIÓN
+
+        JPanel panelNavegacion = new JPanel(new BorderLayout());
+        panelContenido.add(panelNavegacion, BorderLayout.SOUTH);
+
+        JButton btnContinuar = new JButton("Continuar →");
+        panelNavegacion.add(btnContinuar, BorderLayout.EAST);
+        btnContinuar.addActionListener(e -> continuar());
+    }
+
+    // Abre un selector de archivos y carga la imagen elegida.
+    private void cargarImagen() {
+        if (presentador.getCantidadProvincias() > 0) {
+            mostrarMensaje(
+                    "Eliminá las provincias antes de cambiar el mapa.");
+            return;
+        }
+
+        JFileChooser selector = new JFileChooser();
+        selector.setDialogTitle("Seleccionar imagen del mapa");
+        selector.setAcceptAllFileFilterUsed(false);
+        selector.setFileFilter(new FileNameExtensionFilter(
+                "Imágenes PNG y JPG", "png", "jpg", "jpeg"));
+
+        if (selector.showOpenDialog(frame)
+                != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File archivo = selector.getSelectedFile();
+
+        try {
+            BufferedImage imagenCargada = ImageIO.read(archivo);
+
+            if (imagenCargada == null) {
+                mostrarMensaje("El archivo no contiene una imagen válida.");
+                return;
+            }
+
+            imagen = imagenCargada;
+            panelGrafo.setImagen(imagen);
+
+            provinciaPendiente = null;
+            lblEstado.setText(
+                    "Mapa cargado. Escribí una provincia y presioná Ubicar.");
+
+        } catch (IOException e) {
+            mostrarMensaje("No se pudo leer la imagen seleccionada.");
+        }
+    }
+
+    // Guarda el nombre que se utilizará en el próximo click.
+    private void prepararUbicacion() {
+        if (!panelGrafo.tieneImagen()) {
+            mostrarMensaje("Primero cargá una imagen del mapa.");
+            return;
+        }
+
+        String nombre = txtProvincia.getText().trim();
+
+        if (nombre.isEmpty()) {
+            mostrarMensaje("Escribí el nombre de la provincia.");
+            return;
+        }
+
+        for (Provincia provincia : presentador.getProvincias()) {
+            if (provincia.getNombre().equals(nombre)) {
+                mostrarMensaje("La provincia ya existe.");
+                return;
+            }
+        }
+
+        provinciaPendiente = nombre;
+        lblEstado.setText(
+                "Hacé click sobre el mapa para ubicar: " + nombre);
+    }
+
+    // Recibe las coordenadas originales calculadas por PanelGrafo.
+    private void ubicarProvincia(int x, int y) {
+        if (provinciaPendiente == null) {
+            return;
+        }
+
+        try {
+            presentador.agregarProvincia(provinciaPendiente, x, y);
+
+            provinciaPendiente = null;
+            txtProvincia.setText("");
+            lblEstado.setText(
+                    "Provincia agregada. Podés ubicar otra o crear conexiones.");
+
+            actualizarVista();
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensaje(e.getMessage());
+        }
+    }
+
+    private void eliminarProvincia() {
+        String nombre = listaProvincias.getSelectedValue();
+
+        if (nombre == null) {
+            mostrarMensaje("Seleccioná una provincia de la lista.");
+            return;
+        }
+
+        try {
+            presentador.eliminarProvincia(nombre);
+            actualizarVista();
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensaje(e.getMessage());
+        }
+    }
+
+    private void agregarConexion() {
+        String origen = (String) comboProvincia1.getSelectedItem();
+        String destino = (String) comboProvincia2.getSelectedItem();
+
+        if (origen == null || destino == null) {
+            mostrarMensaje("Primero agregá las provincias que querés conectar.");
+            return;
+        }
+
+        try {
+            spinnerPeso.commitEdit();
+            int peso = ((Number) spinnerPeso.getValue()).intValue();
+
+            presentador.agregarConexion(origen, destino, peso);
+            actualizarVista();
+
+        } catch (java.text.ParseException e) {
+            mostrarMensaje("Ingresá un peso entero válido.");
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensaje(e.getMessage());
+        }
+    }
+
+    private void eliminarConexion() {
+        int filaVista = tablaConexiones.getSelectedRow();
+
+        if (filaVista == -1) {
+            mostrarMensaje("Seleccioná una conexión de la tabla.");
+            return;
+        }
+
+        int filaModelo = tablaConexiones.convertRowIndexToModel(filaVista);
+
+        String origen = (String) modeloConexiones.getValueAt(filaModelo, 0);
+        String destino = (String) modeloConexiones.getValueAt(filaModelo, 1);
+
+        try {
+            presentador.eliminarConexion(origen, destino);
+            actualizarVista();
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensaje(e.getMessage());
+        }
+    }
+
+    // Actualiza todos los componentes con los datos del modelo.
+    private void actualizarVista() {
+        String seleccion1 = (String) comboProvincia1.getSelectedItem();
+        String seleccion2 = (String) comboProvincia2.getSelectedItem();
+
+        modeloProvincias.clear();
+        comboProvincia1.removeAllItems();
+        comboProvincia2.removeAllItems();
+
+        for (Provincia provincia : presentador.getProvincias()) {
+            String nombre = provincia.getNombre();
+
+            modeloProvincias.addElement(nombre);
+            comboProvincia1.addItem(nombre);
+            comboProvincia2.addItem(nombre);
+        }
+
+        if (modeloProvincias.contains(seleccion1)) {
+            comboProvincia1.setSelectedItem(seleccion1);
+        }
+
+        if (modeloProvincias.contains(seleccion2)) {
+            comboProvincia2.setSelectedItem(seleccion2);
+        }
+
+        modeloConexiones.setRowCount(0);
+
+        for (Arista<String> conexion : presentador.getConexiones()) {
+            modeloConexiones.addRow(new Object[] {
+                    conexion.obtenerExtremo1(),
+                    conexion.obtenerExtremo2(),
+                    conexion.devolverPeso()
+            });
+        }
+
+        panelGrafo.setDatos(
+                presentador.getProvincias(),
+                presentador.getConexiones());
+    }
+
+    private void continuar() {
+        if (!panelGrafo.tieneImagen()
+                || presentador.getCantidadProvincias() == 0) {
+
+            mostrarMensaje("Cargá un mapa y ubicá al menos una provincia.");
+            return;
+        }
+
+        if (provinciaPendiente != null) {
+            mostrarMensaje(
+                    "Ubicá la provincia pendiente antes de continuar.");
+            return;
+        }
+
+        VentanaConfiguracion ventana =
+                new VentanaConfiguracion(this);
+
+        ventana.mostrar();
+        frame.setVisible(false);
+    }
+
+    private void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(frame, mensaje);
+    }
+
+    // Las próximas ventanas utilizarán el mismo presentador.
+    public Presentador getPresentador() {
+        return presentador;
+    }
+
+    // Permite mostrar la misma imagen en las próximas ventanas.
+    public BufferedImage getImagen() {
+        return imagen;
+    }
+
+    public void mostrar() {
+        frame.setVisible(true);
+    }
 }
