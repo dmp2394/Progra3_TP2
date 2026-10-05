@@ -1,7 +1,8 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+//import java.awt.GridLayout;
+import java.awt.Component;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -10,6 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JList;
 
 public class VentanaResultado {
 
@@ -57,13 +62,25 @@ public class VentanaResultado {
 
                 // CENTRO
 
-                JPanel panelCentral = new JPanel(new GridLayout(0, 1, 0, 8));
+                JPanel panelCentral = new JPanel();
+                panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 
                 for (int i = 0; i < regiones.size(); i++) {
-                        JLabel etiqueta = new JLabel(
-                                        "Región " + (i + 1) + ": "
-                                                        + String.join(", ", regiones.get(i)));
-                        panelCentral.add(etiqueta);
+                        JList<String> listaProvincias = new JList<>(
+                                        regiones.get(i).toArray(new String[0]));
+                        listaProvincias.setVisibleRowCount(
+                                        Math.min(regiones.get(i).size(), 5));
+
+                        JPanel panelRegion = new JPanel(new BorderLayout());
+                        panelRegion.setBorder(
+                                        BorderFactory.createTitledBorder("Región " + (i + 1)));
+                        panelRegion.add(
+                                        new JScrollPane(listaProvincias),
+                                        BorderLayout.CENTER);
+
+                        panelRegion.setAlignmentX(Component.LEFT_ALIGNMENT);
+                        panelCentral.add(panelRegion);
+                        panelCentral.add(Box.createVerticalStrut(8));
                 }
 
                 frame.getContentPane().add(
