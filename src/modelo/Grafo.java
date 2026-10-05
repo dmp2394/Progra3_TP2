@@ -126,5 +126,25 @@ public class Grafo<V> {
 
 		return false;
 	}
+	
+	//Para eliminar vertice primerp verifica que el vertice exista , luego hace una lista de sus conexiones, las elimina y luego elimina el vertice.
+	public void eliminarVertice(V vertice) {
+
+	    if (!listaDeVecinos.containsKey(vertice)) {
+	        throw new IllegalArgumentException(
+	                "Error: El vértice no existe en el grafo.");
+	    }
+
+	    ArrayList<Arista<V>> aristasDelVertice =
+	            new ArrayList<>(listaDeVecinos.get(vertice));
+
+	    for (Arista<V> arista : aristasDelVertice) {
+	        eliminarArista(
+	                arista.obtenerExtremo1(),
+	                arista.obtenerExtremo2());
+	    }
+
+	    listaDeVecinos.remove(vertice);
+	}
 
 }
