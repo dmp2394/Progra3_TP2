@@ -3,6 +3,7 @@ package vista;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -29,12 +30,14 @@ public class PanelGrafo extends JPanel {
 
     private List<Provincia> provincias;
     private List<Arista<String>> conexiones;
+    private List<List<String>> regiones;
 
     private BiConsumer<Integer, Integer> accionClick;
 
     public PanelGrafo() {
         provincias = new ArrayList<>();
         conexiones = new ArrayList<>();
+        regiones = new ArrayList<>();
 
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(650, 450));
@@ -68,6 +71,20 @@ public class PanelGrafo extends JPanel {
         repaint();
     }
 
+    // Recibe copias de las regiones que debe dibujar.
+
+    public void setRegiones(List<List<String>> regiones) {
+        this.regiones = new ArrayList<>();
+
+        if (regiones != null) {
+            for (List<String> region : regiones) {
+                this.regiones.add(new ArrayList<>(region));
+            }
+        }
+
+        repaint();
+    }
+
     // Recibe la acción que debe ejecutarse ante un click válido.
     public void setAccionClick(
             BiConsumer<Integer, Integer> accionClick) {
@@ -92,12 +109,10 @@ public class PanelGrafo extends JPanel {
             return;
         }
 
-        int xImagen = (int) (
-                (xPanel - area.x)
+        int xImagen = (int) ((xPanel - area.x)
                 * (double) imagen.getWidth() / area.width);
 
-        int yImagen = (int) (
-                (yPanel - area.y)
+        int yImagen = (int) ((yPanel - area.y)
                 * (double) imagen.getHeight() / area.height);
 
         accionClick.accept(xImagen, yImagen);
@@ -109,11 +124,9 @@ public class PanelGrafo extends JPanel {
             return new Rectangle();
         }
 
-        double escalaX =
-                (double) getWidth() / imagen.getWidth();
+        double escalaX = (double) getWidth() / imagen.getWidth();
 
-        double escalaY =
-                (double) getHeight() / imagen.getHeight();
+        double escalaY = (double) getHeight() / imagen.getHeight();
 
         double escala = Math.min(escalaX, escalaY);
 
@@ -165,6 +178,7 @@ public class PanelGrafo extends JPanel {
 
             dibujarConexiones(dibujo, area);
             dibujarProvincias(dibujo, area);
+            dibujarEtiquetasRegiones(dibujo, area);
 
         } finally {
             dibujo.dispose();
@@ -245,8 +259,7 @@ public class PanelGrafo extends JPanel {
 
             String nombre = provincia.getNombre();
 
-            int anchoTexto =
-                    dibujo.getFontMetrics().stringWidth(nombre);
+            int anchoTexto = dibujo.getFontMetrics().stringWidth(nombre);
 
             int altoTexto = dibujo.getFontMetrics().getHeight();
             int ascenso = dibujo.getFontMetrics().getAscent();
@@ -269,6 +282,66 @@ public class PanelGrafo extends JPanel {
 
             dibujo.setColor(Color.BLACK);
             dibujo.drawString(nombre, xTexto, yTexto);
+        }
+    }
+
+    // Dibuja un rectángulo con el nombre de cada región en el centro de sus
+    // provincias.
+
+    private void dibujarEtiquetasRegiones(
+            Graphics2D dibujo,
+            Rectangle area) {
+
+        Map<String, Provincia> provinciasPorNombre = new HashMap<>();
+
+        for (Provincia provincia : provincias) {
+            provinciasPorNombre.put(provincia.getNombre(), provincia);
+        }
+
+        for (int i = 0; i < regiones.size(); i++) {
+            int sumaX = 0;
+            int sumaY = 0;
+            int cantidad = 0;
+
+            for (String nombre : regiones.get(i)) {
+                Provincia provincia = provinciasPorNombre.get(nombre);
+
+                if (provincia != null) {
+                    sumaX += provincia.getX();
+                    sumaY += provincia.getY();
+                    cantidad++;
+                }
+            }
+
+            if (cantidad == 0) {
+                continue;
+            }
+
+            int centroX = convertirX(sumaX / cantidad, area);
+            int centroY = convertirY(sumaY / cantidad, area);
+            String texto = "Región " + (i + 1);
+
+            FontMetrics metricas = dibujo.getFontMetrics();
+            int ancho = metricas.stringWidth(texto);
+            int alto = metricas.getHeight();
+            int margen = 6;
+
+            int x = centroX - (ancho + margen * 2) / 2;
+            int y = centroY - (alto + margen * 2) / 2;
+
+            dibujo.setColor(new Color(255, 255, 255, 220));
+            dibujo.fillRoundRect(
+                    x, y, ancho + margen * 2, alto + margen * 2, 10, 10);
+
+            dibujo.setColor(new Color(30, 70, 130));
+            dibujo.setStroke(new BasicStroke(2));
+            dibujo.drawRoundRect(
+                    x, y, ancho + margen * 2, alto + margen * 2, 10, 10);
+
+            dibujo.drawString(
+                    texto,
+                    x + margen,
+                    y + margen + metricas.getAscent());
         }
     }
 

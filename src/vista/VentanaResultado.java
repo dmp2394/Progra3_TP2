@@ -3,13 +3,19 @@ package vista;
 import java.awt.BorderLayout;
 //import java.awt.GridLayout;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.util.List;
+import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import modelo.Arista;
+import modelo.Provincia;
+
 import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,12 +27,21 @@ public class VentanaResultado {
         private JFrame frame;
         private VentanaConfgRegiones ventanaAnterior;
         private List<List<String>> regiones;
+        private BufferedImage imagen;
+        private List<Provincia> provincias;
+        private List<Arista<String>> conexiones;
 
         public VentanaResultado(
                         VentanaConfgRegiones ventanaAnterior,
-                        List<List<String>> regiones) {
+                        List<List<String>> regiones,
+                        BufferedImage imagen,
+                        List<Provincia> provincias,
+                        List<Arista<String>> conexiones) {
                 this.ventanaAnterior = ventanaAnterior;
                 this.regiones = regiones;
+                this.imagen = imagen;
+                this.provincias = provincias;
+                this.conexiones = conexiones;
 
                 initialize();
         }
@@ -83,11 +98,19 @@ public class VentanaResultado {
                         panelCentral.add(Box.createVerticalStrut(8));
                 }
 
-                frame.getContentPane().add(
-                                new JScrollPane(panelCentral),
-                                BorderLayout.CENTER);
+                PanelGrafo panelGrafo = new PanelGrafo();
+                panelGrafo.setImagen(imagen);
+                panelGrafo.setDatos(provincias, conexiones);
+                panelGrafo.setRegiones(regiones);
 
-                // Después acá va el mapa/regiones
+                JPanel panelVista = new JPanel(new BorderLayout(8, 0));
+                panelVista.add(panelGrafo, BorderLayout.CENTER);
+
+                JScrollPane scrollRegiones = new JScrollPane(panelCentral);
+                scrollRegiones.setPreferredSize(new Dimension(240, 0));
+                panelVista.add(scrollRegiones, BorderLayout.EAST);
+
+                frame.getContentPane().add(panelVista, BorderLayout.CENTER);
 
                 // NAVEGACION
 

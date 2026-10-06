@@ -129,7 +129,12 @@ public class VentanaConfgRegiones {
 
 				presentador.ejecutarAlgoritmo(k);
 
-				VentanaResultado resultado = new VentanaResultado(this, presentador.getRegiones());
+				VentanaResultado resultado = new VentanaResultado(
+						this,
+						presentador.getRegiones(),
+						ventanaAnterior.getImagen(),
+						presentador.getProvincias(),
+						presentador.getConexiones());
 
 				resultado.mostrar();
 				frame.setVisible(false);
