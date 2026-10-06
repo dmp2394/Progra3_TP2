@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Window;
 
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,8 +23,7 @@ public class VentanaBienvenida {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    VentanaBienvenida ventana =
-                            new VentanaBienvenida();
+                    VentanaBienvenida ventana = new VentanaBienvenida();
 
                     ventana.mostrar();
                 } catch (Exception e) {
@@ -84,6 +85,19 @@ public class VentanaBienvenida {
         JPanel panelNavegacion = new JPanel();
         panelNavegacion.setLayout(new BorderLayout());
         panelContenido.add(panelNavegacion, BorderLayout.SOUTH);
+
+        JToggleButton btnTema = new JToggleButton("Tema Oscuro");
+        panelNavegacion.add(btnTema, BorderLayout.WEST);
+
+        btnTema.addActionListener(e -> {
+            Tema.setOscuro(btnTema.isSelected());
+
+            for (Window ventana : Window.getWindows()) {
+                if (ventana.isDisplayable()) {
+                    Tema.aplicar(ventana);
+                }
+            }
+        });
 
         JButton btnComenzar = new JButton("Comenzar →");
         panelNavegacion.add(btnComenzar, BorderLayout.EAST);
