@@ -27,7 +27,7 @@ public class KruskalTest {
 	public void grafoVacioTest() {
 		Grafo<String> grafo = new Grafo<>();
 
-		Grafo<String> agm = Kruskal.crearArbolGeneradorMinimo(grafo);
+		Kruskal.crearArbolGeneradorMinimo(grafo);
 
 	}
 
