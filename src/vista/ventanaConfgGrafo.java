@@ -211,8 +211,7 @@ public class ventanaConfgGrafo {
         selector.setFileFilter(new FileNameExtensionFilter(
                 "Imágenes PNG y JPG", "png", "jpg", "jpeg"));
 
-        if (selector.showOpenDialog(frame)
-                != JFileChooser.APPROVE_OPTION) {
+        if (selector.showOpenDialog(frame) != JFileChooser.APPROVE_OPTION) {
             return;
         }
 
@@ -266,12 +265,25 @@ public class ventanaConfgGrafo {
 
     // Recibe las coordenadas originales calculadas por PanelGrafo.
     private void ubicarProvincia(int x, int y) {
-        if (provinciaPendiente == null) {
+        String nombre = provinciaPendiente;
+
+        if (nombre == null) {
+            nombre = txtProvincia.getText().trim();
+        }
+
+        if (nombre.isEmpty()) {
             return;
         }
 
+        for (Provincia provincia : presentador.getProvincias()) {
+            if (provincia.getNombre().equalsIgnoreCase(nombre)) {
+                mostrarMensaje("La provincia ya existe.");
+                return;
+            }
+        }
+
         try {
-            presentador.agregarProvincia(provinciaPendiente, x, y);
+            presentador.agregarProvincia(nombre, x, y);
 
             provinciaPendiente = null;
             txtProvincia.setText("");
@@ -402,8 +414,7 @@ public class ventanaConfgGrafo {
             return;
         }
 
-        VentanaConfgRegiones ventana =
-                new VentanaConfgRegiones(this);
+        VentanaConfgRegiones ventana = new VentanaConfgRegiones(this);
 
         ventana.mostrar();
         frame.setVisible(false);
