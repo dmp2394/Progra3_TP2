@@ -31,6 +31,7 @@ public class PanelGrafo extends JPanel {
     private List<Provincia> provincias;
     private List<Arista<String>> conexiones;
     private List<List<String>> regiones;
+    private boolean filtrarAristasPorRegion;
 
     private BiConsumer<Integer, Integer> accionClick;
 
@@ -38,6 +39,7 @@ public class PanelGrafo extends JPanel {
         provincias = new ArrayList<>();
         conexiones = new ArrayList<>();
         regiones = new ArrayList<>();
+        filtrarAristasPorRegion = false;
 
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(650, 450));
@@ -75,15 +77,25 @@ public class PanelGrafo extends JPanel {
 
     public void setRegiones(List<List<String>> regiones) {
         this.regiones = new ArrayList<>();
+        regionPorProvincia.clear();
 
         if (regiones != null) {
-            for (List<String> region : regiones) {
-                this.regiones.add(new ArrayList<>(region));
+            for (int i = 0; i < regiones.size(); i++) {
+                List<String> region = new ArrayList<>(regiones.get(i));
+                this.regiones.add(region);
+
+                for (String provincia : region) {
+                    regionPorProvincia.put(provincia, i);
+                }
             }
         }
 
+        filtrarAristasPorRegion = regiones != null;
+
         repaint();
     }
+
+    private final Map<String, Integer> regionPorProvincia = new HashMap<>();
 
     // Recibe la acción que debe ejecutarse ante un click válido.
     public void setAccionClick(
@@ -210,10 +222,31 @@ public class PanelGrafo extends JPanel {
                 continue;
             }
 
+            Integer regionOrigen = null;
+
+            if (filtrarAristasPorRegion) {
+                regionOrigen = regionPorProvincia.get(
+                        conexion.obtenerExtremo1());
+
+                Integer regionDestino = regionPorProvincia.get(
+                        conexion.obtenerExtremo2());
+
+                if (regionOrigen == null || !regionOrigen.equals(regionDestino)) {
+                    continue;
+                }
+            }
+
             int x1 = convertirX(origen.getX(), area);
             int y1 = convertirY(origen.getY(), area);
             int x2 = convertirX(destino.getX(), area);
             int y2 = convertirY(destino.getY(), area);
+
+            Color colorArista = filtrarAristasPorRegion
+                    ? colorDeRegion(regionOrigen)
+                    : Color.DARK_GRAY;
+
+            dibujo.setColor(colorArista);
+            dibujo.drawLine(x1, y1, x2, y2);
 
             dibujo.setColor(Color.DARK_GRAY);
             dibujo.drawLine(x1, y1, x2, y2);
@@ -251,7 +284,9 @@ public class PanelGrafo extends JPanel {
             int x = convertirX(provincia.getX(), area);
             int y = convertirY(provincia.getY(), area);
 
-            dibujo.setColor(new Color(30, 100, 200));
+            Color colorRegion = colorDeProvincia(provincia.getNombre());
+
+            dibujo.setColor(colorRegion);
             dibujo.fillOval(x - 6, y - 6, 12, 12);
 
             dibujo.setColor(Color.BLACK);
@@ -280,7 +315,7 @@ public class PanelGrafo extends JPanel {
                     anchoTexto + 4,
                     altoTexto);
 
-            dibujo.setColor(Color.BLACK);
+            dibujo.setColor(colorRegion);
             dibujo.drawString(nombre, xTexto, yTexto);
         }
     }
@@ -338,11 +373,48 @@ public class PanelGrafo extends JPanel {
             dibujo.drawRoundRect(
                     x, y, ancho + margen * 2, alto + margen * 2, 10, 10);
 
+            Color colorRegion = colorDeRegion(i);
+
+            dibujo.setColor(new Color(255, 255, 255, 220));
+            dibujo.fillRoundRect(
+                    x, y, ancho + margen * 2, alto + margen * 2, 10, 10);
+
+            dibujo.setColor(colorRegion);
+            dibujo.setStroke(new BasicStroke(2));
+            dibujo.drawRoundRect(
+                    x, y, ancho + margen * 2, alto + margen * 2, 10, 10);
+
             dibujo.drawString(
                     texto,
                     x + margen,
                     y + margen + metricas.getAscent());
         }
+    }
+
+    private static final Color[] COLORES_REGION = {
+            new Color(46, 139, 87), // verde
+            new Color(45, 105, 190), // azul
+            new Color(205, 55, 55), // rojo
+            new Color(220, 145, 35), // naranja
+            new Color(135, 80, 170) // violeta
+    };
+
+    // Devuelve un color para la provincia según la región a la que pertenece.
+
+    private Color colorDeProvincia(String nombre) {
+        Integer indice = regionPorProvincia.get(nombre);
+
+        if (indice == null) {
+            return Color.GRAY;
+        }
+
+        return colorDeRegion(indice);
+    }
+
+    // Devuelve un color para la región según su índice.
+
+    private Color colorDeRegion(int indice) {
+        return COLORES_REGION[indice % COLORES_REGION.length];
     }
 
     // Convierte una coordenada original a una posición del panel.
