@@ -70,6 +70,18 @@ public class GrafoTest {
 		}
 
 		@Test(expected = IllegalArgumentException.class)
+		public void agregarAristaPrimerExtremoNuloTest() {
+			grafo.agregarVertice(provincia2);
+			grafo.agregarArista(null, provincia2, 100);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void agregarAristaSegundoExtremoNuloTest() {
+			grafo.agregarVertice(provincia1);
+			grafo.agregarArista(provincia1, null, 100);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
 		public void agregarLoopTest() {
 			grafo.agregarVertice(provincia1);
 			grafo.agregarArista(provincia1, provincia1, 100);
@@ -408,6 +420,11 @@ public class GrafoTest {
 		}
 
 		@Test(expected = IllegalArgumentException.class)
+		public void existeAristaAmbosVerticesNoExistenTest() {
+			grafo.existeArista(provincia1, provincia2);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
 		public void existeAristaVerticeNuloTest() {
 			grafo.agregarVertice(provincia1);
 			grafo.existeArista(provincia1, null);
@@ -520,6 +537,11 @@ public class GrafoTest {
 		@Test(expected = IllegalArgumentException.class)
 		public void eliminarVerticeInexistenteTest() {
 			grafo.eliminarVertice(provincia1);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void eliminarVerticeNull() {
+			grafo.eliminarVertice(null);
 		}
 	}
 

@@ -257,7 +257,7 @@ public class ventanaConfgGrafo {
             return;
         }
 
-        for (Provincia provincia : presentador.getProvincias()) {
+        for (Provincia provincia : presentador.obtenerProvincias()) {
             if (provincia.getNombre().equals(nombre)) {
                 mostrarMensaje("La provincia ya existe.");
                 return;
@@ -281,7 +281,7 @@ public class ventanaConfgGrafo {
             return;
         }
 
-        for (Provincia provincia : presentador.getProvincias()) {
+        for (Provincia provincia : presentador.obtenerProvincias()) {
             if (provincia.getNombre().equalsIgnoreCase(nombre)) {
                 mostrarMensaje("La provincia ya existe.");
                 return;
@@ -375,7 +375,7 @@ public class ventanaConfgGrafo {
         comboProvincia1.removeAllItems();
         comboProvincia2.removeAllItems();
 
-        for (Provincia provincia : presentador.getProvincias()) {
+        for (Provincia provincia : presentador.obtenerProvincias()) {
             String nombre = provincia.getNombre();
 
             modeloProvincias.addElement(nombre);
@@ -402,7 +402,7 @@ public class ventanaConfgGrafo {
         }
 
         panelGrafo.setDatos(
-                presentador.getProvincias(),
+                presentador.obtenerProvincias(),
                 presentador.getConexiones());
     }
 

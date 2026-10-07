@@ -31,13 +31,13 @@ public class Presentador {
 	}
 
 	// Devuelve los datos de una provincia.
-	public Provincia getProvincia(String nombre) {
-		return disenioRegiones.getProvincia(nombre);
+	public Provincia obtenerProvincia(String nombre) {
+		return disenioRegiones.obtenerProvincia(nombre);
 	}
 
 	// Devuelve las provincias para que la vista pueda mostrarlas.
-	public ArrayList<Provincia> getProvincias() {
-		return disenioRegiones.getProvincias();
+	public ArrayList<Provincia> obtenerProvincias() {
+		return disenioRegiones.obtenerProvincias();
 	}
 
 	// Solicita agregar una conexión.
@@ -59,7 +59,7 @@ public class Presentador {
 
 	// Permite conocer el máximo de regiones que podrá elegirse.
 	public int getCantidadProvincias() {
-		return disenioRegiones.getProvincias().size();
+		return disenioRegiones.obtenerProvincias().size();
 	}
 
 	// La generación se completará en la etapa 5.

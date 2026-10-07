@@ -24,36 +24,34 @@ public class AristaTest {
 
 	public static class ConstructorExcepcionesYCasosBorde {
 
-		// Hoy Arista no valida nada (lo valida Grafo): decidir qué se espera en cada
-		// caso
 		@Test(expected = IllegalArgumentException.class)
 		public void noPermiteCrearAristaConExtremo1NuloTest() {
-			Arista<String> arista = new Arista<>(null, extremo2, 100);
+			new Arista<>(null, extremo2, 100);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void noPermiteCrearAristaConExtremo2NuloTest() {
-			Arista<String> arista = new Arista<>(extremo1, null, 100);
+			new Arista<>(extremo1, null, 100);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void noPermiteCrearAristaConAmbosExtremosNulosTest() {
-			Arista<String> arista = new Arista<>(null, null, 100);
+			new Arista<>(null, null, 100);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void noPermiteCrearAristaConLoopTest() {
-			Arista<String> arista = new Arista<>(extremo1, extremo1, 100);
+			new Arista<>(extremo1, extremo1, 100);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void noPermiteCrearAristaConPesoCeroTest() {
-			Arista<String> arista = new Arista<>(extremo1, extremo2, 0);
+			new Arista<>(extremo1, extremo2, 0);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void noPermiteCrearAristaConPesoNegativoTest() {
-			Arista<String> arista = new Arista<>(extremo1, extremo2, -100);
+			new Arista<>(extremo1, extremo2, -100);
 		}
 	}
 
@@ -66,13 +64,11 @@ public class AristaTest {
 
 		@Test
 		public void obtenerExtremo1Test() {
-			Arista<String> arista = new Arista<>("Extremo 1", "Extremo 2", 100);
 			assertEquals(extremo1, arista12YPeso100.obtenerExtremo1());
 		}
 
 		@Test
 		public void obtenerExtremo2Test() {
-			Arista<String> arista = new Arista<>("Extremo 1", "Extremo 2", 100);
 			assertEquals(extremo2, arista12YPeso100.obtenerExtremo2());
 		}
 	}

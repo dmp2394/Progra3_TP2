@@ -71,7 +71,7 @@ public class VentanaConfgRegiones {
 
 		panelGrafo.setImagen(ventanaAnterior.getImagen());
 		panelGrafo.setDatos(
-				ventanaAnterior.getPresentador().getProvincias(),
+				ventanaAnterior.getPresentador().obtenerProvincias(),
 				ventanaAnterior.getPresentador().getConexiones());
 
 		JPanel panelMapa = new JPanel(new BorderLayout());
@@ -134,7 +134,7 @@ public class VentanaConfgRegiones {
 						this,
 						presentador.getRegiones(),
 						ventanaAnterior.getImagen(),
-						presentador.getProvincias(),
+						presentador.obtenerProvincias(),
 						presentador.getConexiones());
 
 				resultado.mostrar();

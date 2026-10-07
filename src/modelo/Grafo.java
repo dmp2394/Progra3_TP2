@@ -128,6 +128,9 @@ public class Grafo<V> {
 	}
 
 	public void eliminarVertice(V vertice) {
+		if (vertice == null) {
+			throw new IllegalArgumentException("Error: No se puede borrar el vertice null");
+		}
 
 		if (!listaDeVecinos.containsKey(vertice)) {
 			throw new IllegalArgumentException("Error: El vértice no existe en el grafo.");

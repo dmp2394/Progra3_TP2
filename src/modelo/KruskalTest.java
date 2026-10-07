@@ -13,6 +13,7 @@ public class KruskalTest {
 	// Criterio: el AGM es correcto si
 	// 1) tiene la misma cantidad de vértices que el grafo original
 	// 2) tiene el peso total mínimo esperado
+	// 3) tiene exactamente (cantidad de vértices - 1) aristas
 
 	public static class CrearArbolGeneradorMinimoExcepcionesYCasosBorde {
 
@@ -47,6 +48,16 @@ public class KruskalTest {
 		}
 
 		@Test
+		public void unSoloVerticeNoTieneAristasTest() {
+			Grafo<String> grafo = new Grafo<>();
+			grafo.agregarVertice("A");
+
+			Grafo<String> agm = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(0, agm.obtenerAristas().size());
+		}
+
+		@Test
 		public void grafoQueYaEsArbolTest() {
 			Grafo<String> grafo = new Grafo<>();
 			grafo.agregarVertice("A");
@@ -75,6 +86,35 @@ public class KruskalTest {
 
 			assertEquals(grafo.obtenerVertices().size(), agm.obtenerVertices().size());
 			assertEquals(8, agm.pesoTotal());
+		}
+
+		@Test
+		public void grafoQueYaEsArbolCantidadDeAristasTest() {
+			Grafo<String> grafo = new Grafo<>();
+			grafo.agregarVertice("A");
+			grafo.agregarVertice("B");
+			grafo.agregarVertice("C");
+			grafo.agregarArista("A", "B", 5);
+			grafo.agregarArista("B", "C", 7);
+
+			Grafo<String> agm = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(grafo.obtenerVertices().size() - 1, agm.obtenerAristas().size());
+		}
+
+		@Test
+		public void pesosIgualesCantidadDeAristasTest() {
+			Grafo<String> grafo = new Grafo<>();
+			grafo.agregarVertice("A");
+			grafo.agregarVertice("B");
+			grafo.agregarVertice("C");
+			grafo.agregarArista("A", "B", 4);
+			grafo.agregarArista("B", "C", 4);
+			grafo.agregarArista("A", "C", 4);
+
+			Grafo<String> agm = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(grafo.obtenerVertices().size() - 1, agm.obtenerAristas().size());
 		}
 
 		@Test
@@ -109,6 +149,22 @@ public class KruskalTest {
 
 			assertEquals(grafo.obtenerVertices().size(), resultado.obtenerVertices().size());
 			assertEquals(38, resultado.pesoTotal());
+		}
+
+		@Test
+		public void grafoTriangularCantidadDeAristasTest() {
+			Grafo<String> grafo = creacionDeGrafo();
+			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(grafo.obtenerVertices().size() - 1, resultado.obtenerAristas().size());
+		}
+
+		@Test
+		public void grafoDiapositivaCantidadDeAristasTest() {
+			Grafo<String> grafo = creacionDeGrafoDiapositiva();
+			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(grafo.obtenerVertices().size() - 1, resultado.obtenerAristas().size());
 		}
 	}
 
