@@ -1,7 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,8 +13,8 @@ public class Grafo<V> {
 	private ArrayList<Arista<V>> aristas;
 
 	public Grafo() {
-		this.listaDeVecinos = new HashMap<>();
-		this.aristas = new ArrayList<>();
+		listaDeVecinos = new HashMap<>();
+		aristas = new ArrayList<>();
 
 	}
 
@@ -48,7 +48,8 @@ public class Grafo<V> {
 		listaDeVecinos.get(vertice1).add(arista);
 		listaDeVecinos.get(vertice2).add(arista);
 		aristas.add(arista);
-		aristas.sort(Comparator.comparingInt(Arista::devolverPeso));
+
+		Collections.sort(aristas);
 
 	}
 
@@ -56,8 +57,10 @@ public class Grafo<V> {
 		if (!listaDeVecinos.containsKey(vertice1) || !listaDeVecinos.containsKey(vertice2))
 			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
 
-		// Busca la arista guardada que une a vertice1 con vertice2 (en cualquier orden)
-		Arista<V> buscada = new Arista<V>(vertice1, vertice2, 0);
+		// los vertices se colocan en el objeto Arista en variable "buscada" para
+		// ejecutar el equals
+		int pesoFicticio = 100;
+		Arista<V> buscada = new Arista<V>(vertice1, vertice2, pesoFicticio);
 		Arista<V> arista = null;
 		for (Arista<V> aristaExistente : listaDeVecinos.get(vertice1))
 			if (aristaExistente.equals(buscada))
@@ -79,7 +82,6 @@ public class Grafo<V> {
 		return copia;
 	}
 
-	// Devuelve una copia de la lista de aristas
 	public ArrayList<Arista<V>> obtenerAristas() {
 		return new ArrayList<Arista<V>>(aristas);
 	}
@@ -93,12 +95,10 @@ public class Grafo<V> {
 		return vertices;
 	}
 
-	// Informa si el grafo no tiene vértices
 	public boolean esVacio() {
 		return listaDeVecinos.isEmpty();
 	}
 
-	// Suma de los pesos de todas las aristas del grafo
 	public int pesoTotal() {
 		int total = 0;
 		for (Arista<V> arista : aristas)
@@ -118,33 +118,28 @@ public class Grafo<V> {
 
 		Set<Arista<V>> aristasDeVertice1 = listaDeVecinos.get(vertice1);
 
+		int pesoFicticio = 100;
+		Arista<V> buscada = new Arista<V>(vertice1, vertice2, pesoFicticio);
 		for (Arista<V> unaArista : aristasDeVertice1)
-			if (unaArista.obtenerExtremo1().equals(vertice1) && unaArista.obtenerExtremo2().equals(vertice2)
-					|| unaArista.obtenerExtremo2().equals(vertice1) && unaArista.obtenerExtremo1().equals(vertice2)) {
+			if (unaArista.equals(buscada))
 				return true;
-			}
 
 		return false;
 	}
-	
-	//Para eliminar vertice primerp verifica que el vertice exista , luego hace una lista de sus conexiones, las elimina y luego elimina el vertice.
+
 	public void eliminarVertice(V vertice) {
 
-	    if (!listaDeVecinos.containsKey(vertice)) {
-	        throw new IllegalArgumentException(
-	                "Error: El vértice no existe en el grafo.");
-	    }
+		if (!listaDeVecinos.containsKey(vertice)) {
+			throw new IllegalArgumentException("Error: El vértice no existe en el grafo.");
+		}
 
-	    ArrayList<Arista<V>> aristasDelVertice =
-	            new ArrayList<>(listaDeVecinos.get(vertice));
+		ArrayList<Arista<V>> aristasDelVertice = new ArrayList<>(listaDeVecinos.get(vertice));
 
-	    for (Arista<V> arista : aristasDelVertice) {
-	        eliminarArista(
-	                arista.obtenerExtremo1(),
-	                arista.obtenerExtremo2());
-	    }
+		for (Arista<V> arista : aristasDelVertice) {
+			eliminarArista(arista.obtenerExtremo1(), arista.obtenerExtremo2());
+		}
 
-	    listaDeVecinos.remove(vertice);
+		listaDeVecinos.remove(vertice);
 	}
 
 }
