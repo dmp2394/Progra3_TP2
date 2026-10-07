@@ -22,11 +22,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JToggleButton;
 
 import modelo.Arista;
 import modelo.Provincia;
@@ -97,6 +99,10 @@ public class ventanaConfgGrafo {
         JPanel panelControles = new JPanel(new GridLayout(2, 1, 0, 10));
         panelControles.setPreferredSize(new Dimension(350, 500));
         panelContenido.add(panelControles, BorderLayout.WEST);
+
+        JToggleButton btnTema = Tema.crearBotonTema();
+        btnTema.setPreferredSize(btnCargarMapa.getPreferredSize());
+        panelSuperior.add(btnTema, BorderLayout.EAST);
 
         // PROVINCIAS
 
@@ -435,6 +441,7 @@ public class ventanaConfgGrafo {
     }
 
     public void mostrar() {
+        Tema.aplicar(frame);
         frame.setVisible(true);
     }
 }

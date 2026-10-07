@@ -17,6 +17,7 @@ import modelo.Arista;
 import modelo.Provincia;
 
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -133,6 +134,11 @@ public class VentanaResultado {
 
                 panelNavegacion.add(btnVolver);
 
+                // MODO OSCURO
+
+                JToggleButton btnTema = Tema.crearBotonTema();
+                panelNavegacion.add(btnTema, BorderLayout.EAST);
+
                 // SALIR
 
                 JButton btnSalir = new JButton("Salir");
@@ -146,7 +152,7 @@ public class VentanaResultado {
         }
 
         public void mostrar() {
-
+                Tema.aplicar(frame);
                 frame.setVisible(true);
         }
 }

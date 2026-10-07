@@ -86,7 +86,7 @@ public class VentanaBienvenida {
         panelNavegacion.setLayout(new BorderLayout());
         panelContenido.add(panelNavegacion, BorderLayout.SOUTH);
 
-        JToggleButton btnTema = new JToggleButton("Tema Oscuro");
+        JToggleButton btnTema = Tema.crearBotonTema();
         panelNavegacion.add(btnTema, BorderLayout.WEST);
 
         btnTema.addActionListener(e -> {
@@ -113,6 +113,7 @@ public class VentanaBienvenida {
     }
 
     public void mostrar() {
+        Tema.aplicar(frame);
         frame.setVisible(true);
     }
 }

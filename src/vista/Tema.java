@@ -3,6 +3,7 @@ package vista;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Window;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,9 @@ import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.JToggleButton;
+import javax.swing.BorderFactory;
+import javax.swing.plaf.basic.BasicToggleButtonUI;
 
 public final class Tema {
 
@@ -49,6 +53,44 @@ public final class Tema {
 
     public static Color fondoControl() {
         return oscuro ? CONTROL_OSCURO : CONTROL_CLARO;
+    }
+
+    public static JToggleButton crearBotonTema() {
+        JToggleButton boton = new JToggleButton();
+        boton.setUI(new BasicToggleButtonUI());
+        boton.setFocusPainted(false);
+        boton.setOpaque(true);
+        boton.setContentAreaFilled(true);
+        boton.setBorderPainted(true);
+        boton.putClientProperty("botonTema", Boolean.TRUE);
+        actualizarBoton(boton);
+
+        boton.addActionListener(e -> {
+            oscuro = boton.isSelected();
+
+            for (Window ventana : Window.getWindows()) {
+                if (ventana.isDisplayable()) {
+                    aplicar(ventana);
+                }
+            }
+        });
+
+        return boton;
+    }
+
+    private static void actualizarBoton(JToggleButton boton) {
+        boton.setSelected(oscuro);
+        boton.setText(oscuro ? "Modo claro" : "Modo oscuro");
+        boton.setBackground(fondoControl());
+        boton.setForeground(texto());
+
+        Color colorBorde = oscuro
+                ? new Color(115, 125, 135)
+                : new Color(150, 160, 170);
+
+        boton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(colorBorde),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
     }
 
     public static void aplicar(Component componente) {
@@ -88,6 +130,11 @@ public final class Tema {
             for (Component hijo : contenedor.getComponents()) {
                 aplicar(hijo);
             }
+        }
+
+        if (componente instanceof JToggleButton boton
+                && Boolean.TRUE.equals(boton.getClientProperty("botonTema"))) {
+            actualizarBoton(boton);
         }
 
         componente.repaint();

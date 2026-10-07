@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JOptionPane;
 
@@ -174,10 +175,15 @@ public class VentanaConfgRegiones {
 				btnVolver,
 				BorderLayout.WEST);
 
+		// MODO OSCURO
+
+		JToggleButton btnTema = Tema.crearBotonTema();
+		panelNavegacion.add(btnTema, BorderLayout.EAST);
+
 	}
 
 	public void mostrar() {
-
+		Tema.aplicar(frame);
 		frame.setVisible(true);
 	}
 }
