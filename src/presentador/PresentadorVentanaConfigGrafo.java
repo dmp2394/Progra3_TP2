@@ -21,19 +21,10 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 		this.disenioRegiones.registrar(this);
 	}
 
-	// ---------------------------------------------------------------
-	// Notificación del modelo
-	// ---------------------------------------------------------------
-
 	@Override
 	public void notificar(DisenioRegiones disenioRegiones) {
-		ventana.mostrarProvinciasYConexiones(disenioRegiones.obtenerProvincias(),
-				disenioRegiones.obtenerConexiones());
+		ventana.mostrarProvinciasYConexiones(disenioRegiones.obtenerProvincias(), disenioRegiones.obtenerConexiones());
 	}
-
-	// ---------------------------------------------------------------
-	// Acciones del usuario
-	// ---------------------------------------------------------------
 
 	// El usuario quiere cambiar el mapa.
 	public void cambiarMapa() {
@@ -90,7 +81,8 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 		}
 	}
 
-	// El usuario quiere eliminar la provincia seleccionada (null si no seleccionó ninguna).
+	// El usuario quiere eliminar la provincia seleccionada (null si no seleccionó
+	// ninguna).
 	public void eliminarProvincia(String nombre) {
 		if (nombre == null) {
 			ventana.mostrarMensaje("Seleccioná una provincia de la lista.");
@@ -105,7 +97,8 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 		}
 	}
 
-	// El usuario quiere agregar una conexión. Peso es null si no ingresó un entero válido.
+	// El usuario quiere agregar una conexión. Peso es null si no ingresó un entero
+	// válido.
 	public void agregarConexion(String origen, String destino, Integer peso) {
 		if (origen == null || destino == null) {
 			ventana.mostrarMensaje("Primero agregá las provincias que querés conectar.");
@@ -125,7 +118,8 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 		}
 	}
 
-	// El usuario quiere eliminar la conexión seleccionada (null si no seleccionó ninguna).
+	// El usuario quiere eliminar la conexión seleccionada (null si no seleccionó
+	// ninguna).
 	public void eliminarConexion(String origen, String destino) {
 		if (origen == null || destino == null) {
 			ventana.mostrarMensaje("Seleccioná una conexión de la tabla.");
