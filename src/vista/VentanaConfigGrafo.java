@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -30,12 +31,12 @@ import javax.swing.table.DefaultTableModel;
 
 import modelo.Arista;
 import modelo.Provincia;
-import presentador.Presentador;
+import presentador.PresentadorVentanaConfigGrafo;
 
 public class VentanaConfigGrafo {
 
 	private JFrame frame;
-	private final Presentador presentador;
+	private final PresentadorVentanaConfigGrafo presentador;
 
 	private BufferedImage imagen;
 	private PanelGrafo panelGrafo;
@@ -55,7 +56,7 @@ public class VentanaConfigGrafo {
 	private JTable tablaConexiones;
 
 	public VentanaConfigGrafo() {
-		presentador = new Presentador();
+		presentador = new PresentadorVentanaConfigGrafo(this);
 		initialize();
 	}
 
@@ -264,7 +265,7 @@ public class VentanaConfigGrafo {
 			txtProvincia.setText("");
 			lblEstado.setText("Provincia agregada. Podés ubicar otra o crear conexiones.");
 
-			actualizarVista();
+//			actualizarVista();
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
@@ -281,7 +282,7 @@ public class VentanaConfigGrafo {
 
 		try {
 			presentador.eliminarProvincia(nombre);
-			actualizarVista();
+//			actualizarVista();
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
@@ -302,7 +303,7 @@ public class VentanaConfigGrafo {
 			int peso = ((Number) spinnerPeso.getValue()).intValue();
 
 			presentador.agregarConexion(origen, destino, peso);
-			actualizarVista();
+//			actualizarVista();
 
 		} catch (java.text.ParseException e) {
 			mostrarMensaje("Ingresá un peso entero válido.");
@@ -327,7 +328,7 @@ public class VentanaConfigGrafo {
 
 		try {
 			presentador.eliminarConexion(origen, destino);
-			actualizarVista();
+//			actualizarVista();
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
@@ -335,7 +336,7 @@ public class VentanaConfigGrafo {
 	}
 
 	// Actualiza todos los componentes con los datos del modelo.
-	private void actualizarVista() {
+	public void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
 		String seleccion1 = (String) comboProvincia1.getSelectedItem();
 		String seleccion2 = (String) comboProvincia2.getSelectedItem();
 
@@ -343,7 +344,7 @@ public class VentanaConfigGrafo {
 		comboProvincia1.removeAllItems();
 		comboProvincia2.removeAllItems();
 
-		for (Provincia provincia : presentador.obtenerProvincias()) {
+		for (Provincia provincia : provincias) {
 			String nombre = provincia.getNombre();
 
 			modeloProvincias.addElement(nombre);
@@ -361,12 +362,12 @@ public class VentanaConfigGrafo {
 
 		modeloConexiones.setRowCount(0);
 
-		for (Arista<String> conexion : presentador.getConexiones()) {
+		for (Arista<String> conexion : conexiones) {
 			modeloConexiones.addRow(
 					new Object[] { conexion.obtenerExtremo1(), conexion.obtenerExtremo2(), conexion.devolverPeso() });
 		}
 
-		panelGrafo.setDatos(presentador.obtenerProvincias(), presentador.getConexiones());
+		panelGrafo.setDatos(provincias, conexiones);
 	}
 
 	private void continuar() {
@@ -391,8 +392,7 @@ public class VentanaConfigGrafo {
 		JOptionPane.showMessageDialog(frame, mensaje);
 	}
 
-	// Las próximas ventanas utilizarán el mismo presentador.
-	public Presentador getPresentador() {
+	public PresentadorVentanaConfigGrafo getPresentador() {
 		return presentador;
 	}
 
@@ -405,4 +405,5 @@ public class VentanaConfigGrafo {
 		Tema.aplicar(frame);
 		frame.setVisible(true);
 	}
+
 }

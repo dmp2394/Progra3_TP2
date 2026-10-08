@@ -119,12 +119,12 @@ public class DisenioRegionesTest {
 			disenio.setPosicionProvincia("Córdoba", 350, 200);
 
 			Provincia provincia = disenio.obtenerProvincia("Córdoba");
-			Arista<String> conexion = disenio.getConexiones().get(0);
+			Arista<String> conexion = disenio.obtenerConexiones().get(0);
 
 			assertEquals(350, provincia.getX());
 			assertEquals(200, provincia.getY());
 			assertEquals(2, disenio.obtenerProvincias().size());
-			assertEquals(1, disenio.getConexiones().size());
+			assertEquals(1, disenio.obtenerConexiones().size());
 			assertEquals("Córdoba", conexion.obtenerExtremo1());
 			assertEquals("Santa Fe", conexion.obtenerExtremo2());
 			assertEquals(4, conexion.devolverPeso());
@@ -199,7 +199,7 @@ public class DisenioRegionesTest {
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
-			Arista<String> conexion = disenio.getConexiones().get(0);
+			Arista<String> conexion = disenio.obtenerConexiones().get(0);
 
 			assertEquals("Córdoba", conexion.obtenerExtremo1());
 			assertEquals("Santa Fe", conexion.obtenerExtremo2());
@@ -242,7 +242,7 @@ public class DisenioRegionesTest {
 
 			disenio.eliminarConexion("Santa Fe", "Córdoba");
 
-			assertTrue(disenio.getConexiones().isEmpty());
+			assertTrue(disenio.obtenerConexiones().isEmpty());
 			assertEquals(2, disenio.obtenerProvincias().size());
 		}
 	}
@@ -287,9 +287,9 @@ public class DisenioRegionesTest {
 			disenio.eliminarProvincia("Córdoba");
 
 			assertEquals(2, disenio.obtenerProvincias().size());
-			assertEquals(1, disenio.getConexiones().size());
+			assertEquals(1, disenio.obtenerConexiones().size());
 
-			Arista<String> conexion = disenio.getConexiones().get(0);
+			Arista<String> conexion = disenio.obtenerConexiones().get(0);
 
 			assertEquals("Santa Fe", conexion.obtenerExtremo1());
 			assertEquals("Entre Ríos", conexion.obtenerExtremo2());
@@ -305,7 +305,7 @@ public class DisenioRegionesTest {
 		@Test
 		public void inicialmenteVacioTest() {
 			assertTrue(disenio.obtenerProvincias().isEmpty());
-			assertTrue(disenio.getConexiones().isEmpty());
+			assertTrue(disenio.obtenerConexiones().isEmpty());
 		}
 
 		// Comprueba que modificar las listas devueltas
@@ -317,10 +317,10 @@ public class DisenioRegionesTest {
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
 			disenio.obtenerProvincias().clear();
-			disenio.getConexiones().clear();
+			disenio.obtenerConexiones().clear();
 
 			assertEquals(2, disenio.obtenerProvincias().size());
-			assertEquals(1, disenio.getConexiones().size());
+			assertEquals(1, disenio.obtenerConexiones().size());
 		}
 	}
 
@@ -441,7 +441,7 @@ public class DisenioRegionesTest {
 			disenio.separarEnRegionesConexas(3);
 
 			assertEquals(4, disenio.obtenerProvincias().size());
-			assertEquals(4, disenio.getConexiones().size());
+			assertEquals(4, disenio.obtenerConexiones().size());
 		}
 
 		// Volver a separar reemplaza las regiones anteriores.

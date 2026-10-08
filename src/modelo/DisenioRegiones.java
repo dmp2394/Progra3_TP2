@@ -13,10 +13,16 @@ public class DisenioRegiones {
 	private Grafo<String> provinciasYSimilaridades;
 	private Map<String, Provincia> provincias;
 	private List<List<String>> regiones = new ArrayList<>();
+	private ArrayList<ObservadorDisenioRegiones> observadores;
 
 	public DisenioRegiones() {
 		provinciasYSimilaridades = new Grafo<>();
 		provincias = new LinkedHashMap<>();
+		observadores = new ArrayList<>();
+	}
+
+	public void registrar(ObservadorDisenioRegiones observador) {
+		observadores.add(observador);
 	}
 
 	public void agregarProvincia(String nombre, int x, int y) {
@@ -29,6 +35,14 @@ public class DisenioRegiones {
 
 		provinciasYSimilaridades.agregarVertice(nombreProvincia);
 		provincias.put(nombreProvincia, provincia);
+
+		notificarObservadores();
+	}
+
+	private void notificarObservadores() {
+		for (ObservadorDisenioRegiones observador : observadores)
+			observador.notificar(this);
+
 	}
 
 	public void eliminarProvincia(String nombre) {
@@ -37,6 +51,8 @@ public class DisenioRegiones {
 
 		provinciasYSimilaridades.eliminarVertice(nombreProvincia);
 		provincias.remove(nombreProvincia);
+
+		notificarObservadores();
 	}
 
 	public void setPosicionProvincia(String nombre, int x, int y) {
@@ -76,6 +92,8 @@ public class DisenioRegiones {
 		Provincia destino = obtenerProvincia(provinciaDestino);
 
 		provinciasYSimilaridades.agregarArista(origen.getNombre(), destino.getNombre(), similaridad);
+
+		notificarObservadores();
 	}
 
 	public void eliminarConexion(String provinciaOrigen, String provinciaDestino) {
@@ -84,9 +102,11 @@ public class DisenioRegiones {
 		Provincia destino = obtenerProvincia(provinciaDestino);
 
 		provinciasYSimilaridades.eliminarArista(origen.getNombre(), destino.getNombre());
+
+		notificarObservadores();
 	}
 
-	public ArrayList<Arista<String>> getConexiones() {
+	public ArrayList<Arista<String>> obtenerConexiones() {
 		return provinciasYSimilaridades.obtenerAristas();
 	}
 

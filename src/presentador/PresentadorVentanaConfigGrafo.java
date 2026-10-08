@@ -5,14 +5,22 @@ import java.util.List;
 
 import modelo.Arista;
 import modelo.DisenioRegiones;
+import modelo.ObservadorDisenioRegiones;
 import modelo.Provincia;
+import vista.VentanaConfigGrafo;
 
-public class Presentador {
+public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	private final DisenioRegiones disenioRegiones;
+	private final VentanaConfigGrafo ventana;
 
-	public Presentador() {
-		disenioRegiones = new DisenioRegiones();
+	public PresentadorVentanaConfigGrafo(VentanaConfigGrafo ventana) {
+		this.disenioRegiones = new DisenioRegiones();
+		this.ventana = ventana;
+
+		// Registro este presentador (que es un observador) para que sea notificado
+		// cuando el modelo decida
+		this.disenioRegiones.registrar(this);
 	}
 
 	// Solicita al modelo agregar una provincia con su posición.
@@ -23,11 +31,6 @@ public class Presentador {
 	// Solicita eliminar la provincia y sus conexiones.
 	public void eliminarProvincia(String nombre) {
 		disenioRegiones.eliminarProvincia(nombre);
-	}
-
-	// Solicita cambiar la posición de una provincia.
-	public void setPosicionProvincia(String nombre, int x, int y) {
-		disenioRegiones.setPosicionProvincia(nombre, x, y);
 	}
 
 	// Devuelve los datos de una provincia.
@@ -59,7 +62,7 @@ public class Presentador {
 
 	// Devuelve las conexiones para que la vista pueda mostrarlas.
 	public ArrayList<Arista<String>> getConexiones() {
-		return disenioRegiones.getConexiones();
+		return disenioRegiones.obtenerConexiones();
 	}
 
 	// Permite conocer el máximo de regiones que podrá elegirse.
@@ -75,5 +78,9 @@ public class Presentador {
 	// Devuelve las regiones generadas por el algoritmo.
 	public List<List<String>> getRegiones() {
 		return disenioRegiones.getRegiones();
+	}
+
+	public void notificar(DisenioRegiones disenioRegiones) {
+		ventana.mostrarProvinciasYConexiones(disenioRegiones.obtenerProvincias(), disenioRegiones.obtenerConexiones());
 	}
 }
