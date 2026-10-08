@@ -141,8 +141,9 @@ public class VentanaConfigGrafo {
 
 		JButton btnAgregarConexion = new JButton("Agregar conexión");
 		panelCargaConexion.add(btnAgregarConexion);
-		btnAgregarConexion.addActionListener(e -> presentador.agregarConexion((String) comboProvincia1.getSelectedItem(),
-				(String) comboProvincia2.getSelectedItem(), leerPeso()));
+		btnAgregarConexion
+				.addActionListener(e -> presentador.agregarConexion((String) comboProvincia1.getSelectedItem(),
+						(String) comboProvincia2.getSelectedItem(), leerPeso()));
 
 		modeloConexiones = new DefaultTableModel(new String[] { "Provincia 1", "Provincia 2", "Peso" }, 0) {
 
@@ -162,7 +163,7 @@ public class VentanaConfigGrafo {
 		JButton btnEliminarConexion = new JButton("Eliminar conexión");
 		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
 		btnEliminarConexion.addActionListener(
-				e -> presentador.eliminarConexion(valorDeFilaSeleccionada(0), valorDeFilaSeleccionada(1)));
+				e -> presentador.eliminarConexion(valorDeFilaSobreColumna(0), valorDeFilaSobreColumna(1)));
 
 		// MAPA
 
@@ -183,7 +184,8 @@ public class VentanaConfigGrafo {
 	}
 
 	// Abre un selector de archivos y carga la imagen elegida.
-	// El presentador decide si se puede cambiar el mapa antes de llamar a este método.
+	// El presentador decide si se puede cambiar el mapa antes de llamar a este
+	// método.
 	public void elegirImagen() {
 		JFileChooser selector = new JFileChooser();
 		selector.setDialogTitle("Seleccionar imagen del mapa");
@@ -214,7 +216,8 @@ public class VentanaConfigGrafo {
 		}
 	}
 
-	// Lee el peso del spinner. Devuelve null si el texto ingresado no es un entero válido.
+	// Lee el peso del spinner. Devuelve null si el texto ingresado no es un entero
+	// válido.
 	private Integer leerPeso() {
 		try {
 			spinnerPeso.commitEdit();
@@ -227,7 +230,7 @@ public class VentanaConfigGrafo {
 
 	// Devuelve el valor de la columna indicada en la fila seleccionada de la tabla,
 	// o null si no hay ninguna fila seleccionada.
-	private String valorDeFilaSeleccionada(int columna) {
+	private String valorDeFilaSobreColumna(int columna) {
 		int filaVista = tablaConexiones.getSelectedRow();
 
 		if (filaVista == -1) {
