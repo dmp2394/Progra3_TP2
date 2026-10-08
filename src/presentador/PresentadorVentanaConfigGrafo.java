@@ -2,6 +2,8 @@ package presentador;
 
 import modelo.DisenioRegiones;
 import modelo.ObservadorDisenioRegiones;
+import modelo.Provincia;
+import modelo.ProvinciaJSON;
 import vista.VentanaConfigGrafo;
 
 public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones {
@@ -11,6 +13,7 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 
 	// Nombre que espera un click en el mapa para ser ubicado.
 	private String provinciaPendiente;
+	private boolean jsonCargado;
 
 	public PresentadorVentanaConfigGrafo(VentanaConfigGrafo ventana) {
 		this.disenioRegiones = new DisenioRegiones();
@@ -44,6 +47,10 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 
 	// El usuario escribió un nombre y pidió ubicarlo en el mapa.
 	public void prepararUbicacion(String nombre) {
+//		if (jsonCargado)
+//			provinciaPendiente = listaProvincias.getSelectedValue();
+//		else {
+
 		if (!ventana.tieneImagen()) {
 			ventana.mostrarMensaje("Primero cargá una imagen del mapa.");
 			return;
@@ -61,6 +68,7 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 
 		provinciaPendiente = nombre.trim();
 		ventana.mostrarEstado("Hacé click sobre el mapa para ubicar: " + provinciaPendiente);
+//		}
 	}
 
 	// El usuario hizo click en el mapa (coordenadas de la imagen original).
@@ -147,5 +155,14 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 		}
 
 		ventana.abrirConfigRegiones(disenioRegiones);
+	}
+
+	public void cargarProvinciasDesdeJSON() {
+		ProvinciaJSON provinciasDesdeJSON = ProvinciaJSON.leerJSON(ventana.seleccionarYDevolverRutaAJSONDeProvincias());
+		this.jsonCargado = true;
+
+		for (Provincia provincia : provinciasDesdeJSON.obtenerProvincias())
+			disenioRegiones.agregarProvincia(provincia.getNombre(), 0, 0);
+
 	}
 }

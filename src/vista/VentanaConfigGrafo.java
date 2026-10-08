@@ -104,8 +104,15 @@ public class VentanaConfigGrafo {
 		txtProvincia = new JTextField();
 		panelCargaProvincia.add(txtProvincia);
 
+		JPanel panelBotonesProvincia = new JPanel(new GridLayout(1, 2, 5, 0));
+		panelCargaProvincia.add(panelBotonesProvincia);
+
+		JButton btnCargarJson = new JButton("Cargar desde JSON");
+		panelBotonesProvincia.add(btnCargarJson);
+		btnCargarJson.addActionListener(e -> presentador.cargarProvinciasDesdeJSON());
+
 		JButton btnUbicar = new JButton("Ubicar en mapa");
-		panelCargaProvincia.add(btnUbicar);
+		panelBotonesProvincia.add(btnUbicar);
 		btnUbicar.addActionListener(e -> presentador.prepararUbicacion(txtProvincia.getText()));
 
 		modeloProvincias = new DefaultListModel<>();
@@ -301,7 +308,6 @@ public class VentanaConfigGrafo {
 		frame.setVisible(false);
 	}
 
-
 	// Permite mostrar la misma imagen en las próximas ventanas.
 	public BufferedImage getImagen() {
 		return imagen;
@@ -310,6 +316,19 @@ public class VentanaConfigGrafo {
 	public void mostrar() {
 		Tema.aplicar(frame);
 		frame.setVisible(true);
+	}
+
+	public String seleccionarYDevolverRutaAJSONDeProvincias() {
+		JFileChooser selector = new JFileChooser();
+		selector.setDialogTitle("Seleccionar archivo de provincias");
+		selector.setAcceptAllFileFilterUsed(false);
+		selector.setFileFilter(new FileNameExtensionFilter("Archivos JSON o de texto", "json", "txt"));
+
+		if (selector.showOpenDialog(frame) != JFileChooser.APPROVE_OPTION) {
+			return null;
+		}
+
+		return selector.getSelectedFile().getAbsolutePath();
 	}
 
 }
