@@ -96,13 +96,17 @@ public class VentanaConfigGrafo {
 		panelProvincias.setBorder(new TitledBorder("Provincias"));
 		panelControles.add(panelProvincias);
 
-		JPanel panelCargaProvincia = new JPanel(new GridLayout(3, 1, 0, 5));
+		JPanel panelCargaProvincia = new JPanel(new GridLayout(4, 1, 0, 5));
 		panelProvincias.add(panelCargaProvincia, BorderLayout.NORTH);
 
 		panelCargaProvincia.add(new JLabel("Nombre de provincia:"));
 
 		txtProvincia = new JTextField();
 		panelCargaProvincia.add(txtProvincia);
+
+		JButton btnAgregarProvincia = new JButton("Agregar");
+		panelCargaProvincia.add(btnAgregarProvincia);
+		btnAgregarProvincia.addActionListener(e -> presentador.agregarProvincia(txtProvincia.getText()));
 
 		JPanel panelBotonesProvincia = new JPanel(new GridLayout(1, 2, 5, 0));
 		panelCargaProvincia.add(panelBotonesProvincia);

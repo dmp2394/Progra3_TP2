@@ -165,4 +165,8 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 			disenioRegiones.agregarProvincia(provincia.getNombre(), 0, 0);
 
 	}
+
+	public void agregarProvincia(String provincia) {
+		disenioRegiones.agregarProvincia(provincia, 0, 0);
+	}
 }
