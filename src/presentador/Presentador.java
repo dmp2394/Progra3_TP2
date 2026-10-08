@@ -35,6 +35,11 @@ public class Presentador {
 		return disenioRegiones.obtenerProvincia(nombre);
 	}
 
+	// Consulta al modelo si ya existe una provincia con ese nombre.
+	public boolean existeProvincia(String nombre) {
+		return disenioRegiones.existeProvincia(nombre);
+	}
+
 	// Devuelve las provincias para que la vista pueda mostrarlas.
 	public ArrayList<Provincia> obtenerProvincias() {
 		return disenioRegiones.obtenerProvincias();
@@ -65,12 +70,6 @@ public class Presentador {
 	// La generación se completará en la etapa 5.
 	public void ejecutarAlgoritmo(int k) {
 		disenioRegiones.separarEnRegionesConexas(k);
-	}
-
-	// Método temporal: la vista actual todavía utiliza esta llamada.
-	public void cargarMapa() {
-		throw new UnsupportedOperationException(
-				"La carga desde la tabla anterior será reemplazada " + "por las acciones de la nueva interfaz.");
 	}
 
 	// Devuelve las regiones generadas por el algoritmo.

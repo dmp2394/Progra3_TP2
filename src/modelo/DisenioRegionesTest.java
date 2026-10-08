@@ -1,6 +1,7 @@
 package modelo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -524,6 +525,63 @@ public class DisenioRegionesTest {
 			conjuntos.add(new HashSet<>(region));
 
 		return conjuntos;
+	}
+
+	// nuevo: a chequear
+	public static class ExisteProvincia {
+
+		private DisenioRegiones disenio = new DisenioRegiones();
+
+		@Test
+		public void existeProvinciaAgregadaTest() {
+			disenio.agregarProvincia("Córdoba", 320, 180);
+
+			assertTrue(disenio.existeProvincia("Córdoba"));
+		}
+
+		@Test
+		public void existeProvinciaNoAgregadaTest() {
+			disenio.agregarProvincia("Córdoba", 320, 180);
+
+			assertFalse(disenio.existeProvincia("Santa Fe"));
+		}
+
+		@Test
+		public void existeProvinciaSinProvinciasTest() {
+			assertFalse(disenio.existeProvincia("Córdoba"));
+		}
+
+		@Test
+		public void existeProvinciaConEspaciosTest() {
+			disenio.agregarProvincia("Córdoba", 320, 180);
+
+			assertTrue(disenio.existeProvincia("  Córdoba  "));
+		}
+
+		@Test
+		public void existeProvinciaDistingueMayusculasTest() {
+			disenio.agregarProvincia("Córdoba", 320, 180);
+
+			assertFalse(disenio.existeProvincia("córdoba"));
+		}
+
+		@Test
+		public void existeProvinciaEliminadaTest() {
+			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.eliminarProvincia("Córdoba");
+
+			assertFalse(disenio.existeProvincia("Córdoba"));
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void existeProvinciaNombreNuloTest() {
+			disenio.existeProvincia(null);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void existeProvinciaNombreVacioTest() {
+			disenio.existeProvincia("   ");
+		}
 	}
 
 }

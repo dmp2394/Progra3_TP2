@@ -3,156 +3,135 @@ package vista;
 import java.awt.BorderLayout;
 //import java.awt.GridLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import modelo.Arista;
 import modelo.Provincia;
 
-import javax.swing.JScrollPane;
-import javax.swing.JToggleButton;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JList;
-
 public class VentanaResultado {
 
-        private JFrame frame;
-        private VentanaConfgRegiones ventanaAnterior;
-        private List<List<String>> regiones;
-        private BufferedImage imagen;
-        private List<Provincia> provincias;
-        private List<Arista<String>> conexiones;
+	private JFrame frame;
+	private VentanaConfigRegiones ventanaAnterior;
+	private List<List<String>> regiones;
+	private BufferedImage imagen;
+	private List<Provincia> provincias;
+	private List<Arista<String>> conexiones;
 
-        public VentanaResultado(
-                        VentanaConfgRegiones ventanaAnterior,
-                        List<List<String>> regiones,
-                        BufferedImage imagen,
-                        List<Provincia> provincias,
-                        List<Arista<String>> conexiones) {
-                this.ventanaAnterior = ventanaAnterior;
-                this.regiones = regiones;
-                this.imagen = imagen;
-                this.provincias = provincias;
-                this.conexiones = conexiones;
+	public VentanaResultado(VentanaConfigRegiones ventanaAnterior, List<List<String>> regiones, BufferedImage imagen,
+			List<Provincia> provincias, List<Arista<String>> conexiones) {
+		this.ventanaAnterior = ventanaAnterior;
+		this.regiones = regiones;
+		this.imagen = imagen;
+		this.provincias = provincias;
+		this.conexiones = conexiones;
 
-                initialize();
-        }
+		initialize();
+	}
 
-        private void initialize() {
+	private void initialize() {
 
-                frame = new JFrame();
+		frame = new JFrame();
 
-                frame.setTitle("Regiones generadas");
+		frame.setTitle("Regiones generadas");
 
-                frame.setBounds(
-                                100,
-                                100,
-                                850,
-                                550);
+		frame.setBounds(100, 100, 850, 550);
 
-                frame.setDefaultCloseOperation(
-                                JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-                frame.getContentPane().setLayout(
-                                new BorderLayout());
+		frame.getContentPane().setLayout(new BorderLayout());
 
-                // TITULO
+		// TITULO
 
-                JLabel lblTitulo = new JLabel("Regiones generadas");
+		JLabel lblTitulo = new JLabel("Regiones generadas");
 
-                lblTitulo.setHorizontalAlignment(
-                                SwingConstants.CENTER);
+		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 
-                frame.getContentPane().add(
-                                lblTitulo,
-                                BorderLayout.NORTH);
+		frame.getContentPane().add(lblTitulo, BorderLayout.NORTH);
 
-                // CENTRO
+		// CENTRO
 
-                JPanel panelCentral = new JPanel();
-                panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		JPanel panelCentral = new JPanel();
+		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 
-                for (int i = 0; i < regiones.size(); i++) {
-                        JList<String> listaProvincias = new JList<>(
-                                        regiones.get(i).toArray(new String[0]));
-                        listaProvincias.setVisibleRowCount(
-                                        Math.min(regiones.get(i).size(), 5));
+		for (int i = 0; i < regiones.size(); i++) {
+			JList<String> listaProvincias = new JList<>(regiones.get(i).toArray(new String[0]));
+			listaProvincias.setVisibleRowCount(Math.min(regiones.get(i).size(), 5));
 
-                        JPanel panelRegion = new JPanel(new BorderLayout());
-                        panelRegion.setBorder(
-                                        BorderFactory.createTitledBorder("Región " + (i + 1)));
-                        panelRegion.add(
-                                        new JScrollPane(listaProvincias),
-                                        BorderLayout.CENTER);
+			JPanel panelRegion = new JPanel(new BorderLayout());
+			panelRegion.setBorder(BorderFactory.createTitledBorder("Región " + (i + 1)));
+			panelRegion.add(new JScrollPane(listaProvincias), BorderLayout.CENTER);
 
-                        panelRegion.setAlignmentX(Component.LEFT_ALIGNMENT);
-                        panelCentral.add(panelRegion);
-                        panelCentral.add(Box.createVerticalStrut(8));
-                }
+			panelRegion.setAlignmentX(Component.LEFT_ALIGNMENT);
+			panelCentral.add(panelRegion);
+			panelCentral.add(Box.createVerticalStrut(8));
+		}
 
-                PanelGrafo panelGrafo = new PanelGrafo();
-                panelGrafo.setImagen(imagen);
-                panelGrafo.setDatos(provincias, conexiones);
-                panelGrafo.setRegiones(regiones);
+		PanelGrafo panelGrafo = new PanelGrafo();
+		panelGrafo.setImagen(imagen);
+		panelGrafo.setDatos(provincias, conexiones);
+		panelGrafo.setRegiones(regiones);
 
-                JPanel panelVista = new JPanel(new BorderLayout(8, 0));
-                panelVista.add(panelGrafo, BorderLayout.CENTER);
+		JPanel panelVista = new JPanel(new BorderLayout(8, 0));
+		panelVista.add(panelGrafo, BorderLayout.CENTER);
 
-                JScrollPane scrollRegiones = new JScrollPane(panelCentral);
-                scrollRegiones.setPreferredSize(new Dimension(240, 0));
-                panelVista.add(scrollRegiones, BorderLayout.EAST);
+		JScrollPane scrollRegiones = new JScrollPane(panelCentral);
+		scrollRegiones.setPreferredSize(new Dimension(240, 0));
+		panelVista.add(scrollRegiones, BorderLayout.EAST);
 
-                frame.getContentPane().add(panelVista, BorderLayout.CENTER);
+		frame.getContentPane().add(panelVista, BorderLayout.CENTER);
 
-                // NAVEGACION
+		// NAVEGACION
 
-                JPanel panelNavegacion = new JPanel();
+		JPanel panelNavegacion = new JPanel();
 
-                frame.getContentPane().add(
-                                panelNavegacion,
-                                BorderLayout.SOUTH);
+		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
 
-                // VOLVER
+		// VOLVER
 
-                JButton btnVolver = new JButton("← Volver");
+		JButton btnVolver = new JButton("← Volver");
 
-                btnVolver.addActionListener(e -> {
+		btnVolver.addActionListener(e -> {
 
-                        frame.setVisible(false);
+			frame.setVisible(false);
 
-                        ventanaAnterior.mostrar();
-                });
+			ventanaAnterior.mostrar();
+		});
 
-                panelNavegacion.add(btnVolver);
+		panelNavegacion.add(btnVolver);
 
-                // MODO OSCURO
+		// MODO OSCURO
 
-                JToggleButton btnTema = Tema.crearBotonTema();
-                panelNavegacion.add(btnTema, BorderLayout.EAST);
+		JToggleButton btnTema = Tema.crearBotonTema();
+		panelNavegacion.add(btnTema, BorderLayout.EAST);
 
-                // SALIR
+		// SALIR
 
-                JButton btnSalir = new JButton("Salir");
+		JButton btnSalir = new JButton("Salir");
 
-                btnSalir.addActionListener(e -> {
+		btnSalir.addActionListener(e -> {
 
-                        System.exit(0);
-                });
+			System.exit(0);
+		});
 
-                panelNavegacion.add(btnSalir);
-        }
+		panelNavegacion.add(btnSalir);
+	}
 
-        public void mostrar() {
-                Tema.aplicar(frame);
-                frame.setVisible(true);
-        }
+	public void mostrar() {
+		Tema.aplicar(frame);
+		frame.setVisible(true);
+	}
 }

@@ -6,21 +6,21 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
-public class VentanaConfgRegiones {
+public class VentanaConfigRegiones {
 
 	private JFrame frame;
-	private ventanaConfgGrafo ventanaAnterior;
+	private VentanaConfigGrafo ventanaAnterior;
 	private PanelGrafo panelGrafo;
 
-	public VentanaConfgRegiones(ventanaConfgGrafo ventanaAnterior) {
+	public VentanaConfigRegiones(VentanaConfigGrafo ventanaAnterior) {
 
 		this.ventanaAnterior = ventanaAnterior;
 
@@ -37,8 +37,7 @@ public class VentanaConfgRegiones {
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		frame.getContentPane().setLayout(
-				new BorderLayout());
+		frame.getContentPane().setLayout(new BorderLayout());
 
 		// =========================
 		// TITULO
@@ -46,12 +45,9 @@ public class VentanaConfgRegiones {
 
 		JLabel lblTitulo = new JLabel("Configuración de regiones");
 
-		lblTitulo.setHorizontalAlignment(
-				SwingConstants.CENTER);
+		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 
-		frame.getContentPane().add(
-				lblTitulo,
-				BorderLayout.NORTH);
+		frame.getContentPane().add(lblTitulo, BorderLayout.NORTH);
 
 		// =========================
 		// PANEL CENTRAL
@@ -59,19 +55,15 @@ public class VentanaConfgRegiones {
 
 		JPanel panelCentral = new JPanel();
 
-		frame.getContentPane().add(
-				panelCentral,
-				BorderLayout.CENTER);
+		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
 
-		panelCentral.setLayout(
-				new GridLayout(1, 2, 10, 0));
+		panelCentral.setLayout(new GridLayout(1, 2, 10, 0));
 
 		panelGrafo = new PanelGrafo();
 		panelGrafo.setBorder(new TitledBorder("Mapa y conexiones"));
 
 		panelGrafo.setImagen(ventanaAnterior.getImagen());
-		panelGrafo.setDatos(
-				ventanaAnterior.getPresentador().obtenerProvincias(),
+		panelGrafo.setDatos(ventanaAnterior.getPresentador().obtenerProvincias(),
 				ventanaAnterior.getPresentador().getConexiones());
 
 		JPanel panelMapa = new JPanel(new BorderLayout());
@@ -86,11 +78,9 @@ public class VentanaConfgRegiones {
 
 		panelCentral.add(panelIzquierdo);
 
-		panelIzquierdo.setLayout(
-				new BorderLayout(0, 10));
+		panelIzquierdo.setLayout(new BorderLayout(0, 10));
 
-		panelIzquierdo.setBorder(
-				new TitledBorder("Configuración"));
+		panelIzquierdo.setBorder(new TitledBorder("Configuración"));
 
 		// =========================
 		// CONFIGURACIÓN DE K
@@ -98,12 +88,9 @@ public class VentanaConfgRegiones {
 
 		JPanel panelConfig = new JPanel();
 
-		panelIzquierdo.add(
-				panelConfig,
-				BorderLayout.NORTH);
+		panelIzquierdo.add(panelConfig, BorderLayout.NORTH);
 
-		panelConfig.setLayout(
-				new GridLayout(3, 1, 0, 8));
+		panelConfig.setLayout(new GridLayout(3, 1, 0, 8));
 
 		// Etiqueta
 		JLabel lblK = new JLabel("Cantidad de regiones K:");
@@ -111,12 +98,7 @@ public class VentanaConfgRegiones {
 		panelConfig.add(lblK);
 
 		// Spinner
-		JSpinner spinnerK = new JSpinner(
-				new SpinnerNumberModel(
-						1,
-						1,
-						Integer.MAX_VALUE,
-						1));
+		JSpinner spinnerK = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
 
 		panelConfig.add(spinnerK);
 
@@ -130,20 +112,13 @@ public class VentanaConfgRegiones {
 
 				presentador.ejecutarAlgoritmo(k);
 
-				VentanaResultado resultado = new VentanaResultado(
-						this,
-						presentador.getRegiones(),
-						ventanaAnterior.getImagen(),
-						presentador.obtenerProvincias(),
-						presentador.getConexiones());
+				VentanaResultado resultado = new VentanaResultado(this, presentador.getRegiones(),
+						ventanaAnterior.getImagen(), presentador.obtenerProvincias(), presentador.getConexiones());
 
 				resultado.mostrar();
 				frame.setVisible(false);
 			} catch (IllegalArgumentException | IllegalStateException ex) {
-				JOptionPane.showMessageDialog(
-						frame,
-						ex.getMessage(),
-						"No se pudieron generar las regiones",
+				JOptionPane.showMessageDialog(frame, ex.getMessage(), "No se pudieron generar las regiones",
 						JOptionPane.ERROR_MESSAGE);
 			}
 		});
@@ -157,9 +132,7 @@ public class VentanaConfgRegiones {
 		JPanel panelNavegacion = new JPanel();
 		panelNavegacion.setLayout(new BorderLayout());
 
-		frame.getContentPane().add(
-				panelNavegacion,
-				BorderLayout.SOUTH);
+		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
 
 		// VOLVER
 		JButton btnVolver = new JButton("← Volver");
@@ -171,9 +144,7 @@ public class VentanaConfgRegiones {
 			ventanaAnterior.mostrar();
 		});
 
-		panelNavegacion.add(
-				btnVolver,
-				BorderLayout.WEST);
+		panelNavegacion.add(btnVolver, BorderLayout.WEST);
 
 		// MODO OSCURO
 

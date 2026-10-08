@@ -58,6 +58,10 @@ public class DisenioRegiones {
 		return provincia;
 	}
 
+	public boolean existeProvincia(String nombre) {
+		return provincias.containsKey(validarNombre(nombre));
+	}
+
 	public ArrayList<Provincia> obtenerProvincias() {
 		return new ArrayList<>(provincias.values());
 	}
