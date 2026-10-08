@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import modelo.Arista;
+import modelo.DisenioRegiones;
 import modelo.Provincia;
 import presentador.PresentadorVentanaConfigGrafo;
 
@@ -292,16 +293,14 @@ public class VentanaConfigGrafo {
 		txtProvincia.setText("");
 	}
 
-	public void abrirConfigRegiones() {
-		VentanaConfigRegiones ventanaRegiones = new VentanaConfigRegiones(this);
+	// Recibe el modelo solo para entregárselo a la próxima pantalla.
+	public void abrirConfigRegiones(DisenioRegiones disenioRegiones) {
+		VentanaConfigRegiones ventanaRegiones = new VentanaConfigRegiones(this, disenioRegiones);
 
 		ventanaRegiones.mostrar();
 		frame.setVisible(false);
 	}
 
-	public PresentadorVentanaConfigGrafo getPresentador() {
-		return presentador;
-	}
 
 	// Permite mostrar la misma imagen en las próximas ventanas.
 	public BufferedImage getImagen() {

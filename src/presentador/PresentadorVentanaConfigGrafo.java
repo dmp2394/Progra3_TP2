@@ -1,12 +1,7 @@
 package presentador;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import modelo.Arista;
 import modelo.DisenioRegiones;
 import modelo.ObservadorDisenioRegiones;
-import modelo.Provincia;
 import vista.VentanaConfigGrafo;
 
 public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones {
@@ -157,26 +152,6 @@ public class PresentadorVentanaConfigGrafo implements ObservadorDisenioRegiones 
 			return;
 		}
 
-		ventana.abrirConfigRegiones();
-	}
-
-	// ---------------------------------------------------------------
-	// Usados por VentanaConfigRegiones (pendiente de refactor)
-	// ---------------------------------------------------------------
-
-	public ArrayList<Provincia> obtenerProvincias() {
-		return disenioRegiones.obtenerProvincias();
-	}
-
-	public ArrayList<Arista<String>> getConexiones() {
-		return disenioRegiones.obtenerConexiones();
-	}
-
-	public void ejecutarAlgoritmo(int k) {
-		disenioRegiones.separarEnRegionesConexas(k);
-	}
-
-	public List<List<String>> getRegiones() {
-		return disenioRegiones.getRegiones();
+		ventana.abrirConfigRegiones(disenioRegiones);
 	}
 }

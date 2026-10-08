@@ -2,6 +2,8 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,17 +16,27 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import modelo.Arista;
+import modelo.DisenioRegiones;
+import modelo.Provincia;
+import presentador.PresentadorVentanaConfigRegiones;
+
 public class VentanaConfigRegiones {
 
 	private JFrame frame;
 	private VentanaConfigGrafo ventanaAnterior;
 	private PanelGrafo panelGrafo;
+	private JSpinner spinnerK;
+	private final PresentadorVentanaConfigRegiones presentador;
 
-	public VentanaConfigRegiones(VentanaConfigGrafo ventanaAnterior) {
+	public VentanaConfigRegiones(VentanaConfigGrafo ventanaAnterior, DisenioRegiones disenioRegiones) {
 
 		this.ventanaAnterior = ventanaAnterior;
+		this.presentador = new PresentadorVentanaConfigRegiones(this, disenioRegiones);
 
 		initialize();
+
+		presentador.mostrarGrafoCargado();
 	}
 
 	private void initialize() {
@@ -63,8 +75,6 @@ public class VentanaConfigRegiones {
 		panelGrafo.setBorder(new TitledBorder("Mapa y conexiones"));
 
 		panelGrafo.setImagen(ventanaAnterior.getImagen());
-		panelGrafo.setDatos(ventanaAnterior.getPresentador().obtenerProvincias(),
-				ventanaAnterior.getPresentador().getConexiones());
 
 		JPanel panelMapa = new JPanel(new BorderLayout());
 		panelMapa.add(panelGrafo, BorderLayout.CENTER);
@@ -98,30 +108,14 @@ public class VentanaConfigRegiones {
 		panelConfig.add(lblK);
 
 		// Spinner
-		JSpinner spinnerK = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+		spinnerK = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
 
 		panelConfig.add(spinnerK);
 
 		// Botón generar
 		JButton btnGenerarRegiones = new JButton("Generar regiones");
 
-		btnGenerarRegiones.addActionListener(e -> {
-			try {
-				int k = ((Number) spinnerK.getValue()).intValue();
-				var presentador = ventanaAnterior.getPresentador();
-
-				presentador.ejecutarAlgoritmo(k);
-
-				VentanaResultado resultado = new VentanaResultado(this, presentador.getRegiones(),
-						ventanaAnterior.getImagen(), presentador.obtenerProvincias(), presentador.getConexiones());
-
-				resultado.mostrar();
-				frame.setVisible(false);
-			} catch (IllegalArgumentException | IllegalStateException ex) {
-				JOptionPane.showMessageDialog(frame, ex.getMessage(), "No se pudieron generar las regiones",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		});
+		btnGenerarRegiones.addActionListener(e -> presentador.generarRegiones(leerK()));
 
 		panelConfig.add(btnGenerarRegiones);
 
@@ -151,6 +145,35 @@ public class VentanaConfigRegiones {
 		JToggleButton btnTema = Tema.crearBotonTema();
 		panelNavegacion.add(btnTema, BorderLayout.EAST);
 
+	}
+
+	// Lee k del spinner. Devuelve null si el texto ingresado no es un entero
+	// válido.
+	private Integer leerK() {
+		try {
+			spinnerK.commitEdit();
+			return ((Number) spinnerK.getValue()).intValue();
+
+		} catch (java.text.ParseException e) {
+			return null;
+		}
+	}
+
+	public void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
+		panelGrafo.setDatos(provincias, conexiones);
+	}
+
+	public void mostrarError(String mensaje) {
+		JOptionPane.showMessageDialog(frame, mensaje, "No se pudieron generar las regiones", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void abrirResultado(List<List<String>> regiones, List<Provincia> provincias,
+			List<Arista<String>> conexiones) {
+		VentanaResultado resultado = new VentanaResultado(this, regiones, ventanaAnterior.getImagen(), provincias,
+				conexiones);
+
+		resultado.mostrar();
+		frame.setVisible(false);
 	}
 
 	public void mostrar() {

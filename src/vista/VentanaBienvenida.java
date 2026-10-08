@@ -19,6 +19,9 @@ public class VentanaBienvenida {
 	private JFrame frame;
 	private VentanaConfigGrafo ventanaPrincipal;
 
+//	VentanaBienvenida no tiene presentador porque no interactúa con el modelo 
+//	ni contiene decisiones, solo navega	a la pantalla inicial
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
