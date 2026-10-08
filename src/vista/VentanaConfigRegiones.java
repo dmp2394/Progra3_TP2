@@ -129,7 +129,11 @@ public class VentanaConfigRegiones {
 		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
 
 		// ALERTA: esto cumple mvp? interfaz estaría decidiendo el flujo de la
-		// aplicacion => ventanaAnterior.mostrar()
+		// aplicacion => ventanaAnterior.mostrar(). Puede quedar asi o tiene que pasar
+		// por el presentador?
+		// o sea presentador.mostrarAnterior(), y adentro ejecutar un metodo de la
+		// ventana que sea mostrar la ventana anterior
+
 		// VOLVER
 		JButton btnVolver = new JButton("← Volver");
 
