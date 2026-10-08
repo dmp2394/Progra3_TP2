@@ -265,8 +265,6 @@ public class VentanaConfigGrafo {
 			txtProvincia.setText("");
 			lblEstado.setText("Provincia agregada. Podés ubicar otra o crear conexiones.");
 
-//			actualizarVista();
-
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
 		}
@@ -282,7 +280,6 @@ public class VentanaConfigGrafo {
 
 		try {
 			presentador.eliminarProvincia(nombre);
-//			actualizarVista();
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
@@ -303,7 +300,6 @@ public class VentanaConfigGrafo {
 			int peso = ((Number) spinnerPeso.getValue()).intValue();
 
 			presentador.agregarConexion(origen, destino, peso);
-//			actualizarVista();
 
 		} catch (java.text.ParseException e) {
 			mostrarMensaje("Ingresá un peso entero válido.");
@@ -328,7 +324,6 @@ public class VentanaConfigGrafo {
 
 		try {
 			presentador.eliminarConexion(origen, destino);
-//			actualizarVista();
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
