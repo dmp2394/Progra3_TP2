@@ -128,6 +128,8 @@ public class VentanaConfigRegiones {
 
 		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
 
+		// ALERTA: esto cumple mvp? interfaz estaría decidiendo el flujo de la
+		// aplicacion => ventanaAnterior.mostrar()
 		// VOLVER
 		JButton btnVolver = new JButton("← Volver");
 
