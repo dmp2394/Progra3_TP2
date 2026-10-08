@@ -43,7 +43,6 @@ public class VentanaConfigGrafo {
 
 	private JTextField txtProvincia;
 	private JLabel lblEstado;
-	private String provinciaPendiente;
 
 	private DefaultListModel<String> modeloProvincias;
 	private JList<String> listaProvincias;
@@ -77,7 +76,7 @@ public class VentanaConfigGrafo {
 
 		JButton btnCargarMapa = new JButton("Cargar mapa PNG/JPG");
 		panelSuperior.add(btnCargarMapa, BorderLayout.WEST);
-		btnCargarMapa.addActionListener(e -> cargarImagen());
+		btnCargarMapa.addActionListener(e -> presentador.cambiarMapa());
 
 		lblEstado = new JLabel("Cargá una imagen para comenzar.");
 		panelSuperior.add(lblEstado, BorderLayout.CENTER);
@@ -106,7 +105,7 @@ public class VentanaConfigGrafo {
 
 		JButton btnUbicar = new JButton("Ubicar en mapa");
 		panelCargaProvincia.add(btnUbicar);
-		btnUbicar.addActionListener(e -> guardaNombreAUtilizarEnProximoClick());
+		btnUbicar.addActionListener(e -> presentador.prepararUbicacion(txtProvincia.getText()));
 
 		modeloProvincias = new DefaultListModel<>();
 		listaProvincias = new JList<>(modeloProvincias);
@@ -115,7 +114,7 @@ public class VentanaConfigGrafo {
 
 		JButton btnEliminarProvincia = new JButton("Eliminar provincia");
 		panelProvincias.add(btnEliminarProvincia, BorderLayout.SOUTH);
-		btnEliminarProvincia.addActionListener(e -> eliminarProvincia());
+		btnEliminarProvincia.addActionListener(e -> presentador.eliminarProvincia(listaProvincias.getSelectedValue()));
 
 		// CONEXIONES
 
@@ -142,7 +141,8 @@ public class VentanaConfigGrafo {
 
 		JButton btnAgregarConexion = new JButton("Agregar conexión");
 		panelCargaConexion.add(btnAgregarConexion);
-		btnAgregarConexion.addActionListener(e -> agregarConexion());
+		btnAgregarConexion.addActionListener(e -> presentador.agregarConexion((String) comboProvincia1.getSelectedItem(),
+				(String) comboProvincia2.getSelectedItem(), leerPeso()));
 
 		modeloConexiones = new DefaultTableModel(new String[] { "Provincia 1", "Provincia 2", "Peso" }, 0) {
 
@@ -161,7 +161,8 @@ public class VentanaConfigGrafo {
 
 		JButton btnEliminarConexion = new JButton("Eliminar conexión");
 		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
-		btnEliminarConexion.addActionListener(e -> eliminarConexion());
+		btnEliminarConexion.addActionListener(
+				e -> presentador.eliminarConexion(valorDeFilaSeleccionada(0), valorDeFilaSeleccionada(1)));
 
 		// MAPA
 
@@ -169,7 +170,7 @@ public class VentanaConfigGrafo {
 		panelGrafo.setBorder(new TitledBorder("Mapa"));
 		panelContenido.add(panelGrafo, BorderLayout.CENTER);
 
-		panelGrafo.setAccionClick((x, y) -> ubicarProvincia(x, y));
+		panelGrafo.setAccionClick((x, y) -> presentador.ubicarProvincia(x, y));
 
 		// NAVEGACIÓN
 
@@ -178,16 +179,12 @@ public class VentanaConfigGrafo {
 
 		JButton btnContinuar = new JButton("Continuar →");
 		panelNavegacion.add(btnContinuar, BorderLayout.EAST);
-		btnContinuar.addActionListener(e -> continuar());
+		btnContinuar.addActionListener(e -> presentador.continuar());
 	}
 
 	// Abre un selector de archivos y carga la imagen elegida.
-	private void cargarImagen() {
-		if (presentador.getCantidadProvincias() > 0) {
-			mostrarMensaje("Eliminá las provincias antes de cambiar el mapa.");
-			return;
-		}
-
+	// El presentador decide si se puede cambiar el mapa antes de llamar a este método.
+	public void elegirImagen() {
 		JFileChooser selector = new JFileChooser();
 		selector.setDialogTitle("Seleccionar imagen del mapa");
 		selector.setAcceptAllFileFilterUsed(false);
@@ -210,127 +207,38 @@ public class VentanaConfigGrafo {
 			imagen = imagenCargada;
 			panelGrafo.setImagen(imagen);
 
-			provinciaPendiente = null;
-			lblEstado.setText("Mapa cargado. Escribí una provincia y presioná Ubicar.");
+			presentador.mapaCargado();
 
 		} catch (IOException e) {
 			mostrarMensaje("No se pudo leer la imagen seleccionada.");
 		}
 	}
 
-	// ALERTA. Logica de negocio en la vista???
-	private void guardaNombreAUtilizarEnProximoClick() {
-		if (!panelGrafo.tieneImagen()) {
-			mostrarMensaje("Primero cargá una imagen del mapa.");
-			return;
-		}
-
-		String nombre = txtProvincia.getText().trim();
-
-		if (nombre.isEmpty()) {
-			mostrarMensaje("Escribí el nombre de la provincia.");
-			return;
-		}
-
-		if (presentador.existeProvincia(nombre)) {
-			mostrarMensaje("La provincia ya existe.");
-			return;
-		}
-
-		provinciaPendiente = nombre;
-		lblEstado.setText("Hacé click sobre el mapa para ubicar: " + nombre);
-	}
-
-	// Recibe las coordenadas originales calculadas por PanelGrafo.
-	private void ubicarProvincia(int x, int y) {
-		String nombre = provinciaPendiente;
-
-		if (nombre == null) {
-			nombre = txtProvincia.getText().trim();
-		}
-
-		if (nombre.isEmpty()) {
-			return;
-		}
-
-		if (presentador.existeProvincia(nombre)) {
-			mostrarMensaje("La provincia ya existe.");
-			return;
-		}
-
-		try {
-			presentador.agregarProvincia(nombre, x, y);
-
-			provinciaPendiente = null;
-			txtProvincia.setText("");
-			lblEstado.setText("Provincia agregada. Podés ubicar otra o crear conexiones.");
-
-		} catch (IllegalArgumentException e) {
-			mostrarMensaje(e.getMessage());
-		}
-	}
-
-	private void eliminarProvincia() {
-		String nombre = listaProvincias.getSelectedValue();
-
-		if (nombre == null) {
-			mostrarMensaje("Seleccioná una provincia de la lista.");
-			return;
-		}
-
-		try {
-			presentador.eliminarProvincia(nombre);
-
-		} catch (IllegalArgumentException e) {
-			mostrarMensaje(e.getMessage());
-		}
-	}
-
-	private void agregarConexion() {
-		String origen = (String) comboProvincia1.getSelectedItem();
-		String destino = (String) comboProvincia2.getSelectedItem();
-
-		if (origen == null || destino == null) {
-			mostrarMensaje("Primero agregá las provincias que querés conectar.");
-			return;
-		}
-
+	// Lee el peso del spinner. Devuelve null si el texto ingresado no es un entero válido.
+	private Integer leerPeso() {
 		try {
 			spinnerPeso.commitEdit();
-			int peso = ((Number) spinnerPeso.getValue()).intValue();
-
-			presentador.agregarConexion(origen, destino, peso);
+			return ((Number) spinnerPeso.getValue()).intValue();
 
 		} catch (java.text.ParseException e) {
-			mostrarMensaje("Ingresá un peso entero válido.");
-
-		} catch (IllegalArgumentException e) {
-			mostrarMensaje(e.getMessage());
+			return null;
 		}
 	}
 
-	private void eliminarConexion() {
+	// Devuelve el valor de la columna indicada en la fila seleccionada de la tabla,
+	// o null si no hay ninguna fila seleccionada.
+	private String valorDeFilaSeleccionada(int columna) {
 		int filaVista = tablaConexiones.getSelectedRow();
 
 		if (filaVista == -1) {
-			mostrarMensaje("Seleccioná una conexión de la tabla.");
-			return;
+			return null;
 		}
 
 		int filaModelo = tablaConexiones.convertRowIndexToModel(filaVista);
-
-		String origen = (String) modeloConexiones.getValueAt(filaModelo, 0);
-		String destino = (String) modeloConexiones.getValueAt(filaModelo, 1);
-
-		try {
-			presentador.eliminarConexion(origen, destino);
-
-		} catch (IllegalArgumentException e) {
-			mostrarMensaje(e.getMessage());
-		}
+		return (String) modeloConexiones.getValueAt(filaModelo, columna);
 	}
 
-	// Actualiza todos los componentes con los datos del modelo.
+	// Actualiza todos los componentes con los datos recibidos.
 	public void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
 		String seleccion1 = (String) comboProvincia1.getSelectedItem();
 		String seleccion2 = (String) comboProvincia2.getSelectedItem();
@@ -365,26 +273,27 @@ public class VentanaConfigGrafo {
 		panelGrafo.setDatos(provincias, conexiones);
 	}
 
-	private void continuar() {
-		if (!panelGrafo.tieneImagen() || presentador.getCantidadProvincias() == 0) {
-
-			mostrarMensaje("Cargá un mapa y ubicá al menos una provincia.");
-			return;
-		}
-
-		if (provinciaPendiente != null) {
-			mostrarMensaje("Ubicá la provincia pendiente antes de continuar.");
-			return;
-		}
-
-		VentanaConfigRegiones ventana = new VentanaConfigRegiones(this);
-
-		ventana.mostrar();
-		frame.setVisible(false);
+	public void mostrarMensaje(String mensaje) {
+		JOptionPane.showMessageDialog(frame, mensaje);
 	}
 
-	private void mostrarMensaje(String mensaje) {
-		JOptionPane.showMessageDialog(frame, mensaje);
+	public boolean tieneImagen() {
+		return panelGrafo.tieneImagen();
+	}
+
+	public void mostrarEstado(String estado) {
+		lblEstado.setText(estado);
+	}
+
+	public void limpiarNombre() {
+		txtProvincia.setText("");
+	}
+
+	public void abrirConfigRegiones() {
+		VentanaConfigRegiones ventanaRegiones = new VentanaConfigRegiones(this);
+
+		ventanaRegiones.mostrar();
+		frame.setVisible(false);
 	}
 
 	public PresentadorVentanaConfigGrafo getPresentador() {
