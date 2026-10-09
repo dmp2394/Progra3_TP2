@@ -182,4 +182,9 @@ public class DisenioRegiones {
 
 		return nombre.trim();
 	}
+
+	public boolean existenProvincias() {
+		return !provincias.isEmpty();
+
+	}
 }
