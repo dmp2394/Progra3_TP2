@@ -368,7 +368,7 @@ public class DisenioRegionesTest {
 		public void separarConKUnoTest() {
 			disenio.separarEnRegionesConexas(1);
 
-			Set<Set<String>> regiones = compararRegiones(disenio.getRegiones());
+			Set<Set<String>> regiones = compararRegiones(disenio.obtenerRegiones());
 
 			assertEquals(1, regiones.size());
 			assertTrue(
@@ -380,7 +380,7 @@ public class DisenioRegionesTest {
 		public void separarConKIgualALaCantidadDeProvinciasTest() {
 			disenio.separarEnRegionesConexas(4);
 
-			Set<Set<String>> regiones = compararRegiones(disenio.getRegiones());
+			Set<Set<String>> regiones = compararRegiones(disenio.obtenerRegiones());
 
 			assertEquals(4, regiones.size());
 			assertTrue(regiones.contains(new HashSet<>(Arrays.asList("Córdoba"))));
@@ -397,7 +397,7 @@ public class DisenioRegionesTest {
 
 			unaProvincia.separarEnRegionesConexas(1);
 
-			Set<Set<String>> regiones = compararRegiones(unaProvincia.getRegiones());
+			Set<Set<String>> regiones = compararRegiones(unaProvincia.obtenerRegiones());
 
 			assertEquals(1, regiones.size());
 			assertTrue(regiones.contains(new HashSet<>(Arrays.asList("Córdoba"))));
@@ -415,7 +415,7 @@ public class DisenioRegionesTest {
 		public void separarEnDosRegionesTest() {
 			disenio.separarEnRegionesConexas(2);
 
-			Set<Set<String>> regiones = compararRegiones(disenio.getRegiones());
+			Set<Set<String>> regiones = compararRegiones(disenio.obtenerRegiones());
 
 			assertEquals(2, regiones.size());
 			assertTrue(regiones.contains(new HashSet<>(Arrays.asList("Córdoba", "Santa Fe", "Entre Ríos"))));
@@ -427,7 +427,7 @@ public class DisenioRegionesTest {
 		public void separarEnTresRegionesTest() {
 			disenio.separarEnRegionesConexas(3);
 
-			Set<Set<String>> regiones = compararRegiones(disenio.getRegiones());
+			Set<Set<String>> regiones = compararRegiones(disenio.obtenerRegiones());
 
 			assertEquals(3, regiones.size());
 			assertTrue(regiones.contains(new HashSet<>(Arrays.asList("Santa Fe", "Entre Ríos"))));
@@ -450,30 +450,30 @@ public class DisenioRegionesTest {
 			disenio.separarEnRegionesConexas(3);
 			disenio.separarEnRegionesConexas(2);
 
-			assertEquals(2, disenio.getRegiones().size());
+			assertEquals(2, disenio.obtenerRegiones().size());
 		}
 	}
 
-	public static class GetRegionesExcepcionesYCasosBorde {
+	public static class obtenerRegionesExcepcionesYCasosBorde {
 
 		private DisenioRegiones disenio = crearDisenioDeCuatroProvincias();
 
 		// Antes de separar no hay regiones.
 		@Test
-		public void getRegionesAntesDeSepararTest() {
-			assertTrue(disenio.getRegiones().isEmpty());
+		public void obtenerRegionesAntesDeSepararTest() {
+			assertTrue(disenio.obtenerRegiones().isEmpty());
 		}
 
 		// Modificar lo devuelto no modifica las regiones internas.
 		@Test
-		public void getRegionesDevuelveCopiaTest() {
+		public void obtenerRegionesDevuelveCopiaTest() {
 			disenio.separarEnRegionesConexas(2);
 
-			List<List<String>> regiones = disenio.getRegiones();
+			List<List<String>> regiones = disenio.obtenerRegiones();
 			regiones.get(0).clear();
 			regiones.clear();
 
-			Set<Set<String>> regionesInternas = compararRegiones(disenio.getRegiones());
+			Set<Set<String>> regionesInternas = compararRegiones(disenio.obtenerRegiones());
 
 			assertEquals(2, regionesInternas.size());
 			assertTrue(regionesInternas.contains(new HashSet<>(Arrays.asList("Córdoba", "Santa Fe", "Entre Ríos"))));
@@ -481,18 +481,18 @@ public class DisenioRegionesTest {
 		}
 	}
 
-	public static class GetRegionesHappyPath {
+	public static class obtenerRegionesHappyPath {
 
 		private DisenioRegiones disenio = crearDisenioDeCuatroProvincias();
 
 		// Entre todas las regiones están todas las provincias, sin repetir.
 		@Test
-		public void getRegionesContieneTodasLasProvinciasTest() {
+		public void obtenerRegionesContieneTodasLasProvinciasTest() {
 			disenio.separarEnRegionesConexas(2);
 
 			int cantidad = 0;
 			Set<String> provincias = new HashSet<>();
-			for (List<String> region : disenio.getRegiones()) {
+			for (List<String> region : disenio.obtenerRegiones()) {
 				cantidad += region.size();
 				provincias.addAll(region);
 			}

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
@@ -130,15 +131,21 @@ public class PanelGrafo extends JPanel {
         accionClick.accept(xImagen, yImagen);
     }
 
-    // Calcula dónde mostrar la imagen, conservando su proporción.
+    // Calcula dónde mostrar la imagen, conservando su proporción y sin pisar
+    // el borde del panel (por ejemplo, el título "Mapa y conexiones").
     private Rectangle getAreaImagen() {
-        if (imagen == null || getWidth() <= 0 || getHeight() <= 0) {
+        Insets bordes = getInsets();
+
+        int anchoDisponible = getWidth() - bordes.left - bordes.right;
+        int altoDisponible = getHeight() - bordes.top - bordes.bottom;
+
+        if (imagen == null || anchoDisponible <= 0 || altoDisponible <= 0) {
             return new Rectangle();
         }
 
-        double escalaX = (double) getWidth() / imagen.getWidth();
+        double escalaX = (double) anchoDisponible / imagen.getWidth();
 
-        double escalaY = (double) getHeight() / imagen.getHeight();
+        double escalaY = (double) altoDisponible / imagen.getHeight();
 
         double escala = Math.min(escalaX, escalaY);
 
@@ -148,8 +155,8 @@ public class PanelGrafo extends JPanel {
         int alto = Math.max(
                 1, (int) (imagen.getHeight() * escala));
 
-        int x = (getWidth() - ancho) / 2;
-        int y = (getHeight() - alto) / 2;
+        int x = bordes.left + (anchoDisponible - ancho) / 2;
+        int y = bordes.top + (altoDisponible - alto) / 2;
 
         return new Rectangle(x, y, ancho, alto);
     }
@@ -168,9 +175,11 @@ public class PanelGrafo extends JPanel {
 
             if (imagen == null) {
                 dibujo.setColor(Color.GRAY);
+                Insets bordes = getInsets();
+
                 dibujo.drawString(
                         "Cargá una imagen PNG o JPG para comenzar.",
-                        20, 30);
+                        bordes.left + 20, bordes.top + 30);
                 return;
             }
 
@@ -197,7 +206,7 @@ public class PanelGrafo extends JPanel {
         }
     }
 
-    // Dibuja las líneas y sus pesos antes de dibujar los nodos.
+    // Dibuja las líneas y su similaridad antes de dibujar los nodos.
     private void dibujarConexiones(
             Graphics2D dibujo,
             Rectangle area) {
@@ -251,12 +260,12 @@ public class PanelGrafo extends JPanel {
             dibujo.setColor(Color.DARK_GRAY);
             dibujo.drawLine(x1, y1, x2, y2);
 
-            String peso = String.valueOf(conexion.devolverPeso());
+            String similaridad = String.valueOf(conexion.devolverPeso());
 
             int centroX = (x1 + x2) / 2;
             int centroY = (y1 + y2) / 2;
 
-            int anchoTexto = dibujo.getFontMetrics().stringWidth(peso);
+            int anchoTexto = dibujo.getFontMetrics().stringWidth(similaridad);
             int altoTexto = dibujo.getFontMetrics().getHeight();
             int ascenso = dibujo.getFontMetrics().getAscent();
 
@@ -269,7 +278,7 @@ public class PanelGrafo extends JPanel {
 
             dibujo.setColor(Color.BLACK);
             dibujo.drawString(
-                    peso,
+                    similaridad,
                     centroX - anchoTexto / 2,
                     centroY);
         }
@@ -299,14 +308,14 @@ public class PanelGrafo extends JPanel {
             int altoTexto = dibujo.getFontMetrics().getHeight();
             int ascenso = dibujo.getFontMetrics().getAscent();
 
-            // Mantiene el nombre dentro del panel cuando es posible.
+            // Mantiene el nombre dentro de la imagen cuando es posible.
             int xTexto = Math.max(
-                    2,
-                    Math.min(x + 10, getWidth() - anchoTexto - 2));
+                    area.x + 2,
+                    Math.min(x + 10, area.x + area.width - anchoTexto - 2));
 
             int yTexto = Math.max(
-                    ascenso + 2,
-                    Math.min(y, getHeight() - 4));
+                    area.y + ascenso + 2,
+                    Math.min(y, area.y + area.height - 4));
 
             dibujo.setColor(Color.WHITE);
             dibujo.fillRect(

@@ -31,45 +31,63 @@ public class VentanaConfigRegiones {
 	public VentanaConfigRegiones(VentanaConfigGrafo ventanaAnterior, DisenioRegiones disenioRegiones) {
 
 		this.ventanaAnterior = ventanaAnterior;
-		this.controlador = new ControladorVentanaConfigRegiones(this, disenioRegiones);
+		this.controlador = new ControladorVentanaConfigRegiones(disenioRegiones);
 
 		initialize();
 
-		controlador.mostrarGrafoCargado();
+		mostrarProvinciasYConexiones(controlador.obtenerProvincias(), controlador.obtenerConexiones());
 	}
 
+	// Estructura de la ventana:
+	// - Arriba: título.
+	// - Centro: dos columnas, a la izquierda el mapa con el grafo y a la derecha
+	// la configuración de la cantidad de regiones.
+	// - Abajo: navegación (volver y modo oscuro).
 	private void initialize() {
-
 		frame = new JFrame();
+		configurarVentana();
 
+		crearTitulo();
+
+		JPanel panelMapaYConfiguracion = crearPanelMapaYConfiguracion();
+		crearPanelMapa(panelMapaYConfiguracion);
+
+		JPanel panelConfiguracionRegiones = crearPanelConfiguracionRegiones(panelMapaYConfiguracion);
+		crearControlesCantidadDeRegiones(panelConfiguracionRegiones);
+
+		JPanel panelNavegacion = crearPanelNavegacion();
+		crearBotonVolver(panelNavegacion);
+		crearBotonModoOscuro(panelNavegacion);
+	}
+
+	private void configurarVentana() {
 		frame.setTitle("Configuración de regiones");
 
-		frame.setBounds(100, 100, 850, 550);
+		frame.setSize(850, 550);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.getContentPane().setLayout(new BorderLayout());
+	}
 
-		// =========================
-		// TITULO
-		// =========================
-
+	private void crearTitulo() {
 		JLabel lblTitulo = new JLabel("Configuración de regiones");
 
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 
 		frame.getContentPane().add(lblTitulo, BorderLayout.NORTH);
+	}
 
-		// =========================
-		// PANEL CENTRAL
-		// =========================
+	private JPanel crearPanelMapaYConfiguracion() {
+		JPanel panelMapaYConfiguracion = new JPanel();
 
-		JPanel panelCentral = new JPanel();
+		panelMapaYConfiguracion.setLayout(new GridLayout(1, 2, 10, 0));
 
-		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
+		frame.getContentPane().add(panelMapaYConfiguracion, BorderLayout.CENTER);
+		return panelMapaYConfiguracion;
+	}
 
-		panelCentral.setLayout(new GridLayout(1, 2, 10, 0));
-
+	private void crearPanelMapa(JPanel panelMapaYConfiguracion) {
 		panelGrafo = new PanelGrafo();
 		panelGrafo.setBorder(new TitledBorder("Mapa y conexiones"));
 
@@ -77,63 +95,51 @@ public class VentanaConfigRegiones {
 
 		JPanel panelMapa = new JPanel(new BorderLayout());
 		panelMapa.add(panelGrafo, BorderLayout.CENTER);
-		panelCentral.add(panelMapa);
+		panelMapaYConfiguracion.add(panelMapa);
+	}
 
-		// =========================
-		// PANEL IZQUIERDO
-		// =========================
+	private JPanel crearPanelConfiguracionRegiones(JPanel panelMapaYConfiguracion) {
+		JPanel panelConfiguracionRegiones = new JPanel();
 
-		JPanel panelIzquierdo = new JPanel();
+		panelConfiguracionRegiones.setLayout(new BorderLayout(0, 10));
 
-		panelCentral.add(panelIzquierdo);
+		panelConfiguracionRegiones.setBorder(new TitledBorder("Configuración"));
 
-		panelIzquierdo.setLayout(new BorderLayout(0, 10));
+		panelMapaYConfiguracion.add(panelConfiguracionRegiones);
+		return panelConfiguracionRegiones;
+	}
 
-		panelIzquierdo.setBorder(new TitledBorder("Configuración"));
+	private void crearControlesCantidadDeRegiones(JPanel panelConfiguracionRegiones) {
+		JPanel panelCantidadDeRegiones = new JPanel();
 
-		// =========================
-		// CONFIGURACIÓN DE K
-		// =========================
+		panelCantidadDeRegiones.setLayout(new GridLayout(3, 1, 0, 8));
 
-		JPanel panelConfig = new JPanel();
+		panelConfiguracionRegiones.add(panelCantidadDeRegiones, BorderLayout.NORTH);
 
-		panelIzquierdo.add(panelConfig, BorderLayout.NORTH);
-
-		panelConfig.setLayout(new GridLayout(3, 1, 0, 8));
-
-		// Etiqueta
 		JLabel lblK = new JLabel("Cantidad de regiones K:");
 
-		panelConfig.add(lblK);
+		panelCantidadDeRegiones.add(lblK);
 
-		// Spinner
 		spinnerK = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
 
-		panelConfig.add(spinnerK);
+		panelCantidadDeRegiones.add(spinnerK);
 
-		// Botón generar
 		JButton btnGenerarRegiones = new JButton("Generar regiones");
 
-		btnGenerarRegiones.addActionListener(e -> controlador.generarRegiones(leerK()));
+		btnGenerarRegiones.addActionListener(e -> generarRegiones());
 
-		panelConfig.add(btnGenerarRegiones);
+		panelCantidadDeRegiones.add(btnGenerarRegiones);
+	}
 
-		// =========================
-		// PANEL DE NAVEGACION
-		// =========================
-
+	private JPanel crearPanelNavegacion() {
 		JPanel panelNavegacion = new JPanel();
 		panelNavegacion.setLayout(new BorderLayout());
 
 		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
+		return panelNavegacion;
+	}
 
-		// ALERTA: esto cumple mvp? interfaz estaría decidiendo el flujo de la
-		// aplicacion => ventanaAnterior.mostrar(). Puede quedar asi o tiene que pasar
-		// por el controlador?
-		// o sea controlador.mostrarAnterior(), y adentro ejecutar un metodo de la
-		// ventana que sea mostrar la ventana anterior
-
-		// VOLVER
+	private void crearBotonVolver(JPanel panelNavegacion) {
 		JButton btnVolver = new JButton("← Volver");
 
 		btnVolver.addActionListener(e -> {
@@ -144,35 +150,32 @@ public class VentanaConfigRegiones {
 		});
 
 		panelNavegacion.add(btnVolver, BorderLayout.WEST);
-
-		// MODO OSCURO
-
-		JToggleButton btnTema = Tema.crearBotonTema();
-		panelNavegacion.add(btnTema, BorderLayout.EAST);
-
 	}
 
-	// Lee k del spinner. Devuelve null si el texto ingresado no es un entero
-	// válido.
-	private Integer leerK() {
-		try {
-			spinnerK.commitEdit();
-			return ((Number) spinnerK.getValue()).intValue();
+	private void crearBotonModoOscuro(JPanel panelNavegacion) {
+		JToggleButton btnTema = Tema.crearBotonTema();
+		panelNavegacion.add(btnTema, BorderLayout.EAST);
+	}
 
-		} catch (java.text.ParseException e) {
-			return null;
+	private void generarRegiones() {
+		Integer k = leerK();
+		if (k == null) {
+			mostrarError("Ingresá una cantidad de regiones válida.");
+			return;
+		}
+
+		try {
+			controlador.separarEnRegionesConexas(k);
+
+			abrirResultado(controlador.obtenerRegiones(), controlador.obtenerProvincias(),
+					controlador.obtenerConexiones());
+
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			mostrarError(e.getMessage());
 		}
 	}
 
-	public void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
-		panelGrafo.setDatos(provincias, conexiones);
-	}
-
-	public void mostrarError(String mensaje) {
-		JOptionPane.showMessageDialog(frame, mensaje, "No se pudieron generar las regiones", JOptionPane.ERROR_MESSAGE);
-	}
-
-	public void abrirResultado(List<List<String>> regiones, List<Provincia> provincias,
+	private void abrirResultado(List<List<String>> regiones, List<Provincia> provincias,
 			List<Arista<String>> conexiones) {
 		VentanaResultado resultado = new VentanaResultado(this, regiones, ventanaAnterior.getImagen(), provincias,
 				conexiones);
@@ -183,6 +186,28 @@ public class VentanaConfigRegiones {
 
 	public void mostrar() {
 		Tema.aplicar(frame);
+
+		// Centra la ventana en el monitor cada vez que se muestra.
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
+
+	private void mostrarError(String mensaje) {
+		JOptionPane.showMessageDialog(frame, mensaje, "No se pudieron generar las regiones", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private Integer leerK() {
+		try {
+			spinnerK.commitEdit();
+			return ((Number) spinnerK.getValue()).intValue();
+
+		} catch (java.text.ParseException e) {
+			return null;
+		}
+	}
+
+	private void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
+		panelGrafo.setDatos(provincias, conexiones);
+	}
+
 }

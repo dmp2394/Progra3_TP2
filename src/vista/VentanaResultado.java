@@ -48,7 +48,7 @@ public class VentanaResultado {
 
 		frame.setTitle("Regiones generadas");
 
-		frame.setBounds(100, 100, 850, 550);
+		frame.setSize(850, 550);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -132,6 +132,9 @@ public class VentanaResultado {
 
 	public void mostrar() {
 		Tema.aplicar(frame);
+
+		// Centra la ventana en el monitor cada vez que se muestra.
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 }

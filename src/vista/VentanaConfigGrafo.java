@@ -53,7 +53,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	private String provinciaPendiente;
 	private JComboBox<String> comboProvincia1;
 	private JComboBox<String> comboProvincia2;
-	private JSpinner spinnerPeso;
+	private JSpinner spinnerSimilaridad;
 
 	private DefaultTableModel modeloConexiones;
 	private JTable tablaConexiones;
@@ -72,8 +72,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Carga del mapa y del grafo");
-		frame.setBounds(100, 100, 1150, 700);
-		frame.setLocationRelativeTo(null);
+		frame.setSize(1150, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panelContenido = new JPanel();
@@ -154,9 +153,9 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		comboProvincia2 = new JComboBox<>();
 		panelCargaConexion.add(comboProvincia2);
 
-		panelCargaConexion.add(new JLabel("Peso:"));
-		spinnerPeso = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
-		panelCargaConexion.add(spinnerPeso);
+		panelCargaConexion.add(new JLabel("Similaridad:"));
+		spinnerSimilaridad = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+		panelCargaConexion.add(spinnerSimilaridad);
 
 		panelCargaConexion.add(new JLabel());
 
@@ -164,7 +163,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		panelCargaConexion.add(btnAgregarConexion);
 		btnAgregarConexion.addActionListener(e -> agregarConexion());
 
-		modeloConexiones = new DefaultTableModel(new String[] { "Provincia 1", "Provincia 2", "Peso" }, 0) {
+		modeloConexiones = new DefaultTableModel(new String[] { "Provincia 1", "Provincia 2", "Similaridad" }, 0) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -255,12 +254,12 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		mostrarEstado("Mapa cargado. Escribí una provincia y presioná Ubicar.");
 	}
 
-	// Lee el peso del spinner. Devuelve null si el texto ingresado no es un entero
+	// Lee la similaridad del spinner. Devuelve null si el texto ingresado no es un entero
 	// válido.
-	private Integer leerPeso() {
+	private Integer leerSimilaridad() {
 		try {
-			spinnerPeso.commitEdit();
-			return ((Number) spinnerPeso.getValue()).intValue();
+			spinnerSimilaridad.commitEdit();
+			return ((Number) spinnerSimilaridad.getValue()).intValue();
 
 		} catch (java.text.ParseException e) {
 			return null;
@@ -346,6 +345,9 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	public void mostrar() {
 		Tema.aplicar(frame);
+
+		// Centra la ventana en el monitor cada vez que se muestra.
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 
@@ -399,25 +401,25 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		}
 	}
 
-	// El usuario quiere agregar una conexión. Peso es null si no ingresó un entero
-	// válido.
+	// El usuario quiere agregar una conexión. Similaridad es null si no ingresó un
+	// entero válido.
 	private void agregarConexion() {
 		String provincia1 = (String) comboProvincia1.getSelectedItem();
 		String provincia2 = (String) comboProvincia2.getSelectedItem();
-		Integer peso = leerPeso();
+		Integer similaridad = leerSimilaridad();
 
 		if (provincia1 == null || provincia2 == null) {
 			mostrarMensaje("Primero agregá las provincias que querés conectar.");
 			return;
 		}
 
-		if (peso == null) {
-			mostrarMensaje("Ingresá un peso entero válido.");
+		if (similaridad == null) {
+			mostrarMensaje("Ingresá una similaridad entera válida.");
 			return;
 		}
 
 		try {
-			controlador.agregarConexion(provincia1, provincia2, peso);
+			controlador.agregarConexion(provincia1, provincia2, similaridad);
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());

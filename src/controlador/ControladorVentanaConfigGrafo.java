@@ -25,8 +25,8 @@ public class ControladorVentanaConfigGrafo {
 		disenioRegiones.eliminarProvincia(nombre);
 	}
 
-	public void agregarConexion(String origen, String destino, Integer peso) {
-		disenioRegiones.agregarConexion(origen, destino, peso);
+	public void agregarConexion(String origen, String destino, Integer similaridad) {
+		disenioRegiones.agregarConexion(origen, destino, similaridad);
 	}
 
 	public void eliminarConexion(String origen, String destino) {

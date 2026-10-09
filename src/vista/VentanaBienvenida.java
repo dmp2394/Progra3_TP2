@@ -19,9 +19,6 @@ public class VentanaBienvenida {
 	private JFrame frame;
 	private VentanaConfigGrafo ventanaPrincipal;
 
-//	VentanaBienvenida no tiene controlador porque no interactúa con el modelo 
-//	ni contiene decisiones, solo navega	a la pantalla inicial
-
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -43,8 +40,7 @@ public class VentanaBienvenida {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Bienvenido - Diseño de regiones");
-		frame.setBounds(100, 100, 760, 460);
-		frame.setLocationRelativeTo(null);
+		frame.setSize(760, 460);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panelContenido = new JPanel();
@@ -70,7 +66,7 @@ public class VentanaBienvenida {
 		JLabel lblPaso3 = new JLabel("3. Ubicarlas haciendo click sobre el mapa.");
 		panelPasos.add(lblPaso3);
 
-		JLabel lblPaso4 = new JLabel("4. Crear conexiones e indicar sus pesos.");
+		JLabel lblPaso4 = new JLabel("4. Crear conexiones e indicar su similaridad.");
 		panelPasos.add(lblPaso4);
 
 		JLabel lblPaso5 = new JLabel("5. Elegir la cantidad de regiones K.");
@@ -111,6 +107,9 @@ public class VentanaBienvenida {
 
 	public void mostrar() {
 		Tema.aplicar(frame);
+
+		// Centra la ventana en el monitor cada vez que se muestra.
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 }

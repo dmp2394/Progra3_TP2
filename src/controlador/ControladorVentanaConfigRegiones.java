@@ -1,38 +1,35 @@
 package controlador;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import modelo.Arista;
 import modelo.DisenioRegiones;
-import vista.VentanaConfigRegiones;
+import modelo.Provincia;
 
 public class ControladorVentanaConfigRegiones {
 
 	private final DisenioRegiones disenioRegiones;
-	private final VentanaConfigRegiones ventana;
 
 	// Recibe el mismo modelo que se cargó en la ventana anterior.
-	public ControladorVentanaConfigRegiones(VentanaConfigRegiones ventana, DisenioRegiones disenioRegiones) {
-		this.ventana = ventana;
+	public ControladorVentanaConfigRegiones(DisenioRegiones disenioRegiones) {
 		this.disenioRegiones = disenioRegiones;
 	}
 
-	// Muestra en la ventana el grafo cargado hasta el momento.
-	public void mostrarGrafoCargado() {
-		ventana.mostrarProvinciasYConexiones(disenioRegiones.obtenerProvincias(), disenioRegiones.obtenerConexiones());
+	public void separarEnRegionesConexas(Integer k) {
+		disenioRegiones.separarEnRegionesConexas(k);
 	}
 
-	public void generarRegiones(Integer k) {
-		if (k == null) {
-			ventana.mostrarError("Ingresá una cantidad de regiones válida.");
-			return;
-		}
+	public ArrayList<Provincia> obtenerProvincias() {
+		return disenioRegiones.obtenerProvincias();
+	}
 
-		try {
-			disenioRegiones.separarEnRegionesConexas(k);
+	public ArrayList<Arista<String>> obtenerConexiones() {
+		return disenioRegiones.obtenerConexiones();
+	}
 
-			ventana.abrirResultado(disenioRegiones.getRegiones(), disenioRegiones.obtenerProvincias(),
-					disenioRegiones.obtenerConexiones());
+	public List<List<String>> obtenerRegiones() {
+		return disenioRegiones.obtenerRegiones();
 
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			ventana.mostrarError(e.getMessage());
-		}
 	}
 }

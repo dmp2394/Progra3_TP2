@@ -85,7 +85,7 @@ public class DisenioRegiones {
 	public void agregarConexion(String provinciaOrigen, String provinciaDestino, Integer similaridad) {
 
 		if (similaridad == null) {
-			throw new IllegalArgumentException("El peso de la conexión no puede ser nulo.");
+			throw new IllegalArgumentException("La similaridad de la conexión no puede ser nula.");
 		}
 
 		Provincia origen = obtenerProvincia(provinciaOrigen);
@@ -164,7 +164,7 @@ public class DisenioRegiones {
 		return resultado;
 	}
 
-	public List<List<String>> getRegiones() {
+	public List<List<String>> obtenerRegiones() {
 		List<List<String>> copia = new ArrayList<>();
 
 		for (List<String> region : regiones) {
