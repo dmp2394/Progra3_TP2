@@ -82,6 +82,27 @@ public class Grafo<V> {
 		return copia;
 	}
 
+	public boolean esConexo() {
+		if (esVacio())
+			return true;
+
+		Set<V> visitados = new HashSet<>();
+		V verticeInicial = listaDeVecinos.keySet().iterator().next();
+		dfs(verticeInicial, visitados);
+
+		return visitados.size() == listaDeVecinos.size();
+	}
+	
+	public void dfs(V vertice, Set<V> visitados) {
+		visitados.add(vertice);
+		for (Arista<V> arista : listaDeVecinos.get(vertice)) {
+			V vecino = arista.obtenerExtremo1().equals(vertice) ? arista.obtenerExtremo2() : arista.obtenerExtremo1();
+			if (!visitados.contains(vecino)) {
+				dfs(vecino, visitados);
+			}
+		}
+	}
+	
 	public ArrayList<Arista<V>> obtenerAristas() {
 		return new ArrayList<Arista<V>>(aristas);
 	}
