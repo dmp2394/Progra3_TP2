@@ -29,15 +29,16 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import controlador.ControladorVentanaConfigGrafo;
 import modelo.Arista;
 import modelo.DisenioRegiones;
+import modelo.ObservadorDisenioRegiones;
 import modelo.Provincia;
-import presentador.PresentadorVentanaConfigGrafo;
 
-public class VentanaConfigGrafo {
+public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	private JFrame frame;
-	private final PresentadorVentanaConfigGrafo presentador;
+	private final ControladorVentanaConfigGrafo controlador;
 
 	private BufferedImage imagen;
 	private PanelGrafo panelGrafo;
@@ -56,8 +57,9 @@ public class VentanaConfigGrafo {
 	private JTable tablaConexiones;
 
 	public VentanaConfigGrafo() {
-		presentador = new PresentadorVentanaConfigGrafo(this);
+		controlador = new ControladorVentanaConfigGrafo(this);
 		initialize();
+
 	}
 
 	private void initialize() {
@@ -77,7 +79,7 @@ public class VentanaConfigGrafo {
 
 		JButton btnCargarMapa = new JButton("Cargar mapa PNG/JPG");
 		panelSuperior.add(btnCargarMapa, BorderLayout.WEST);
-		btnCargarMapa.addActionListener(e -> presentador.cambiarMapa());
+		btnCargarMapa.addActionListener(e -> controlador.cambiarMapa());
 
 		lblEstado = new JLabel("Cargá una imagen para comenzar.");
 		panelSuperior.add(lblEstado, BorderLayout.CENTER);
@@ -106,18 +108,18 @@ public class VentanaConfigGrafo {
 
 		JButton btnAgregarProvincia = new JButton("Agregar");
 		panelCargaProvincia.add(btnAgregarProvincia);
-		btnAgregarProvincia.addActionListener(e -> presentador.agregarProvincia(txtProvincia.getText()));
+		btnAgregarProvincia.addActionListener(e -> controlador.agregarProvincia(txtProvincia.getText()));
 
 		JPanel panelBotonesProvincia = new JPanel(new GridLayout(1, 2, 5, 0));
 		panelCargaProvincia.add(panelBotonesProvincia);
 
 		JButton btnCargarJson = new JButton("Cargar desde JSON");
 		panelBotonesProvincia.add(btnCargarJson);
-		btnCargarJson.addActionListener(e -> presentador.cargarProvinciasDesdeJSON());
+		btnCargarJson.addActionListener(e -> controlador.cargarProvinciasDesdeJSON());
 
 		JButton btnUbicar = new JButton("Ubicar en mapa");
 		panelBotonesProvincia.add(btnUbicar);
-		btnUbicar.addActionListener(e -> presentador.prepararUbicacion(txtProvincia.getText()));
+		btnUbicar.addActionListener(e -> controlador.prepararUbicacion(txtProvincia.getText()));
 
 		modeloProvincias = new DefaultListModel<>();
 		listaProvincias = new JList<>(modeloProvincias);
@@ -126,7 +128,7 @@ public class VentanaConfigGrafo {
 
 		JButton btnEliminarProvincia = new JButton("Eliminar provincia");
 		panelProvincias.add(btnEliminarProvincia, BorderLayout.SOUTH);
-		btnEliminarProvincia.addActionListener(e -> presentador.eliminarProvincia(listaProvincias.getSelectedValue()));
+		btnEliminarProvincia.addActionListener(e -> controlador.eliminarProvincia(listaProvincias.getSelectedValue()));
 
 		// CONEXIONES
 
@@ -154,7 +156,7 @@ public class VentanaConfigGrafo {
 		JButton btnAgregarConexion = new JButton("Agregar conexión");
 		panelCargaConexion.add(btnAgregarConexion);
 		btnAgregarConexion
-				.addActionListener(e -> presentador.agregarConexion((String) comboProvincia1.getSelectedItem(),
+				.addActionListener(e -> controlador.agregarConexion((String) comboProvincia1.getSelectedItem(),
 						(String) comboProvincia2.getSelectedItem(), leerPeso()));
 
 		modeloConexiones = new DefaultTableModel(new String[] { "Provincia 1", "Provincia 2", "Peso" }, 0) {
@@ -175,7 +177,7 @@ public class VentanaConfigGrafo {
 		JButton btnEliminarConexion = new JButton("Eliminar conexión");
 		panelConexiones.add(btnEliminarConexion, BorderLayout.SOUTH);
 		btnEliminarConexion.addActionListener(
-				e -> presentador.eliminarConexion(valorDeFilaSobreColumna(0), valorDeFilaSobreColumna(1)));
+				e -> controlador.eliminarConexion(valorDeFilaSobreColumna(0), valorDeFilaSobreColumna(1)));
 
 		// MAPA
 
@@ -183,7 +185,7 @@ public class VentanaConfigGrafo {
 		panelGrafo.setBorder(new TitledBorder("Mapa"));
 		panelContenido.add(panelGrafo, BorderLayout.CENTER);
 
-		panelGrafo.setAccionClick((x, y) -> presentador.ubicarProvincia(x, y));
+		panelGrafo.setAccionClick((x, y) -> controlador.ubicarProvincia(x, y));
 
 		// NAVEGACIÓN
 
@@ -192,11 +194,11 @@ public class VentanaConfigGrafo {
 
 		JButton btnContinuar = new JButton("Continuar →");
 		panelNavegacion.add(btnContinuar, BorderLayout.EAST);
-		btnContinuar.addActionListener(e -> presentador.continuar());
+		btnContinuar.addActionListener(e -> controlador.continuar());
 	}
 
 	// Abre un selector de archivos y carga la imagen elegida.
-	// El presentador decide si se puede cambiar el mapa antes de llamar a este
+	// El controlador decide si se puede cambiar el mapa antes de llamar a este
 	// método.
 	public void elegirImagen() {
 		JFileChooser selector = new JFileChooser();
@@ -221,7 +223,7 @@ public class VentanaConfigGrafo {
 			imagen = imagenCargada;
 			panelGrafo.setImagen(imagen);
 
-			presentador.mapaCargado();
+			controlador.mapaCargado();
 
 		} catch (IOException e) {
 			mostrarMensaje("No se pudo leer la imagen seleccionada.");
@@ -333,6 +335,11 @@ public class VentanaConfigGrafo {
 		}
 
 		return selector.getSelectedFile().getAbsolutePath();
+	}
+
+	@Override
+	public void notificar(DisenioRegiones disenioRegiones) {
+		mostrarProvinciasYConexiones(disenioRegiones.obtenerProvincias(), disenioRegiones.obtenerConexiones());
 	}
 
 }

@@ -16,27 +16,26 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import controlador.ControladorVentanaConfigRegiones;
 import modelo.Arista;
 import modelo.DisenioRegiones;
 import modelo.Provincia;
-import presentador.PresentadorVentanaConfigRegiones;
 
 public class VentanaConfigRegiones {
-
 	private JFrame frame;
 	private VentanaConfigGrafo ventanaAnterior;
 	private PanelGrafo panelGrafo;
 	private JSpinner spinnerK;
-	private final PresentadorVentanaConfigRegiones presentador;
+	private final ControladorVentanaConfigRegiones controlador;
 
 	public VentanaConfigRegiones(VentanaConfigGrafo ventanaAnterior, DisenioRegiones disenioRegiones) {
 
 		this.ventanaAnterior = ventanaAnterior;
-		this.presentador = new PresentadorVentanaConfigRegiones(this, disenioRegiones);
+		this.controlador = new ControladorVentanaConfigRegiones(this, disenioRegiones);
 
 		initialize();
 
-		presentador.mostrarGrafoCargado();
+		controlador.mostrarGrafoCargado();
 	}
 
 	private void initialize() {
@@ -115,7 +114,7 @@ public class VentanaConfigRegiones {
 		// Botón generar
 		JButton btnGenerarRegiones = new JButton("Generar regiones");
 
-		btnGenerarRegiones.addActionListener(e -> presentador.generarRegiones(leerK()));
+		btnGenerarRegiones.addActionListener(e -> controlador.generarRegiones(leerK()));
 
 		panelConfig.add(btnGenerarRegiones);
 
@@ -130,8 +129,8 @@ public class VentanaConfigRegiones {
 
 		// ALERTA: esto cumple mvp? interfaz estaría decidiendo el flujo de la
 		// aplicacion => ventanaAnterior.mostrar(). Puede quedar asi o tiene que pasar
-		// por el presentador?
-		// o sea presentador.mostrarAnterior(), y adentro ejecutar un metodo de la
+		// por el controlador?
+		// o sea controlador.mostrarAnterior(), y adentro ejecutar un metodo de la
 		// ventana que sea mostrar la ventana anterior
 
 		// VOLVER
