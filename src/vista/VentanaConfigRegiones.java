@@ -131,6 +131,47 @@ public class VentanaConfigRegiones {
 		panelCantidadDeRegiones.add(btnGenerarRegiones);
 	}
 
+	private void generarRegiones() {
+		Integer k = leerK();
+		if (k == null) {
+			mostrarError("Ingresá una cantidad de regiones válida.");
+			return;
+		}
+
+		try {
+			controlador.separarEnRegionesConexas(k);
+
+			abrirResultado(controlador.obtenerRegiones(), controlador.obtenerProvincias(),
+					controlador.obtenerConexiones());
+
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			mostrarError(e.getMessage());
+		}
+	}
+
+	private Integer leerK() {
+		try {
+			spinnerK.commitEdit();
+			return ((Number) spinnerK.getValue()).intValue();
+
+		} catch (java.text.ParseException e) {
+			return null;
+		}
+	}
+
+	private void mostrarError(String mensaje) {
+		JOptionPane.showMessageDialog(frame, mensaje, "No se pudieron generar las regiones", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void abrirResultado(List<List<String>> regiones, List<Provincia> provincias,
+			List<Arista<String>> conexiones) {
+		VentanaResultado resultado = new VentanaResultado(this, regiones, ventanaAnterior.getImagen(), provincias,
+				conexiones);
+
+		resultado.mostrar();
+		frame.setVisible(false);
+	}
+
 	private JPanel crearPanelNavegacion() {
 		JPanel panelNavegacion = new JPanel();
 		panelNavegacion.setLayout(new BorderLayout());
@@ -157,31 +198,8 @@ public class VentanaConfigRegiones {
 		panelNavegacion.add(btnTema, BorderLayout.EAST);
 	}
 
-	private void generarRegiones() {
-		Integer k = leerK();
-		if (k == null) {
-			mostrarError("Ingresá una cantidad de regiones válida.");
-			return;
-		}
-
-		try {
-			controlador.separarEnRegionesConexas(k);
-
-			abrirResultado(controlador.obtenerRegiones(), controlador.obtenerProvincias(),
-					controlador.obtenerConexiones());
-
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			mostrarError(e.getMessage());
-		}
-	}
-
-	private void abrirResultado(List<List<String>> regiones, List<Provincia> provincias,
-			List<Arista<String>> conexiones) {
-		VentanaResultado resultado = new VentanaResultado(this, regiones, ventanaAnterior.getImagen(), provincias,
-				conexiones);
-
-		resultado.mostrar();
-		frame.setVisible(false);
+	private void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
+		panelGrafo.setDatos(provincias, conexiones);
 	}
 
 	public void mostrar() {
@@ -190,24 +208,6 @@ public class VentanaConfigRegiones {
 		// Centra la ventana en el monitor cada vez que se muestra.
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-	}
-
-	private void mostrarError(String mensaje) {
-		JOptionPane.showMessageDialog(frame, mensaje, "No se pudieron generar las regiones", JOptionPane.ERROR_MESSAGE);
-	}
-
-	private Integer leerK() {
-		try {
-			spinnerK.commitEdit();
-			return ((Number) spinnerK.getValue()).intValue();
-
-		} catch (java.text.ParseException e) {
-			return null;
-		}
-	}
-
-	private void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
-		panelGrafo.setDatos(provincias, conexiones);
 	}
 
 }

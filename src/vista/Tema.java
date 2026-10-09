@@ -20,54 +20,44 @@ import javax.swing.JViewport;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicToggleButtonUI;
 
+// Modo claro / oscuro compartido por todas las ventanas.
 public final class Tema {
 
-	private static boolean oscuro;
+	private static final String PROPIEDAD_BOTON_TEMA = "botonTema";
 
-	private static final Color FONDO_CLARO = new Color(245, 246, 248);
 	private static final Color TEXTO_CLARO = new Color(30, 35, 40);
 	private static final Color CONTROL_CLARO = Color.WHITE;
+	private static final Color BORDE_BOTON_CLARO = new Color(150, 160, 170);
 
-	private static final Color FONDO_OSCURO = new Color(38, 40, 44);
 	private static final Color TEXTO_OSCURO = new Color(235, 237, 240);
 	private static final Color CONTROL_OSCURO = new Color(55, 58, 64);
+	private static final Color BORDE_BOTON_OSCURO = new Color(115, 125, 135);
+
+	private static final Color FONDO_SELECCION_LISTA = new Color(75, 105, 145);
+
+	private static boolean oscuro;
 
 	private Tema() {
 	}
 
-	public static void setOscuro(boolean activar) {
-		oscuro = activar;
-	}
-
-	public static Color texto() {
-		return oscuro ? TEXTO_OSCURO : TEXTO_CLARO;
-	}
-
-	public static Color fondoControl() {
-		return oscuro ? CONTROL_OSCURO : CONTROL_CLARO;
-	}
-
 	public static JToggleButton crearBotonTema() {
 		JToggleButton boton = new JToggleButton();
+
+		configurarAspectoBoton(boton);
+		boton.putClientProperty(PROPIEDAD_BOTON_TEMA, Boolean.TRUE);
+		actualizarBoton(boton);
+
+		boton.addActionListener(e -> cambiarTema(boton.isSelected()));
+
+		return boton;
+	}
+
+	private static void configurarAspectoBoton(JToggleButton boton) {
 		boton.setUI(new BasicToggleButtonUI());
 		boton.setFocusPainted(false);
 		boton.setOpaque(true);
 		boton.setContentAreaFilled(true);
 		boton.setBorderPainted(true);
-		boton.putClientProperty("botonTema", Boolean.TRUE);
-		actualizarBoton(boton);
-
-		boton.addActionListener(e -> {
-			oscuro = boton.isSelected();
-
-			for (Window ventana : Window.getWindows()) {
-				if (ventana.isDisplayable()) {
-					aplicar(ventana);
-				}
-			}
-		});
-
-		return boton;
 	}
 
 	private static void actualizarBoton(JToggleButton boton) {
@@ -76,26 +66,61 @@ public final class Tema {
 		boton.setBackground(fondoControl());
 		boton.setForeground(texto());
 
-		Color colorBorde = oscuro ? new Color(115, 125, 135) : new Color(150, 160, 170);
+		Color colorBorde = oscuro ? BORDE_BOTON_OSCURO : BORDE_BOTON_CLARO;
 
 		boton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(colorBorde),
 				BorderFactory.createEmptyBorder(5, 10, 5, 10)));
 	}
 
+	private static Color fondoControl() {
+		return oscuro ? CONTROL_OSCURO : CONTROL_CLARO;
+	}
+
+	private static Color texto() {
+		return oscuro ? TEXTO_OSCURO : TEXTO_CLARO;
+	}
+
+	private static void cambiarTema(boolean activarOscuro) {
+		oscuro = activarOscuro;
+
+		for (Window ventana : Window.getWindows()) {
+			if (ventana.isDisplayable()) {
+				aplicar(ventana);
+			}
+		}
+	}
+
 	public static void aplicar(Component componente) {
+		aplicarColores(componente);
+		aplicarDetallesSegunTipo(componente);
+		aplicarAHijos(componente);
+
+		if (esBotonTema(componente)) {
+			actualizarBoton((JToggleButton) componente);
+		}
+
+		componente.repaint();
+	}
+
+	private static void aplicarColores(Component componente) {
 		if (componente instanceof JLabel) {
 			componente.setForeground(texto());
 		}
 
-		if (componente instanceof JPanel || componente instanceof JScrollPane || componente instanceof JViewport
-				|| componente instanceof JTextField || componente instanceof JComboBox<?>
-				|| componente instanceof JSpinner || componente instanceof JTable || componente instanceof JList<?>
-				|| componente instanceof AbstractButton) {
-
+		if (usaFondoDeControl(componente)) {
 			componente.setBackground(fondoControl());
 			componente.setForeground(texto());
 		}
+	}
 
+	private static boolean usaFondoDeControl(Component componente) {
+		return componente instanceof JPanel || componente instanceof JScrollPane || componente instanceof JViewport
+				|| componente instanceof JTextField || componente instanceof JComboBox<?>
+				|| componente instanceof JSpinner || componente instanceof JTable || componente instanceof JList<?>
+				|| componente instanceof AbstractButton;
+	}
+
+	private static void aplicarDetallesSegunTipo(Component componente) {
 		if (componente instanceof JPanel panel && panel.getBorder() instanceof TitledBorder borde) {
 			borde.setTitleColor(texto());
 		}
@@ -105,20 +130,21 @@ public final class Tema {
 		}
 
 		if (componente instanceof JList<?> lista) {
-			lista.setSelectionBackground(new Color(75, 105, 145));
+			lista.setSelectionBackground(FONDO_SELECCION_LISTA);
 			lista.setSelectionForeground(Color.WHITE);
 		}
+	}
 
+	private static void aplicarAHijos(Component componente) {
 		if (componente instanceof Container contenedor) {
 			for (Component hijo : contenedor.getComponents()) {
 				aplicar(hijo);
 			}
 		}
+	}
 
-		if (componente instanceof JToggleButton boton && Boolean.TRUE.equals(boton.getClientProperty("botonTema"))) {
-			actualizarBoton(boton);
-		}
-
-		componente.repaint();
+	private static boolean esBotonTema(Component componente) {
+		return componente instanceof JToggleButton boton
+				&& Boolean.TRUE.equals(boton.getClientProperty(PROPIEDAD_BOTON_TEMA));
 	}
 }
