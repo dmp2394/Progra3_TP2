@@ -36,8 +36,22 @@ public class ControladorVentanaConfigGrafo {
 	public void cargarProvinciasDesdeJSON(String ruta) {
 		ProvinciaJSON archivo = ProvinciaJSON.leerJSON(ruta);
 
+		if (archivo == null || archivo.obtenerProvincias() == null) {
+			throw new IllegalArgumentException("No se pudo leer el JSON de provincias.");
+		}
+
 		for (Provincia provincia : archivo.obtenerProvincias()) {
-			disenioRegiones.agregarProvincia(provincia.getNombre(), 0, 0);
+			disenioRegiones.agregarProvincia(
+					provincia.getNombre(),
+					provincia.getX(),
+					provincia.getY());
+		}
+
+		for (ProvinciaJSON.ConexionJSON conexion : archivo.obtenerConexiones()) {
+			disenioRegiones.agregarConexion(
+					conexion.getProvinciaOrigen(),
+					conexion.getProvinciaDestino(),
+					conexion.getSimilaridad());
 		}
 	}
 

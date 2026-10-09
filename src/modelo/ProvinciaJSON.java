@@ -34,4 +34,28 @@ public class ProvinciaJSON {
 		return provincias;
 	}
 
+	private ArrayList<ConexionJSON> conexiones;
+
+	public ArrayList<ConexionJSON> obtenerConexiones() {
+		return conexiones == null ? new ArrayList<>() : conexiones;
+	}
+
+	public static class ConexionJSON {
+		private String provinciaOrigen;
+		private String provinciaDestino;
+		private Integer similaridad;
+
+		public String getProvinciaOrigen() {
+			return provinciaOrigen;
+		}
+
+		public String getProvinciaDestino() {
+			return provinciaDestino;
+		}
+
+		public Integer getSimilaridad() {
+			return similaridad;
+		}
+	}
+
 }
