@@ -26,16 +26,23 @@ public class VentanaConfigRegiones {
 	private VentanaConfigGrafo ventanaAnterior;
 	private PanelGrafo panelGrafo;
 	private JSpinner spinnerK;
+	private Integer cantidadRegionesInicial;
 	private final ControladorVentanaConfigRegiones controlador;
 
-	public VentanaConfigRegiones(VentanaConfigGrafo ventanaAnterior, DisenioRegiones disenioRegiones) {
+	public VentanaConfigRegiones(
+			VentanaConfigGrafo ventanaAnterior,
+			DisenioRegiones disenioRegiones,
+			Integer cantidadRegionesInicial) {
 
 		this.ventanaAnterior = ventanaAnterior;
 		this.controlador = new ControladorVentanaConfigRegiones(disenioRegiones);
+		this.cantidadRegionesInicial = cantidadRegionesInicial;
 
 		initialize();
 
-		mostrarProvinciasYConexiones(controlador.obtenerProvincias(), controlador.obtenerConexiones());
+		mostrarProvinciasYConexiones(
+				controlador.obtenerProvincias(),
+				controlador.obtenerConexiones());
 	}
 
 	// Estructura de la ventana:
@@ -109,25 +116,33 @@ public class VentanaConfigRegiones {
 		return panelConfiguracionRegiones;
 	}
 
-	private void crearControlesCantidadDeRegiones(JPanel panelConfiguracionRegiones) {
+	private void crearControlesCantidadDeRegiones(
+			JPanel panelConfiguracionRegiones) {
+
 		JPanel panelCantidadDeRegiones = new JPanel();
-
 		panelCantidadDeRegiones.setLayout(new GridLayout(3, 1, 0, 8));
-
-		panelConfiguracionRegiones.add(panelCantidadDeRegiones, BorderLayout.NORTH);
+		panelConfiguracionRegiones.add(
+				panelCantidadDeRegiones,
+				BorderLayout.NORTH);
 
 		JLabel lblK = new JLabel("Cantidad de regiones K:");
-
 		panelCantidadDeRegiones.add(lblK);
 
-		spinnerK = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+		int cantidadProvincias = controlador.obtenerProvincias().size();
+		int maxK = Math.max(1, cantidadProvincias);
 
+		int kInicial = cantidadRegionesInicial == null
+				? 1
+				: cantidadRegionesInicial;
+
+		kInicial = Math.max(1, Math.min(kInicial, maxK));
+
+		spinnerK = new JSpinner(
+				new SpinnerNumberModel(kInicial, 1, maxK, 1));
 		panelCantidadDeRegiones.add(spinnerK);
 
 		JButton btnGenerarRegiones = new JButton("Generar regiones");
-
 		btnGenerarRegiones.addActionListener(e -> generarRegiones());
-
 		panelCantidadDeRegiones.add(btnGenerarRegiones);
 	}
 

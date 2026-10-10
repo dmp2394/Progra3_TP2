@@ -37,11 +37,20 @@ public class ControladorVentanaConfigGrafo {
 		disenioRegiones.eliminarConexion(origen, destino);
 	}
 
-	public void cargarProvinciasDesdeJSON(String ruta) {
+	public Integer cargarProvinciasDesdeJSON(String ruta) {
 		ProvinciaJSON archivo = ProvinciaJSON.leerJSON(ruta);
 
 		if (archivo == null || archivo.obtenerProvincias() == null) {
-			throw new IllegalArgumentException("No se pudo leer el JSON de provincias.");
+			throw new IllegalArgumentException(
+					"No se pudo leer el JSON de provincias.");
+		}
+
+		Integer k = archivo.obtenerCantidadRegiones();
+		int cantidadProvincias = archivo.obtenerProvincias().size();
+
+		if (k != null && (k < 1 || k > cantidadProvincias)) {
+			throw new IllegalArgumentException(
+					"La cantidad de regiones debe estar entre 1 y la cantidad de provincias.");
 		}
 
 		for (Provincia provincia : archivo.obtenerProvincias()) {
@@ -57,6 +66,8 @@ public class ControladorVentanaConfigGrafo {
 					conexion.getProvinciaDestino(),
 					conexion.getSimilaridad());
 		}
+
+		return k;
 	}
 
 	public void agregarProvincia(String provincia) {

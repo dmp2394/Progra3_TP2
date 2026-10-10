@@ -59,6 +59,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	private JTable tablaConexiones;
 	private boolean reubicandoProvincia;
 	private boolean jsonCargado;
+	private Integer cantidadRegionesImportada;
 
 	public VentanaConfigGrafo() {
 		this.disenioRegiones = new DisenioRegiones();
@@ -251,8 +252,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		}
 
 		try {
-			controlador.cargarProvinciasDesdeJSON(ruta);
-
+			cantidadRegionesImportada = controlador.cargarProvinciasDesdeJSON(ruta);
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
 		}
@@ -524,7 +524,10 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void abrirConfigRegiones(DisenioRegiones disenioRegiones) {
-		VentanaConfigRegiones ventanaRegiones = new VentanaConfigRegiones(this, disenioRegiones);
+		VentanaConfigRegiones ventanaRegiones = new VentanaConfigRegiones(
+				this,
+				disenioRegiones,
+				cantidadRegionesImportada);
 
 		ventanaRegiones.mostrar();
 		frame.setVisible(false);

@@ -85,5 +85,6 @@
 
     { "provinciaOrigen": "Buenos Aires", "provinciaDestino": "La Pampa", "similaridad": 9 },
     { "provinciaOrigen": "Buenos Aires", "provinciaDestino": "Río Negro", "similaridad": 10 }
-  ]
+  ],
+  "cantidadRegiones": 6
 }

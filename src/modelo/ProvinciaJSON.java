@@ -10,34 +10,29 @@ import com.google.gson.Gson;
 public class ProvinciaJSON {
 
 	private ArrayList<Provincia> provincias;
+	private ArrayList<ConexionJSON> conexiones;
+	private Integer cantidadRegiones;
 
-	public ProvinciaJSON() {
-		new ArrayList<Provincia>();
-	}
-
-	public static ProvinciaJSON leerJSON(String archivo) {
-		Gson gson = new Gson();
-		ProvinciaJSON ret = null;
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(archivo));
-			ret = gson.fromJson(br, ProvinciaJSON.class);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return ret;
+	public Integer obtenerCantidadRegiones() {
+		return cantidadRegiones;
 	}
 
 	public ArrayList<Provincia> obtenerProvincias() {
 		return provincias;
 	}
 
-	private ArrayList<ConexionJSON> conexiones;
-
 	public ArrayList<ConexionJSON> obtenerConexiones() {
 		return conexiones == null ? new ArrayList<>() : conexiones;
+	}
+
+	public static ProvinciaJSON leerJSON(String archivo) {
+		try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+			return new Gson().fromJson(lector, ProvinciaJSON.class);
+		} catch (IOException e) {
+			throw new IllegalArgumentException(
+					"No se pudo leer el archivo JSON: " + archivo,
+					e);
+		}
 	}
 
 	public static class ConexionJSON {
@@ -57,5 +52,4 @@ public class ProvinciaJSON {
 			return similaridad;
 		}
 	}
-
 }
