@@ -132,38 +132,41 @@ public class DisenioRegiones {
 	}
 
 	private List<List<String>> buscarComponentes(Grafo<String> grafo) {
-		var listaDeVecinos = grafo.obtenerlistaDeVecinos();
-		Set<String> visitadas = new HashSet<>();
-		List<List<String>> resultado = new ArrayList<>();
 
-		for (String inicio : listaDeVecinos.keySet()) {
-			if (!visitadas.add(inicio)) {
-				continue;
-			}
+	    Set<String> visitadas = new HashSet<>();
+	    List<List<String>> resultado = new ArrayList<>();
 
-			List<String> region = new ArrayList<>();
-			ArrayDeque<String> pendientes = new ArrayDeque<>();
-			pendientes.add(inicio);
+	    for (String inicio : grafo.obtenerVertices()) {
 
-			while (!pendientes.isEmpty()) {
-				String actual = pendientes.remove();
-				region.add(actual);
+	        if (!visitadas.add(inicio)) {
+	            continue;
+	        }
 
-				for (Arista<String> arista : listaDeVecinos.get(actual)) {
-					String vecino = arista.obtenerExtremo1().equals(actual) ? arista.obtenerExtremo2()
-							: arista.obtenerExtremo1();
+	        List<String> region = new ArrayList<>();
+	        ArrayDeque<String> pendientes = new ArrayDeque<>();
 
-					if (visitadas.add(vecino)) {
-						pendientes.add(vecino);
-					}
-				}
-			}
+	        pendientes.add(inicio);
 
-			resultado.add(region);
-		}
+	        while (!pendientes.isEmpty()) {
 
-		return resultado;
+	            String actual = pendientes.remove();
+
+	            region.add(actual);
+
+	            for (String vecino : grafo.obtenerVecinos(actual)) {
+
+	                if (visitadas.add(vecino)) {
+	                    pendientes.add(vecino);
+	                }
+	            }
+	        }
+
+	        resultado.add(region);
+	    }
+
+	    return resultado;
 	}
+	
 
 	public List<List<String>> obtenerRegiones() {
 		List<List<String>> copia = new ArrayList<>();

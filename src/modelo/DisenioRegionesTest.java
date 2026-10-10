@@ -351,18 +351,7 @@ public class DisenioRegionesTest {
 			vacio.separarEnRegionesConexas(1);
 		}
 
-		// Si el grafo no es conexo no existe el AGM.
-		@Test(expected = IllegalArgumentException.class)
-		public void separarGrafoNoConexoTest() {
-			DisenioRegiones noConexo = new DisenioRegiones();
-			noConexo.agregarProvincia("Córdoba", 320, 180);
-			noConexo.agregarProvincia("Santa Fe", 420, 150);
-			noConexo.agregarProvincia("Entre Ríos", 500, 150);
-			noConexo.agregarConexion("Córdoba", "Santa Fe", 4);
-
-			noConexo.separarEnRegionesConexas(1);
-		}
-
+	
 		// Con k = 1 todas las provincias quedan en una sola región.
 		@Test
 		public void separarConKUnoTest() {

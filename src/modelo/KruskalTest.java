@@ -69,7 +69,7 @@ public class KruskalTest {
 			grafo.agregarArista("B", "C", 7);
 
 			Grafo<String> agm = Kruskal.crearArbolGeneradorMinimo(grafo);
-			boolean esConexo = agm.esConexo();
+			boolean esConexo = DFS.esConexo(agm);
 			boolean aristaIgualVmenos1 = agm.obtenerAristas().size() == agm.obtenerVertices().size() - 1;
 			boolean esArbol = esConexo && aristaIgualVmenos1;
 			assertTrue(esArbol);
