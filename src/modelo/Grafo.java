@@ -94,6 +94,16 @@ public class Grafo<V> {
 	}
 	
 	public void dfs(V vertice, Set<V> visitados) {
+		 if (vertice == null) {
+		        throw new IllegalArgumentException("El vértice no puede ser null");
+		    }
+		 if (!listaDeVecinos.containsKey(vertice)) {
+		        throw new IllegalArgumentException("El vértice no existe en el grafo");
+		    }
+		 if (visitados==null) {
+			 throw new IllegalArgumentException("El conjunto de visitados no puede ser null");
+		 }
+		       
 		visitados.add(vertice);
 		for (Arista<V> arista : listaDeVecinos.get(vertice)) {
 			V vecino = arista.obtenerExtremo1().equals(vertice) ? arista.obtenerExtremo2() : arista.obtenerExtremo1();
