@@ -232,9 +232,9 @@ public class PanelGrafo extends JPanel {
 			Provincia destino) {
 
 		int x1 = convertirX(origen.getX(), area);
-		int y1 = convertirY(origen.getY(), area);
+		int y1 = convertirY(origen.obtenerY(), area);
 		int x2 = convertirX(destino.getX(), area);
-		int y2 = convertirY(destino.getY(), area);
+		int y2 = convertirY(destino.obtenerY(), area);
 
 		dibujo.setColor(colorDeConexion(conexion));
 		dibujo.drawLine(x1, y1, x2, y2);
@@ -285,7 +285,7 @@ public class PanelGrafo extends JPanel {
 
 	private void dibujarProvincia(Graphics2D dibujo, Rectangle area, Provincia provincia) {
 		int x = convertirX(provincia.getX(), area);
-		int y = convertirY(provincia.getY(), area);
+		int y = convertirY(provincia.obtenerY(), area);
 
 		Color colorRegion = colorDeProvincia(provincia.getNombre());
 
@@ -353,7 +353,7 @@ public class PanelGrafo extends JPanel {
 
 			if (provincia != null) {
 				sumaX += provincia.getX();
-				sumaY += provincia.getY();
+				sumaY += provincia.obtenerY();
 				cantidad++;
 			}
 		}

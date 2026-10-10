@@ -41,7 +41,7 @@ public class ProvinciaTest {
 			Provincia provincia = new Provincia("Córdoba", 0, 0);
 
 			assertEquals(0, provincia.getX());
-			assertEquals(0, provincia.getY());
+			assertEquals(0, provincia.obtenerY());
 		}
 	}
 
@@ -53,7 +53,7 @@ public class ProvinciaTest {
 
 			assertEquals("Córdoba", provincia.getNombre());
 			assertEquals(320, provincia.getX());
-			assertEquals(180, provincia.getY());
+			assertEquals(180, provincia.obtenerY());
 		}
 	}
 }

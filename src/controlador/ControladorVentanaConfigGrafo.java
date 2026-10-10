@@ -57,7 +57,7 @@ public class ControladorVentanaConfigGrafo {
 			disenioRegiones.agregarProvincia(
 					provincia.getNombre(),
 					provincia.getX(),
-					provincia.getY());
+					provincia.obtenerY());
 		}
 
 		for (ProvinciaJSON.ConexionJSON conexion : archivo.obtenerConexiones()) {

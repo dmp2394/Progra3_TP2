@@ -57,7 +57,7 @@ public class DisenioRegionesTest {
 
 			assertEquals("Córdoba", provincia.getNombre());
 			assertEquals(320, provincia.getX());
-			assertEquals(180, provincia.getY());
+			assertEquals(180, provincia.obtenerY());
 			assertEquals(1, disenio.obtenerProvincias().size());
 		}
 	}
@@ -86,7 +86,7 @@ public class DisenioRegionesTest {
 			Provincia provincia = disenio.obtenerProvincia("Córdoba");
 
 			assertEquals(320, provincia.getX());
-			assertEquals(180, provincia.getY());
+			assertEquals(180, provincia.obtenerY());
 		}
 
 		// Comprueba que no se pueda mover una provincia que no existe.
@@ -122,7 +122,7 @@ public class DisenioRegionesTest {
 			Arista<String> conexion = disenio.obtenerConexiones().get(0);
 
 			assertEquals(350, provincia.getX());
-			assertEquals(200, provincia.getY());
+			assertEquals(200, provincia.obtenerY());
 			assertEquals(2, disenio.obtenerProvincias().size());
 			assertEquals(1, disenio.obtenerConexiones().size());
 			assertEquals("Córdoba", conexion.obtenerExtremo1());
