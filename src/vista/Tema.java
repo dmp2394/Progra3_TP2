@@ -62,7 +62,7 @@ public final class Tema {
 
 	private static void actualizarBoton(JToggleButton boton) {
 		boton.setSelected(oscuro);
-		boton.setText(oscuro ? "Modo claro" : "Modo oscuro");
+		boton.setText(oscuro ? "☀️" : "🌙");
 		boton.setBackground(fondoControl());
 		boton.setForeground(texto());
 
