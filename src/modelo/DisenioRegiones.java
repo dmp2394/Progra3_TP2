@@ -27,7 +27,7 @@ public class DisenioRegiones {
 
 	public void agregarProvincia(String nombre, int x, int y) {
 		Provincia provincia = new Provincia(nombre, x, y);
-		String nombreProvincia = provincia.getNombre();
+		String nombreProvincia = provincia.obtenerNombre();
 
 		if (provincias.containsKey(nombreProvincia)) {
 			throw new IllegalArgumentException("La provincia ya existe.");
@@ -47,7 +47,7 @@ public class DisenioRegiones {
 
 	public void eliminarProvincia(String nombre) {
 		Provincia provincia = obtenerProvincia(nombre);
-		String nombreProvincia = provincia.getNombre();
+		String nombreProvincia = provincia.obtenerNombre();
 
 		provinciasYSimilaridades.eliminarVertice(nombreProvincia);
 		provincias.remove(nombreProvincia);
@@ -58,9 +58,9 @@ public class DisenioRegiones {
 	public void setPosicionProvincia(String nombre, int x, int y) {
 		Provincia provinciaActual = obtenerProvincia(nombre);
 
-		Provincia provinciaActualizada = new Provincia(provinciaActual.getNombre(), x, y);
+		Provincia provinciaActualizada = new Provincia(provinciaActual.obtenerNombre(), x, y);
 
-		provincias.put(provinciaActualizada.getNombre(), provinciaActualizada);
+		provincias.put(provinciaActualizada.obtenerNombre(), provinciaActualizada);
 		notificarObservadores();
 	}
 
@@ -92,7 +92,7 @@ public class DisenioRegiones {
 		Provincia origen = obtenerProvincia(provinciaOrigen);
 		Provincia destino = obtenerProvincia(provinciaDestino);
 
-		provinciasYSimilaridades.agregarArista(origen.getNombre(), destino.getNombre(), similaridad);
+		provinciasYSimilaridades.agregarArista(origen.obtenerNombre(), destino.obtenerNombre(), similaridad);
 
 		notificarObservadores();
 	}
@@ -102,7 +102,7 @@ public class DisenioRegiones {
 		Provincia origen = obtenerProvincia(provinciaOrigen);
 		Provincia destino = obtenerProvincia(provinciaDestino);
 
-		provinciasYSimilaridades.eliminarArista(origen.getNombre(), destino.getNombre());
+		provinciasYSimilaridades.eliminarArista(origen.obtenerNombre(), destino.obtenerNombre());
 
 		notificarObservadores();
 	}
