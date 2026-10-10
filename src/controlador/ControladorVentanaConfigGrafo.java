@@ -21,6 +21,10 @@ public class ControladorVentanaConfigGrafo {
 		disenioRegiones.agregarProvincia(provincia, x, y);
 	}
 
+	public void reubicarProvincia(String nombre, int x, int y) {
+		disenioRegiones.setPosicionProvincia(nombre, x, y);
+	}
+
 	public void eliminarProvincia(String nombre) {
 		disenioRegiones.eliminarProvincia(nombre);
 	}

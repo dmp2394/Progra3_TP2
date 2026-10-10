@@ -61,6 +61,7 @@ public class DisenioRegiones {
 		Provincia provinciaActualizada = new Provincia(provinciaActual.getNombre(), x, y);
 
 		provincias.put(provinciaActualizada.getNombre(), provinciaActualizada);
+		notificarObservadores();
 	}
 
 	public Provincia obtenerProvincia(String nombre) {

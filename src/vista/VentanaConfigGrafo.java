@@ -57,6 +57,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	private DefaultTableModel modeloConexiones;
 	private JTable tablaConexiones;
+	private boolean reubicandoProvincia;
 	private boolean jsonCargado;
 
 	public VentanaConfigGrafo() {
@@ -271,26 +272,35 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void prepararUbicacion() {
-
-		String nombre = txtProvincia.getText();
-
 		if (!tieneImagen()) {
 			mostrarMensaje("Primero cargá una imagen del mapa.");
 			return;
 		}
 
-		if (nombre == null || nombre.trim().isEmpty()) {
+		String seleccionada = listaProvincias.getSelectedValue();
+
+		if (seleccionada != null) {
+			provinciaPendiente = seleccionada;
+			reubicandoProvincia = true;
+			mostrarEstado("Hacé click en el mapa para reubicar: " + seleccionada);
+			return;
+		}
+
+		String nombre = txtProvincia.getText().trim();
+
+		if (nombre.isEmpty()) {
 			mostrarMensaje("Escribí el nombre de la provincia.");
 			return;
 		}
 
 		if (controlador.existeProvincia(nombre)) {
-			mostrarMensaje("La provincia ya existe.");
+			mostrarMensaje("La provincia ya existe. Seleccionala en la lista para reubicarla.");
 			return;
 		}
 
-		provinciaPendiente = nombre.trim();
-		mostrarEstado("Hacé click sobre el mapa para ubicar: " + provinciaPendiente);
+		provinciaPendiente = nombre;
+		reubicandoProvincia = false;
+		mostrarEstado("Hacé click sobre el mapa para ubicar: " + nombre);
 	}
 
 	private boolean tieneImagen() {
@@ -465,20 +475,26 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 			return;
 		}
 
+		boolean eraReubicacion = reubicandoProvincia;
+
 		try {
-			controlador.ubicarProvincia(provinciaPendiente, x, y);
+			if (eraReubicacion) {
+				controlador.reubicarProvincia(provinciaPendiente, x, y);
+				listaProvincias.clearSelection();
+			} else {
+				controlador.ubicarProvincia(provinciaPendiente, x, y);
+				txtProvincia.setText("");
+			}
 
 			provinciaPendiente = null;
-			limpiarNombre();
-			mostrarEstado("Provincia agregada. Podés ubicar otra o crear conexiones.");
+			reubicandoProvincia = false;
+			mostrarEstado(eraReubicacion
+					? "Provincia reubicada."
+					: "Provincia agregada. Podés ubicar otra o crear conexiones.");
 
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
 		}
-	}
-
-	private void limpiarNombre() {
-		txtProvincia.setText("");
 	}
 
 	private JPanel crearPanelNavegacion(JPanel panelContenido) {
