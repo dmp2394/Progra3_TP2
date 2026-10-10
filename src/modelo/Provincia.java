@@ -21,15 +21,15 @@ public class Provincia {
 		this.y = y;
 	}
 
-	public String getNombre() {
+	public String obtenerNombre() {
 		return nombre;
 	}
 
-	public int getX() {
+	public int obtenerX() {
 		return x;
 	}
 
-	public int getY() {
+	public int obtenerY() {
 		return y;
 	}
 }
