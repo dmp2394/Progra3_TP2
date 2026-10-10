@@ -40,20 +40,25 @@ public class ProvinciaTest {
 		public void coordenadasCeroTest() {
 			Provincia provincia = new Provincia("Córdoba", 0, 0);
 
-			assertEquals(0, provincia.getX());
+			assertEquals(0, provincia.obtenerX());
 			assertEquals(0, provincia.obtenerY());
 		}
 	}
 
-	public static class ConstructorHappyPath {
+	public static class Constructor {
 
 		@Test
-		public void constructorGuardaDatosTest() {
+		public void constructorGuardaNombreTest() {
 			Provincia provincia = new Provincia("Córdoba", 320, 180);
 
-			assertEquals("Córdoba", provincia.getNombre());
-			assertEquals(320, provincia.getX());
-			assertEquals(180, provincia.obtenerY());
+			assertEquals("Córdoba", provincia.obtenerNombre());
+		}
+		@Test
+		public void constructorGuardaCoordenadasTest() {
+			Provincia provincia = new Provincia("Córdoba", 320, 180);
+			boolean coordenadasCorrectas = provincia.obtenerX() == 320 && provincia.obtenerY() == 180;
+			
+			assertEquals(true, coordenadasCorrectas);
 		}
 	}
 }
