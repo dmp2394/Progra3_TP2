@@ -198,7 +198,7 @@ public class PanelGrafo extends JPanel {
 		Map<String, Provincia> provinciasPorNombre = new HashMap<>();
 
 		for (Provincia provincia : provincias) {
-			provinciasPorNombre.put(provincia.getNombre(), provincia);
+			provinciasPorNombre.put(provincia.obtenerNombre(), provincia);
 		}
 
 		return provinciasPorNombre;
@@ -231,9 +231,9 @@ public class PanelGrafo extends JPanel {
 	private void dibujarConexion(Graphics2D dibujo, Rectangle area, Arista<String> conexion, Provincia origen,
 			Provincia destino) {
 
-		int x1 = convertirX(origen.getX(), area);
+		int x1 = convertirX(origen.obtenerX(), area);
 		int y1 = convertirY(origen.obtenerY(), area);
-		int x2 = convertirX(destino.getX(), area);
+		int x2 = convertirX(destino.obtenerX(), area);
 		int y2 = convertirY(destino.obtenerY(), area);
 
 		dibujo.setColor(colorDeConexion(conexion));
@@ -284,13 +284,13 @@ public class PanelGrafo extends JPanel {
 	}
 
 	private void dibujarProvincia(Graphics2D dibujo, Rectangle area, Provincia provincia) {
-		int x = convertirX(provincia.getX(), area);
+		int x = convertirX(provincia.obtenerX(), area);
 		int y = convertirY(provincia.obtenerY(), area);
 
-		Color colorRegion = colorDeProvincia(provincia.getNombre());
+		Color colorRegion = colorDeProvincia(provincia.obtenerNombre());
 
 		dibujarNodo(dibujo, x, y, colorRegion);
-		dibujarNombreProvincia(dibujo, area, provincia.getNombre(), x, y, colorRegion);
+		dibujarNombreProvincia(dibujo, area, provincia.obtenerNombre(), x, y, colorRegion);
 	}
 
 	private Color colorDeProvincia(String nombre) {
@@ -352,7 +352,7 @@ public class PanelGrafo extends JPanel {
 			Provincia provincia = provinciasPorNombre.get(nombre);
 
 			if (provincia != null) {
-				sumaX += provincia.getX();
+				sumaX += provincia.obtenerX();
 				sumaY += provincia.obtenerY();
 				cantidad++;
 			}

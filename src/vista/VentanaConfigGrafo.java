@@ -548,7 +548,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		comboProvincia2.removeAllItems();
 
 		for (Provincia provincia : provincias) {
-			String nombre = provincia.getNombre();
+			String nombre = provincia.obtenerNombre();
 
 			modeloProvincias.addElement(nombre);
 			comboProvincia1.addItem(nombre);
