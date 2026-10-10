@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.awt.FlowLayout;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -111,7 +112,19 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		JPanel panelSuperior = new JPanel(new BorderLayout(10, 0));
 		panelContenido.add(panelSuperior, BorderLayout.NORTH);
 
-		JButton btnCargarMapa = crearBotonCargarMapa(panelSuperior);
+		JPanel botonesCarga = new JPanel(new GridLayout(2, 1, 0, 5));
+		panelSuperior.add(botonesCarga, BorderLayout.WEST);
+
+		JButton btnCargarMapa = new JButton("Cargar mapa PNG/JPG");
+		btnCargarMapa.setFocusPainted(false);
+		botonesCarga.add(btnCargarMapa);
+		btnCargarMapa.addActionListener(e -> cargarMapa());
+
+		JButton btnCargarJson = new JButton("Cargar desde JSON");
+		btnCargarJson.setFocusPainted(false);
+		botonesCarga.add(btnCargarJson);
+		btnCargarJson.addActionListener(e -> cargarProvinciasDesdeJSON());
+
 		crearEtiquetaEstado(panelSuperior);
 		crearBotonModoOscuro(panelSuperior, btnCargarMapa.getPreferredSize());
 	}
@@ -181,9 +194,14 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearBotonModoOscuro(JPanel panelSuperior, Dimension tamanio) {
+		JPanel contenedorTema = new JPanel(
+				new FlowLayout(FlowLayout.RIGHT, 0, 0));
+
 		JToggleButton btnTema = Tema.crearBotonTema();
 		btnTema.setPreferredSize(tamanio);
-		panelSuperior.add(btnTema, BorderLayout.EAST);
+		contenedorTema.add(btnTema);
+
+		panelSuperior.add(contenedorTema, BorderLayout.EAST);
 	}
 
 	private JPanel crearPanelProvinciasYConexiones(JPanel panelContenido) {
@@ -232,15 +250,8 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearBotonesJsonYUbicar(JPanel panelCargaProvincia) {
-		JPanel panelBotonesProvincia = new JPanel(new GridLayout(1, 2, 5, 0));
-		panelCargaProvincia.add(panelBotonesProvincia);
-
-		JButton btnCargarJson = new JButton("Cargar desde JSON");
-		panelBotonesProvincia.add(btnCargarJson);
-		btnCargarJson.addActionListener(e -> cargarProvinciasDesdeJSON());
-
 		JButton btnUbicar = new JButton("Ubicar en mapa");
-		panelBotonesProvincia.add(btnUbicar);
+		panelCargaProvincia.add(btnUbicar);
 		btnUbicar.addActionListener(e -> prepararUbicacion());
 	}
 
