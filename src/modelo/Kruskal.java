@@ -11,7 +11,7 @@ public class Kruskal<V> {
 		if (grafo.esVacio())
 			throw new IllegalStateException("El grafo no debe estar vacío para crear su AGM.");
 		
-		if (!grafo.esConexo())
+		if (!DFS.esConexo(grafo))
 			throw new IllegalStateException("El grafo debe ser conexo para crear su AGM.");
 		
 		ArrayList<Arista<V>> aristasOriginales = grafo.obtenerAristas();

@@ -9,11 +9,11 @@ import java.util.Set;
 
 public class Grafo<V> {
 
-	private Map<V, Set<Arista<V>>> listaDeVecinos;
+	private Map<V, Set<Arista<V>>> listaDeAristasIncidentes;
 	private ArrayList<Arista<V>> aristas;
 
 	public Grafo() {
-		listaDeVecinos = new HashMap<>();
+		listaDeAristasIncidentes = new HashMap<>();
 		aristas = new ArrayList<>();
 
 	}
@@ -22,15 +22,15 @@ public class Grafo<V> {
 		if (vertice == null)
 			throw new IllegalArgumentException("Error: El vértice no puede ser nulo.");
 
-		if (listaDeVecinos.containsKey(vertice))
+		if (listaDeAristasIncidentes.containsKey(vertice))
 			throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
 
 		// Crear la lista de listaDeVecinos vacía para ese vértice
-		listaDeVecinos.put(vertice, new HashSet<>());
+		listaDeAristasIncidentes.put(vertice, new HashSet<>());
 	}
 
 	public void agregarArista(V vertice1, V vertice2, int peso) {
-		if (!listaDeVecinos.containsKey(vertice1) || !listaDeVecinos.containsKey(vertice2))
+		if (!listaDeAristasIncidentes.containsKey(vertice1) || !listaDeAristasIncidentes.containsKey(vertice2))
 			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
 
 		if (vertice1.equals(vertice2))
@@ -41,12 +41,12 @@ public class Grafo<V> {
 
 		Arista<V> arista = new Arista<V>(vertice1, vertice2, peso);
 
-		for (Arista<V> aristaExistente : listaDeVecinos.get(vertice1))
+		for (Arista<V> aristaExistente : listaDeAristasIncidentes.get(vertice1))
 			if (aristaExistente.equals(arista))
 				throw new IllegalArgumentException("Error: La arista ya existe entre estos vértices.");
 
-		listaDeVecinos.get(vertice1).add(arista);
-		listaDeVecinos.get(vertice2).add(arista);
+		listaDeAristasIncidentes.get(vertice1).add(arista);
+		listaDeAristasIncidentes.get(vertice2).add(arista);
 		aristas.add(arista);
 
 		Collections.sort(aristas);
@@ -54,7 +54,7 @@ public class Grafo<V> {
 	}
 
 	public void eliminarArista(V vertice1, V vertice2) {
-		if (!listaDeVecinos.containsKey(vertice1) || !listaDeVecinos.containsKey(vertice2))
+		if (!listaDeAristasIncidentes.containsKey(vertice1) || !listaDeAristasIncidentes.containsKey(vertice2))
 			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
 
 		// los vertices se colocan en el objeto Arista en variable "buscada" para
@@ -62,56 +62,35 @@ public class Grafo<V> {
 		int pesoFicticio = 100;
 		Arista<V> buscada = new Arista<V>(vertice1, vertice2, pesoFicticio);
 		Arista<V> arista = null;
-		for (Arista<V> aristaExistente : listaDeVecinos.get(vertice1))
+		for (Arista<V> aristaExistente : listaDeAristasIncidentes.get(vertice1))
 			if (aristaExistente.equals(buscada))
 				arista = aristaExistente;
 
 		if (arista == null)
 			throw new IllegalArgumentException("Error: La arista no existe entre estos vértices.");
 
-		listaDeVecinos.get(vertice1).remove(arista);
-		listaDeVecinos.get(vertice2).remove(arista);
+		listaDeAristasIncidentes.get(vertice1).remove(arista);
+		listaDeAristasIncidentes.get(vertice2).remove(arista);
 		aristas.remove(arista);
 	}
 
-	public Map<V, Set<Arista<V>>> obtenerlistaDeVecinos() {
-		Map<V, Set<Arista<V>>> copia = new HashMap<>();
-		for (Map.Entry<V, Set<Arista<V>>> entrada : listaDeVecinos.entrySet())
-			copia.put(entrada.getKey(), new HashSet<>(entrada.getValue()));
+	public Set<V> obtenerVecinos(V vertice) {
+	    Set<V> vecinos = new HashSet<>();
 
-		return copia;
-	}
+	    for (Arista<V> arista : listaDeAristasIncidentes.get(vertice)) {
 
-	public boolean esConexo() {
-		if (esVacio())
-			return true;
+	        V vecino = arista.obtenerExtremo1().equals(vertice)
+	                ? arista.obtenerExtremo2()
+	                : arista.obtenerExtremo1();
 
-		Set<V> visitados = new HashSet<>();
-		V verticeInicial = listaDeVecinos.keySet().iterator().next();
-		dfs(verticeInicial, visitados);
+	        vecinos.add(vecino);
+	    }
 
-		return visitados.size() == listaDeVecinos.size();
+	    return vecinos;
 	}
 	
-	public void dfs(V vertice, Set<V> visitados) {
-		 if (vertice == null) {
-		        throw new IllegalArgumentException("El vértice no puede ser null");
-		    }
-		 if (!listaDeVecinos.containsKey(vertice)) {
-		        throw new IllegalArgumentException("El vértice no existe en el grafo");
-		    }
-		 if (visitados==null) {
-			 throw new IllegalArgumentException("El conjunto de visitados no puede ser null");
-		 }
-		       
-		visitados.add(vertice);
-		for (Arista<V> arista : listaDeVecinos.get(vertice)) {
-			V vecino = arista.obtenerExtremo1().equals(vertice) ? arista.obtenerExtremo2() : arista.obtenerExtremo1();
-			if (!visitados.contains(vecino)) {
-				dfs(vecino, visitados);
-			}
-		}
-	}
+	
+
 	
 	public ArrayList<Arista<V>> obtenerAristas() {
 		return new ArrayList<Arista<V>>(aristas);
@@ -120,14 +99,14 @@ public class Grafo<V> {
 	public ArrayList<V> obtenerVertices() {
 
 		ArrayList<V> vertices = new ArrayList<>();
-		for (V vertice : listaDeVecinos.keySet())
+		for (V vertice : listaDeAristasIncidentes.keySet())
 			vertices.add(vertice);
 
 		return vertices;
 	}
 
 	public boolean esVacio() {
-		return listaDeVecinos.isEmpty();
+		return listaDeAristasIncidentes.isEmpty();
 	}
 
 	public int pesoTotal() {
@@ -139,7 +118,7 @@ public class Grafo<V> {
 	}
 
 	public boolean existeVertice(V vertice) {
-		return listaDeVecinos.containsKey(vertice);
+		return listaDeAristasIncidentes.containsKey(vertice);
 	}
 
 	public boolean existeArista(V vertice1, V vertice2) {
@@ -147,7 +126,7 @@ public class Grafo<V> {
 		if (!existeVertice(vertice1) || !existeVertice(vertice2))
 			throw new IllegalArgumentException("Error: Uno o ambos vertices no existen.");
 
-		Set<Arista<V>> aristasDeVertice1 = listaDeVecinos.get(vertice1);
+		Set<Arista<V>> aristasDeVertice1 = listaDeAristasIncidentes.get(vertice1);
 
 		int pesoFicticio = 100;
 		Arista<V> buscada = new Arista<V>(vertice1, vertice2, pesoFicticio);
@@ -163,17 +142,17 @@ public class Grafo<V> {
 			throw new IllegalArgumentException("Error: No se puede borrar el vertice null");
 		}
 
-		if (!listaDeVecinos.containsKey(vertice)) {
+		if (!listaDeAristasIncidentes.containsKey(vertice)) {
 			throw new IllegalArgumentException("Error: El vértice no existe en el grafo.");
 		}
 
-		ArrayList<Arista<V>> aristasDelVertice = new ArrayList<>(listaDeVecinos.get(vertice));
+		ArrayList<Arista<V>> aristasDelVertice = new ArrayList<>(listaDeAristasIncidentes.get(vertice));
 
 		for (Arista<V> arista : aristasDelVertice) {
 			eliminarArista(arista.obtenerExtremo1(), arista.obtenerExtremo2());
 		}
 
-		listaDeVecinos.remove(vertice);
+		listaDeAristasIncidentes.remove(vertice);
 	}
 
 }
