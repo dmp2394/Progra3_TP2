@@ -137,40 +137,39 @@ public class DisenioRegiones {
 
 	private List<List<String>> buscarComponentes(Grafo<String> grafo) {
 
-	    Set<String> visitadas = new HashSet<>();
-	    List<List<String>> resultado = new ArrayList<>();
+		Set<String> visitadas = new HashSet<>();
+		List<List<String>> resultado = new ArrayList<>();
 
-	    for (String inicio : grafo.obtenerVertices()) {
+		for (String inicio : grafo.obtenerVertices()) {
 
-	        if (!visitadas.add(inicio)) {
-	            continue;
-	        }
+			if (!visitadas.add(inicio)) {
+				continue;
+			}
 
-	        List<String> region = new ArrayList<>();
-	        ArrayDeque<String> pendientes = new ArrayDeque<>();
+			List<String> region = new ArrayList<>();
+			ArrayDeque<String> pendientes = new ArrayDeque<>();
 
-	        pendientes.add(inicio);
+			pendientes.add(inicio);
 
-	        while (!pendientes.isEmpty()) {
+			while (!pendientes.isEmpty()) {
 
-	            String actual = pendientes.remove();
+				String actual = pendientes.remove();
 
-	            region.add(actual);
+				region.add(actual);
 
-	            for (String vecino : grafo.obtenerVecinos(actual)) {
+				for (String vecino : grafo.obtenerVecinos(actual)) {
 
-	                if (visitadas.add(vecino)) {
-	                    pendientes.add(vecino);
-	                }
-	            }
-	        }
+					if (visitadas.add(vecino)) {
+						pendientes.add(vecino);
+					}
+				}
+			}
 
-	        resultado.add(region);
-	    }
+			resultado.add(region);
+		}
 
-	    return resultado;
+		return resultado;
 	}
-	
 
 	public List<List<String>> obtenerRegiones() {
 		List<List<String>> copia = new ArrayList<>();

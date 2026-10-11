@@ -2,14 +2,18 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Rectangle;
+import javax.swing.SwingUtilities;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.awt.FlowLayout;
 import java.util.HashSet;
 import java.util.Set;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -62,7 +66,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	private DefaultTableModel modeloConexiones;
 	private JTable tablaConexiones;
 	private boolean reubicandoProvincia;
-	private boolean jsonCargado;
+	private PanelUbicacionMapa capaUbicacion;
 	private Integer cantidadRegionesImportada;
 
 	public VentanaConfigGrafo() {
@@ -76,9 +80,9 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	// Estructura de la ventana:
-	// - Arriba: cargar mapa, texto de estado y modo oscuro.
-	// - Izquierda: provincias (arriba) y conexiones (abajo).
-	// - Centro: el mapa.
+	// - Arriba: modo oscuro.
+	// - Izquierda: importación y carga manual.
+	// - Centro: carga de imagen, estado y mapa.
 	// - Abajo: navegación (continuar).
 	private void initialize() {
 		frame = new JFrame();
@@ -92,6 +96,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		crearSeccionConexiones(panelProvinciasYConexiones);
 
 		crearPanelMapa(panelContenido);
+		configurarCapaUbicacion();
 
 		JPanel panelNavegacion = crearPanelNavegacion(panelContenido);
 		crearBotonContinuar(panelNavegacion);
@@ -99,7 +104,9 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	private void configurarVentana() {
 		frame.setTitle("Carga del mapa y del grafo");
-		frame.setSize(1150, 700);
+		frame.setSize(1280, 720);
+		frame.setResizable(true);
+		frame.setMinimumSize(new Dimension(1050, 650));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -115,25 +122,11 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		JPanel panelSuperior = new JPanel(new BorderLayout(10, 0));
 		panelContenido.add(panelSuperior, BorderLayout.NORTH);
 
-		JPanel botonesCarga = new JPanel(new GridLayout(2, 1, 0, 5));
-		panelSuperior.add(botonesCarga, BorderLayout.WEST);
-
-		JButton btnCargarMapa = new JButton("Cargar mapa PNG/JPG");
-		btnCargarMapa.setFocusPainted(false);
-		botonesCarga.add(btnCargarMapa);
-		btnCargarMapa.addActionListener(e -> cargarMapa());
-
-		JButton btnCargarJson = new JButton("Cargar desde JSON");
-		btnCargarJson.setFocusPainted(false);
-		botonesCarga.add(btnCargarJson);
-		btnCargarJson.addActionListener(e -> cargarProvinciasDesdeJSON());
-
-		crearEtiquetaEstado(panelSuperior);
-		crearBotonModoOscuro(panelSuperior, btnCargarMapa.getPreferredSize());
+		crearBotonModoOscuro(panelSuperior, new Dimension(140, 30));
 	}
 
 	private JButton crearBotonCargarMapa(JPanel panelSuperior) {
-		JButton btnCargarMapa = new JButton("Cargar mapa PNG/JPG");
+		JButton btnCargarMapa = new JButton("Cargar imagen del mapa…");
 		panelSuperior.add(btnCargarMapa, BorderLayout.WEST);
 		btnCargarMapa.addActionListener(e -> cargarMapa());
 		return btnCargarMapa;
@@ -197,27 +190,53 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearBotonModoOscuro(JPanel panelSuperior, Dimension tamanio) {
-		JPanel contenedorTema = new JPanel(
-				new FlowLayout(FlowLayout.RIGHT, 0, 0));
-
 		JToggleButton btnTema = Tema.crearBotonTema();
 		btnTema.setPreferredSize(tamanio);
-		contenedorTema.add(btnTema);
-
-		panelSuperior.add(contenedorTema, BorderLayout.EAST);
+		panelSuperior.add(btnTema, BorderLayout.EAST);
 	}
 
 	private JPanel crearPanelProvinciasYConexiones(JPanel panelContenido) {
-		JPanel panelProvinciasYConexiones = new JPanel(new GridLayout(2, 1, 0, 10));
-		panelProvinciasYConexiones.setPreferredSize(new Dimension(350, 500));
-		panelContenido.add(panelProvinciasYConexiones, BorderLayout.WEST);
-		return panelProvinciasYConexiones;
+		JPanel panelLateral = new JPanel(new BorderLayout(0, 10));
+		panelLateral.setPreferredSize(new Dimension(390, 500));
+		panelContenido.add(panelLateral, BorderLayout.WEST);
+		crearSeccionCargaDatos(panelLateral);
+
+		JPanel panelManual = new JPanel(new BorderLayout(0, 6));
+		JLabel titulo = new JLabel("Carga manual");
+		titulo.setFont(titulo.getFont().deriveFont(Font.BOLD));
+		panelManual.add(titulo, BorderLayout.NORTH);
+		panelLateral.add(panelManual, BorderLayout.CENTER);
+
+		JPanel secciones = new JPanel(new GridBagLayout());
+		panelManual.add(secciones, BorderLayout.CENTER);
+		return secciones;
+	}
+
+	private void crearSeccionCargaDatos(JPanel panelLateral) {
+		JPanel panelDatos = new JPanel(new BorderLayout(0, 6));
+		panelDatos.setBorder(new TitledBorder("Carga de datos"));
+		JButton boton = new JButton("Importar datos desde JSON…");
+		boton.setFocusPainted(false);
+		boton.addActionListener(e -> cargarProvinciasDesdeJSON());
+		panelDatos.add(boton, BorderLayout.NORTH);
+		panelDatos.add(new JLabel("<html>Cargá provincias y conexiones desde un archivo<br>"
+				+ "o agregalas manualmente abajo.<br>Cargá primero la imagen del mapa.</html>"),
+				BorderLayout.CENTER);
+		panelLateral.add(panelDatos, BorderLayout.NORTH);
 	}
 
 	private void crearSeccionProvincias(JPanel panelProvinciasYConexiones) {
 		JPanel panelProvincias = new JPanel(new BorderLayout(0, 8));
 		panelProvincias.setBorder(new TitledBorder("Provincias"));
-		panelProvinciasYConexiones.add(panelProvincias);
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.weightx = 1;
+		constraints.weighty = 0.40;
+		constraints.fill = GridBagConstraints.BOTH;
+
+		panelProvinciasYConexiones.add(panelProvincias, constraints);
+		;
 
 		crearFormularioProvincia(panelProvincias);
 		crearListaProvincias(panelProvincias);
@@ -225,22 +244,16 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearFormularioProvincia(JPanel panelProvincias) {
-		JPanel panelCargaProvincia = new JPanel(new GridLayout(4, 1, 0, 5));
-		panelProvincias.add(panelCargaProvincia, BorderLayout.NORTH);
-
-		panelCargaProvincia.add(new JLabel("Nombre de provincia:"));
-
+		JPanel formulario = new JPanel(new BorderLayout(0, 5));
+		formulario.add(new JLabel("Nombre de provincia:"), BorderLayout.NORTH);
+		JPanel fila = new JPanel(new BorderLayout(6, 0));
 		txtProvincia = new JTextField();
-		panelCargaProvincia.add(txtProvincia);
-
-		crearBotonAgregarProvincia(panelCargaProvincia);
-		crearBotonesJsonYUbicar(panelCargaProvincia);
-	}
-
-	private void crearBotonAgregarProvincia(JPanel panelCargaProvincia) {
-		JButton btnAgregarProvincia = new JButton("Agregar");
-		panelCargaProvincia.add(btnAgregarProvincia);
-		btnAgregarProvincia.addActionListener(e -> agregarProvincia());
+		fila.add(txtProvincia, BorderLayout.CENTER);
+		JButton agregar = new JButton("Agregar provincia");
+		agregar.addActionListener(e -> agregarProvincia());
+		fila.add(agregar, BorderLayout.EAST);
+		formulario.add(fila, BorderLayout.CENTER);
+		panelProvincias.add(formulario, BorderLayout.NORTH);
 	}
 
 	private void agregarProvincia() {
@@ -262,12 +275,6 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		txtProvincia.setText("");
 	}
 
-	private void crearBotonesJsonYUbicar(JPanel panelCargaProvincia) {
-		JButton btnUbicar = new JButton("Ubicar en mapa");
-		panelCargaProvincia.add(btnUbicar);
-		btnUbicar.addActionListener(e -> prepararUbicacion());
-	}
-
 	private void cargarProvinciasDesdeJSON() {
 		String ruta = seleccionarRutaJSON();
 
@@ -277,6 +284,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 		try {
 			cantidadRegionesImportada = controlador.cargarProvinciasDesdeJSON(ruta);
+
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
 		}
@@ -284,7 +292,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	private String seleccionarRutaJSON() {
 		JFileChooser selector = new JFileChooser();
-		selector.setDialogTitle("Seleccionar archivo de provincias");
+		selector.setDialogTitle("Seleccionar archivo de datos");
 		selector.setAcceptAllFileFilterUsed(false);
 		selector.setFileFilter(new FileNameExtensionFilter("Archivos JSON o de texto", "json", "txt"));
 
@@ -302,31 +310,19 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		}
 
 		String seleccionada = listaProvincias.getSelectedValue();
-
-		if (seleccionada != null) {
-			provinciaPendiente = seleccionada;
-			reubicandoProvincia = !provinciasSinUbicar.contains(seleccionada);
-			mostrarEstado("Hacé click en el mapa para ubicar: " + seleccionada);
+		if (seleccionada == null) {
+			mostrarMensaje("Seleccioná una provincia de la lista.");
 			return;
 		}
 
-		String nombre = txtProvincia.getText().trim();
+		provinciaPendiente = seleccionada;
+		reubicandoProvincia = !provinciasSinUbicar.contains(seleccionada);
 
-		if (nombre.isEmpty()) {
-			mostrarMensaje("Escribí el nombre de la provincia.");
-			return;
-		}
+		String mensaje = reubicandoProvincia
+				? "Hacé clic en el mapa para reubicar: "
+				: "Hacé clic en el mapa para ubicar: ";
 
-		if (controlador.existeProvincia(nombre)
-				|| provinciasSinUbicar.contains(nombre)) {
-			mostrarMensaje(
-					"La provincia ya existe. Seleccionala en la lista para reubicarla.");
-			return;
-		}
-
-		provinciaPendiente = nombre;
-		reubicandoProvincia = false;
-		mostrarEstado("Hacé click sobre el mapa para ubicar: " + nombre);
+		iniciarUbicacion(mensaje + seleccionada);
 	}
 
 	private boolean tieneImagen() {
@@ -341,8 +337,13 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearBotonEliminarProvincia(JPanel panelProvincias) {
+		JPanel acciones = new JPanel(new GridLayout(1, 2, 6, 0));
+		JButton ubicar = new JButton("Ubicar en mapa");
+		ubicar.addActionListener(e -> prepararUbicacion());
+		acciones.add(ubicar);
 		JButton btnEliminarProvincia = new JButton("Eliminar provincia");
-		panelProvincias.add(btnEliminarProvincia, BorderLayout.SOUTH);
+		acciones.add(btnEliminarProvincia);
+		panelProvincias.add(acciones, BorderLayout.SOUTH);
 		btnEliminarProvincia.addActionListener(e -> eliminarProvincia());
 	}
 
@@ -364,7 +365,14 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	private void crearSeccionConexiones(JPanel panelProvinciasYConexiones) {
 		JPanel panelConexiones = new JPanel(new BorderLayout(0, 8));
 		panelConexiones.setBorder(new TitledBorder("Conexiones"));
-		panelProvinciasYConexiones.add(panelConexiones);
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		constraints.weightx = 1;
+		constraints.weighty = 0.60;
+		constraints.fill = GridBagConstraints.BOTH;
+
+		panelProvinciasYConexiones.add(panelConexiones, constraints);
 
 		crearFormularioConexion(panelConexiones);
 		crearTablaConexiones(panelConexiones);
@@ -489,11 +497,44 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearPanelMapa(JPanel panelContenido) {
-		panelGrafo = new PanelGrafo();
-		panelGrafo.setBorder(new TitledBorder("Mapa"));
-		panelContenido.add(panelGrafo, BorderLayout.CENTER);
+		JPanel contenedor = new JPanel(new BorderLayout(0, 8));
+		contenedor.setBorder(new TitledBorder("Mapa"));
+		JPanel barraMapa = new JPanel(new BorderLayout(10, 0));
+		crearBotonCargarMapa(barraMapa);
+		crearEtiquetaEstado(barraMapa);
+		contenedor.add(barraMapa, BorderLayout.NORTH);
 
+		panelGrafo = new PanelGrafo();
+		contenedor.add(panelGrafo, BorderLayout.CENTER);
+		panelContenido.add(contenedor, BorderLayout.CENTER);
 		panelGrafo.setAccionClick((x, y) -> ubicarProvincia(x, y));
+	}
+
+	private void configurarCapaUbicacion() {
+		capaUbicacion = new PanelUbicacionMapa(this::areaMapaEnCapa,
+				punto -> {
+					java.awt.Point puntoPanel = SwingUtilities.convertPoint(
+							capaUbicacion, punto, panelGrafo);
+					panelGrafo.procesarClickEnPanel(puntoPanel.x, puntoPanel.y);
+				}, this::cancelarUbicacion);
+		frame.setGlassPane(capaUbicacion);
+	}
+
+	private Rectangle areaMapaEnCapa() {
+		return SwingUtilities.convertRectangle(panelGrafo,
+				panelGrafo.obtenerAreaImagen(), capaUbicacion);
+	}
+
+	private void iniciarUbicacion(String mensaje) {
+		mostrarEstado(mensaje);
+		capaUbicacion.activar(mensaje);
+	}
+
+	private void cancelarUbicacion() {
+		provinciaPendiente = null;
+		reubicandoProvincia = false;
+		capaUbicacion.desactivar();
+		mostrarEstado("Ubicación cancelada. Podés seleccionar otra provincia.");
 	}
 
 	private void ubicarProvincia(int x, int y) {
@@ -507,14 +548,16 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 			if (eraReubicacion) {
 				controlador.reubicarProvincia(provinciaPendiente, x, y);
 			} else {
-				provinciasSinUbicar.remove(provinciaPendiente);
-				controlador.ubicarProvincia(provinciaPendiente, x, y);
+				String nombreUbicado = provinciaPendiente;
+				controlador.ubicarProvincia(nombreUbicado, x, y);
+				provinciasSinUbicar.remove(nombreUbicado);
 				txtProvincia.setText("");
 			}
 
 			provinciaPendiente = null;
 			reubicandoProvincia = false;
 			listaProvincias.clearSelection();
+			capaUbicacion.desactivar();
 
 			mostrarEstado(eraReubicacion
 					? "Provincia reubicada."
@@ -580,6 +623,12 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 			modeloProvincias.addElement(nombre);
 			comboProvincia1.addItem(nombre);
 			comboProvincia2.addItem(nombre);
+		}
+
+		for (String pendiente : provinciasSinUbicar) {
+			if (!modeloProvincias.contains(pendiente)) {
+				modeloProvincias.addElement(pendiente);
+			}
 		}
 
 		if (modeloProvincias.contains(seleccion1)) {

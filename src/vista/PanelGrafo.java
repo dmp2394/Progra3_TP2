@@ -92,6 +92,14 @@ public class PanelGrafo extends JPanel {
 		accionClick.accept(xImagen, yImagen);
 	}
 
+	public Rectangle obtenerAreaImagen() {
+		return getAreaImagen();
+	}
+
+	public void procesarClickEnPanel(int xPanel, int yPanel) {
+		procesarClick(xPanel, yPanel);
+	}
+
 	private Rectangle getAreaImagen() {
 		Insets bordes = getInsets();
 
