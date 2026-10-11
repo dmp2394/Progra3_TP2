@@ -97,7 +97,7 @@ public class DisenioRegionesTest {
 			try {
 				disenio.setPosicionProvincia("Córdoba", -91.0, -64.5);
 			} catch (IllegalArgumentException esperada) {
-				// La excepción se prueba en setPosicionLatitudFueraDeRangoTest.
+				// No debe hacer nada
 			}
 
 			assertEquals(Arrays.asList("Córdoba", -31.42, -64.18), datosDe(disenio.obtenerProvincia("Córdoba")));
@@ -292,7 +292,7 @@ public class DisenioRegionesTest {
 	}
 
 	public static class EliminarProvinciaCasoFeliz {
-		
+
 		private DisenioRegiones disenio = new DisenioRegiones();
 
 		// Comprueba que eliminar una provincia quite sus conexiones
@@ -405,7 +405,6 @@ public class DisenioRegionesTest {
 			sinConectar.separarEnRegionesConexas(2);
 		}
 
-	
 		// Con k = 1 todas las provincias quedan en una sola región.
 		@Test
 		public void separarConKUnoTest() {
@@ -664,7 +663,7 @@ public class DisenioRegionesTest {
 		return disenio;
 	}
 
-	// Nombre, latitud y longitud de una provincia, para comparar todo junto.
+	// Nombre, latitud y longitud de una provincia, para comparar todo junto
 	private static List<Object> datosDe(Provincia provincia) {
 		List<Object> datos = new ArrayList<>();
 		datos.add(provincia.obtenerNombre());
@@ -673,7 +672,7 @@ public class DisenioRegionesTest {
 		return datos;
 	}
 
-	// Extremos y peso de cada conexión, para comparar todo junto.
+	// Extremos y peso de cada conexión, para comparar todo junto
 	private static List<List<Object>> datosDeConexiones(DisenioRegiones disenio) {
 		List<List<Object>> datos = new ArrayList<>();
 		for (Arista<String> conexion : disenio.obtenerConexiones()) {
@@ -695,5 +694,4 @@ public class DisenioRegionesTest {
 
 		return conjuntos;
 	}
-
 }

@@ -3,6 +3,7 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -15,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import modelo.Arista;
 import modelo.Provincia;
@@ -44,7 +46,7 @@ public class VentanaResultado {
 	// - Arriba: título.
 	// - Centro: a la izquierda el mapa con las regiones coloreadas y a la derecha
 	// la lista de provincias de cada región.
-	// - Abajo: navegación (volver, modo oscuro y salir).
+	// - Abajo: navegación (modo oscuro, volver y salir).
 	private void initialize() {
 		frame = new JFrame();
 		configurarVentana();
@@ -53,15 +55,16 @@ public class VentanaResultado {
 		crearPanelMapaYRegiones();
 
 		JPanel panelNavegacion = crearPanelNavegacion();
-		crearBotonVolver(panelNavegacion);
 		crearBotonModoOscuro(panelNavegacion);
+		crearBotonVolver(panelNavegacion);
 		crearBotonSalir(panelNavegacion);
 	}
 
 	private void configurarVentana() {
 		frame.setTitle("Regiones generadas");
 
-		frame.setSize(850, 550);
+		frame.setSize(1366, 768);
+		frame.setResizable(false);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -122,7 +125,8 @@ public class VentanaResultado {
 	}
 
 	private JPanel crearPanelNavegacion() {
-		JPanel panelNavegacion = new JPanel();
+		JPanel panelNavegacion = new JPanel(new BorderLayout());
+		panelNavegacion.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
 		return panelNavegacion;
@@ -138,11 +142,13 @@ public class VentanaResultado {
 			ventanaAnterior.mostrar();
 		});
 
-		panelNavegacion.add(btnVolver);
+		JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+		panelVolver.add(btnVolver);
+		panelNavegacion.add(panelVolver, BorderLayout.CENTER);
 	}
 
 	private void crearBotonModoOscuro(JPanel panelNavegacion) {
-		panelNavegacion.add(Tema.crearBotonTema());
+		panelNavegacion.add(Tema.crearBotonTema(), BorderLayout.WEST);
 	}
 
 	private void crearBotonSalir(JPanel panelNavegacion) {
@@ -150,7 +156,7 @@ public class VentanaResultado {
 
 		btnSalir.addActionListener(e -> System.exit(0));
 
-		panelNavegacion.add(btnSalir);
+		panelNavegacion.add(btnSalir, BorderLayout.EAST);
 	}
 
 	public void mostrar() {

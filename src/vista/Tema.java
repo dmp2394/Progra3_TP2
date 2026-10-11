@@ -3,6 +3,7 @@ package vista;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Window;
 
 import javax.swing.AbstractButton;
@@ -24,6 +25,9 @@ import javax.swing.plaf.basic.BasicToggleButtonUI;
 public final class Tema {
 
 	private static final String PROPIEDAD_BOTON_TEMA = "botonTema";
+
+	// Mismo tamaño del botón de modo oscuro en todas las ventanas.
+	private static final Dimension TAMANIO_BOTON_TEMA = new Dimension(60, 30);
 
 	private static final Color TEXTO_CLARO = new Color(30, 35, 40);
 	private static final Color CONTROL_CLARO = Color.WHITE;
@@ -54,6 +58,7 @@ public final class Tema {
 
 	private static void configurarAspectoBoton(JToggleButton boton) {
 		boton.setUI(new BasicToggleButtonUI());
+		boton.setPreferredSize(TAMANIO_BOTON_TEMA);
 		boton.setFocusPainted(false);
 		boton.setOpaque(true);
 		boton.setContentAreaFilled(true);

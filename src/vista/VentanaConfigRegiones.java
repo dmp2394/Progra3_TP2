@@ -1,6 +1,7 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import controlador.ControladorVentanaConfigRegiones;
@@ -49,7 +51,7 @@ public class VentanaConfigRegiones {
 	// - Arriba: título.
 	// - Centro: dos columnas, a la izquierda el mapa con el grafo y a la derecha
 	// la configuración de la cantidad de regiones.
-	// - Abajo: navegación (volver y modo oscuro).
+	// - Abajo: navegación (modo oscuro, volver y generar regiones).
 	private void initialize() {
 		frame = new JFrame();
 		configurarVentana();
@@ -63,14 +65,16 @@ public class VentanaConfigRegiones {
 		crearControlesCantidadDeRegiones(panelConfiguracionRegiones);
 
 		JPanel panelNavegacion = crearPanelNavegacion();
-		crearBotonVolver(panelNavegacion);
 		crearBotonModoOscuro(panelNavegacion);
+		crearBotonVolver(panelNavegacion);
+		crearBotonGenerarRegiones(panelNavegacion);
 	}
 
 	private void configurarVentana() {
 		frame.setTitle("Configuración de regiones");
 
-		frame.setSize(850, 550);
+		frame.setSize(1366, 768);
+		frame.setResizable(false);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -118,7 +122,7 @@ public class VentanaConfigRegiones {
 			JPanel panelConfiguracionRegiones) {
 
 		JPanel panelCantidadDeRegiones = new JPanel();
-		panelCantidadDeRegiones.setLayout(new GridLayout(3, 1, 0, 8));
+		panelCantidadDeRegiones.setLayout(new GridLayout(2, 1, 0, 8));
 		panelConfiguracionRegiones.add(
 				panelCantidadDeRegiones,
 				BorderLayout.NORTH);
@@ -138,10 +142,12 @@ public class VentanaConfigRegiones {
 		spinnerK = new JSpinner(
 				new SpinnerNumberModel(kInicial, 1, maxK, 1));
 		panelCantidadDeRegiones.add(spinnerK);
+	}
 
-		JButton btnGenerarRegiones = new JButton("Generar regiones");
+	private void crearBotonGenerarRegiones(JPanel panelNavegacion) {
+		JButton btnGenerarRegiones = new JButton("Generar regiones →");
 		btnGenerarRegiones.addActionListener(e -> generarRegiones());
-		panelCantidadDeRegiones.add(btnGenerarRegiones);
+		panelNavegacion.add(btnGenerarRegiones, BorderLayout.EAST);
 	}
 
 	private void generarRegiones() {
@@ -187,6 +193,7 @@ public class VentanaConfigRegiones {
 	private JPanel crearPanelNavegacion() {
 		JPanel panelNavegacion = new JPanel();
 		panelNavegacion.setLayout(new BorderLayout());
+		panelNavegacion.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		frame.getContentPane().add(panelNavegacion, BorderLayout.SOUTH);
 		return panelNavegacion;
@@ -202,12 +209,14 @@ public class VentanaConfigRegiones {
 			ventanaAnterior.mostrar();
 		});
 
-		panelNavegacion.add(btnVolver, BorderLayout.WEST);
+		JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+		panelVolver.add(btnVolver);
+		panelNavegacion.add(panelVolver, BorderLayout.CENTER);
 	}
 
 	private void crearBotonModoOscuro(JPanel panelNavegacion) {
 		JToggleButton btnTema = Tema.crearBotonTema();
-		panelNavegacion.add(btnTema, BorderLayout.EAST);
+		panelNavegacion.add(btnTema, BorderLayout.WEST);
 	}
 
 	private void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {

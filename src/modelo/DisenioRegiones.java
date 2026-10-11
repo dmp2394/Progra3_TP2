@@ -1,6 +1,5 @@
 package modelo;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -29,8 +28,16 @@ public class DisenioRegiones {
 		observadores.add(observador);
 	}
 
+	// Agrega una provincia sin ubicar. Se ubica después con setPosicionProvincia.
+	public void agregarProvincia(String nombre) {
+		agregar(new Provincia(nombre));
+	}
+
 	public void agregarProvincia(String nombre, double latitud, double longitud) {
-		Provincia provincia = new Provincia(nombre, latitud, longitud);
+		agregar(new Provincia(nombre, latitud, longitud));
+	}
+
+	private void agregar(Provincia provincia) {
 		String nombreProvincia = provincia.obtenerNombre();
 
 		if (provincias.containsKey(nombreProvincia)) {
@@ -127,7 +134,7 @@ public class DisenioRegiones {
 		List<Arista<String>> aristas = agm.obtenerAristas();
 
 		// Las aristas están ordenadas de menor a mayor peso.
-		for (int i = aristas.size() - 1; i >= aristas.size() - (k - 1); i--) {
+		for (int i = aristas.size() - 1; (aristas.size() - (k - 1)) <= i; i--) {
 			Arista<String> arista = aristas.get(i);
 			agm.eliminarArista(arista.obtenerExtremo1(), arista.obtenerExtremo2());
 		}
@@ -135,37 +142,19 @@ public class DisenioRegiones {
 		regiones = buscarComponentes(agm);
 	}
 
+	// Cada region es una componente conexa, se recorre con DFS desde cada vértice
+	// que todavía no quedó en ninguna región.
 	private List<List<String>> buscarComponentes(Grafo<String> grafo) {
-
 		Set<String> visitadas = new HashSet<>();
 		List<List<String>> resultado = new ArrayList<>();
 
 		for (String inicio : grafo.obtenerVertices()) {
+			if (!visitadas.contains(inicio)) {
+				Set<String> region = DFS.recorrer(grafo, inicio);
 
-			if (!visitadas.add(inicio)) {
-				continue;
+				visitadas.addAll(region);
+				resultado.add(new ArrayList<>(region));
 			}
-
-			List<String> region = new ArrayList<>();
-			ArrayDeque<String> pendientes = new ArrayDeque<>();
-
-			pendientes.add(inicio);
-
-			while (!pendientes.isEmpty()) {
-
-				String actual = pendientes.remove();
-
-				region.add(actual);
-
-				for (String vecino : grafo.obtenerVecinos(actual)) {
-
-					if (visitadas.add(vecino)) {
-						pendientes.add(vecino);
-					}
-				}
-			}
-
-			resultado.add(region);
 		}
 
 		return resultado;
@@ -190,8 +179,18 @@ public class DisenioRegiones {
 		return nombre.trim();
 	}
 
+	public boolean todasLasProvinciasUbicadas() {
+		for (Provincia provincia : provincias.values()) {
+			if (!provincia.estaUbicada()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public boolean existenProvincias() {
 		return !provincias.isEmpty();
 
 	}
-}
+}

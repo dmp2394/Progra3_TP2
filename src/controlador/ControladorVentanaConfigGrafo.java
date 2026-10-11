@@ -1,8 +1,9 @@
 package controlador;
 
 import modelo.DisenioRegiones;
-import modelo.Provincia;
 import modelo.ProvinciaJSON;
+import modelo.AristaJSON;
+import modelo.DatosDeEntradaJSON;
 
 public class ControladorVentanaConfigGrafo {
 
@@ -13,11 +14,8 @@ public class ControladorVentanaConfigGrafo {
 		this.disenioRegiones = disenioRegiones;
 	}
 
-	public void ubicarProvincia(String provincia, double latitud, double longitud) {
-		disenioRegiones.agregarProvincia(provincia, latitud, longitud);
-	}
-
-	public void reubicarProvincia(String nombre, double latitud, double longitud) {
+	// Sirve tanto para ubicar una provincia por primera vez como para moverla.
+	public void ubicarProvincia(String nombre, double latitud, double longitud) {
 		disenioRegiones.setPosicionProvincia(nombre, latitud, longitud);
 	}
 
@@ -34,11 +32,11 @@ public class ControladorVentanaConfigGrafo {
 	}
 
 	public Integer cargarProvinciasDesdeJSON(String ruta) {
-		ProvinciaJSON archivo = ProvinciaJSON.leerJSON(ruta);
+		DatosDeEntradaJSON archivo = DatosDeEntradaJSON.leerJSON(ruta);
 
-		if (archivo == null || archivo.obtenerProvincias() == null) {
+		if (archivo == null || archivo.obtenerProvincias().isEmpty()) {
 			throw new IllegalArgumentException(
-					"No se pudo leer el JSON de provincias.");
+					"El archivo JSON no tiene provincias.");
 		}
 
 		Integer k = archivo.obtenerCantidadRegiones();
@@ -49,29 +47,43 @@ public class ControladorVentanaConfigGrafo {
 					"La cantidad de regiones debe estar entre 1 y la cantidad de provincias.");
 		}
 
-		for (Provincia provincia : archivo.obtenerProvincias()) {
-			disenioRegiones.agregarProvincia(
-					provincia.obtenerNombre(),
-					provincia.obtenerLatitud(),
-					provincia.obtenerLongitud());
+		// La ubicación es opcional en el archivo: o vienen latitud y longitud, o
+		// no viene ninguna (la provincia queda sin ubicar y se ubica en el mapa).
+		// Se valida antes de agregar nada para no dejar el modelo a medio cargar.
+		for (ProvinciaJSON provincia : archivo.obtenerProvincias()) {
+			if ((provincia.obtenerLatitud() == null) != (provincia.obtenerLongitud() == null)) {
+				throw new IllegalArgumentException("La provincia " + provincia.obtenerNombre()
+						+ " debe tener latitud y longitud, o ninguna de las dos.");
+			}
 		}
 
-		for (ProvinciaJSON.ConexionJSON conexion : archivo.obtenerConexiones()) {
+		for (ProvinciaJSON provincia : archivo.obtenerProvincias()) {
+			if (provincia.obtenerLatitud() == null) {
+				disenioRegiones.agregarProvincia(provincia.obtenerNombre());
+			} else {
+				disenioRegiones.agregarProvincia(
+						provincia.obtenerNombre(),
+						provincia.obtenerLatitud(),
+						provincia.obtenerLongitud());
+			}
+		}
+
+		for (AristaJSON conexion : archivo.obtenerConexiones()) {
 			disenioRegiones.agregarConexion(
-					conexion.getProvinciaOrigen(),
-					conexion.getProvinciaDestino(),
-					conexion.getSimilaridad());
+					conexion.obtenerProvinciaOrigen(),
+					conexion.obtenerProvinciaDestino(),
+					conexion.obtenerSimilaridad());
 		}
 
 		return k;
 	}
 
 	public void agregarProvincia(String provincia) {
-		disenioRegiones.agregarProvincia(provincia, 0, 0);
+		disenioRegiones.agregarProvincia(provincia);
 	}
 
-	public boolean existeProvincia(String nombre) {
-		return disenioRegiones.existeProvincia(nombre);
+	public boolean todasLasProvinciasUbicadas() {
+		return disenioRegiones.todasLasProvinciasUbicadas();
 	}
 
 	public boolean existenProvincias() {

@@ -3,7 +3,6 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,15 +13,7 @@ import javax.swing.border.EmptyBorder;
 
 public class VentanaBienvenida {
 
-	// Instrucciones
-	private static final String[] PASOS = { "1. Escribir los nombres de las provincias o unidades.",
-			"2. Ubicarlas haciendo click sobre el mapa (zoom con la rueda del mouse).",
-			"3. Crear conexiones e indicar su similaridad.", "4. Elegir la cantidad de regiones K.",
-			"5. Generar y consultar las regiones resultantes." };
-
 	private JFrame frame;
-	private VentanaConfigGrafo ventanaPrincipal;
-
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
@@ -41,7 +32,7 @@ public class VentanaBienvenida {
 
 	// Estructura de la ventana:
 	// - Arriba: título.
-	// - Centro: los pasos a seguir.
+	// - Centro: instrucciones en dos columnas (carga manual y carga desde archivo).
 	// - Abajo: navegación (modo oscuro y comenzar).
 	private void initialize() {
 		frame = new JFrame();
@@ -49,7 +40,7 @@ public class VentanaBienvenida {
 
 		JPanel panelContenido = crearPanelContenido();
 		crearTitulo(panelContenido);
-		crearListaDePasos(panelContenido);
+		crearInstrucciones(panelContenido);
 
 		JPanel panelNavegacion = crearPanelNavegacion(panelContenido);
 		crearBotonModoOscuro(panelNavegacion);
@@ -58,13 +49,14 @@ public class VentanaBienvenida {
 
 	private void configurarVentana() {
 		frame.setTitle("Bienvenido - Diseño de regiones");
-		frame.setSize(760, 460);
+		frame.setSize(800, 400);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	private JPanel crearPanelContenido() {
 		JPanel panelContenido = new JPanel();
-		panelContenido.setBorder(new EmptyBorder(25, 30, 25, 30));
+		panelContenido.setBorder(new EmptyBorder(25, 10, 10, 10));
 		panelContenido.setLayout(new BorderLayout(0, 20));
 
 		frame.setContentPane(panelContenido);
@@ -79,15 +71,25 @@ public class VentanaBienvenida {
 		panelContenido.add(lblTitulo, BorderLayout.NORTH);
 	}
 
-	private void crearListaDePasos(JPanel panelContenido) {
-		JPanel panelPasos = new JPanel();
-		panelPasos.setLayout(new GridLayout(PASOS.length, 1, 0, 8));
+	// Se usa html para insertar saltos de linea y cursiva en el hint del mapa
+	private void crearInstrucciones(JPanel panelContenido) {
+		JLabel lblPasos = new JLabel("<html>" + "1. Agregá las provincias por nombre.<br><br>"
+				+ "2. Seleccioná una, tocá \"Ubicar en mapa\" y hacé doble clic en su posición.<br><br>"
+				+ "3. Creá las conexiones entre provincias con su similaridad.<br><br>"
+				+ "<i>Opcional, carga desde archivo:</i> en lugar de los pasos 1 a 3, importá un archivo JSON "
+				+ "con las provincias (nombre y, opcionalmente, latitud y longitud), sus conexiones (origen, destino y "
+				+ "similaridad) y, si querés, la cantidad de regiones K.<br><br>"
+				+ "4. Elegí la cantidad de regiones K y generá las regiones.</html>");
+		lblPasos.setVerticalAlignment(SwingConstants.TOP);
 
-		for (String paso : PASOS) {
-			panelPasos.add(new JLabel(paso));
-		}
+		JLabel lblAyudaMapa = new JLabel(
+				"<html><i>Mapa: rueda del mouse para zoom, clic derecho y arrastrar para moverte.</i></html>");
 
-		panelContenido.add(panelPasos, BorderLayout.CENTER);
+		JPanel panelInstrucciones = new JPanel(new BorderLayout());
+		panelInstrucciones.add(lblPasos, BorderLayout.CENTER);
+		panelInstrucciones.add(lblAyudaMapa, BorderLayout.SOUTH);
+
+		panelContenido.add(panelInstrucciones, BorderLayout.CENTER);
 	}
 
 	private JPanel crearPanelNavegacion(JPanel panelContenido) {
@@ -110,12 +112,10 @@ public class VentanaBienvenida {
 		panelNavegacion.add(btnComenzar, BorderLayout.EAST);
 	}
 
-	// La ventana principal se crea una sola vez: asi, si se vuelve a esta pantalla,
-	// no se pierde lo cargado
+	// Cada vez que se presiona Comenzar se arranca de cero, con una ventana y un
+	// modelo nuevos.
 	private void abrirVentanaPrincipal() {
-		if (ventanaPrincipal == null) {
-			ventanaPrincipal = new VentanaConfigGrafo();
-		}
+		VentanaConfigGrafo ventanaPrincipal = new VentanaConfigGrafo(this);
 
 		ventanaPrincipal.mostrar();
 		frame.setVisible(false);
