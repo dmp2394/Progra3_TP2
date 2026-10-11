@@ -1,0 +1,304 @@
+{
+  "provincias": [
+    {
+      "nombre": "Buenos Aires"
+    },
+    {
+      "nombre": "Ciudad Autónoma de Buenos Aires"
+    },
+    {
+      "nombre": "Catamarca"
+    },
+    {
+      "nombre": "Chaco"
+    },
+    {
+      "nombre": "Chubut"
+    },
+    {
+      "nombre": "Córdoba"
+    },
+    {
+      "nombre": "Corrientes"
+    },
+    {
+      "nombre": "Entre Ríos"
+    },
+    {
+      "nombre": "Formosa"
+    },
+    {
+      "nombre": "Jujuy"
+    },
+    {
+      "nombre": "La Pampa"
+    },
+    {
+      "nombre": "La Rioja"
+    },
+    {
+      "nombre": "Mendoza"
+    },
+    {
+      "nombre": "Misiones"
+    },
+    {
+      "nombre": "Neuquén"
+    },
+    {
+      "nombre": "Río Negro"
+    },
+    {
+      "nombre": "Salta"
+    },
+    {
+      "nombre": "San Juan"
+    },
+    {
+      "nombre": "San Luis"
+    },
+    {
+      "nombre": "Santa Cruz"
+    },
+    {
+      "nombre": "Santa Fe"
+    },
+    {
+      "nombre": "Santiago del Estero"
+    },
+    {
+      "nombre": "Tierra del Fuego"
+    },
+    {
+      "nombre": "Tucumán"
+    }
+  ],
+  "conexiones": [
+    {
+      "provinciaOrigen": "Jujuy",
+      "provinciaDestino": "Salta",
+      "similaridad": 11
+    },
+    {
+      "provinciaOrigen": "Salta",
+      "provinciaDestino": "Catamarca",
+      "similaridad": 5
+    },
+    {
+      "provinciaOrigen": "Salta",
+      "provinciaDestino": "Tucumán",
+      "similaridad": 13
+    },
+    {
+      "provinciaOrigen": "Salta",
+      "provinciaDestino": "Santiago del Estero",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "Salta",
+      "provinciaDestino": "Chaco",
+      "similaridad": 3
+    },
+    {
+      "provinciaOrigen": "Salta",
+      "provinciaDestino": "Formosa",
+      "similaridad": 18
+    },
+    {
+      "provinciaOrigen": "Formosa",
+      "provinciaDestino": "Chaco",
+      "similaridad": 4
+    },
+    {
+      "provinciaOrigen": "Chaco",
+      "provinciaDestino": "Santiago del Estero",
+      "similaridad": 12
+    },
+    {
+      "provinciaOrigen": "Chaco",
+      "provinciaDestino": "Santa Fe",
+      "similaridad": 19
+    },
+    {
+      "provinciaOrigen": "Chaco",
+      "provinciaDestino": "Corrientes",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "Misiones",
+      "provinciaDestino": "Corrientes",
+      "similaridad": 17
+    },
+    {
+      "provinciaOrigen": "Corrientes",
+      "provinciaDestino": "Entre Ríos",
+      "similaridad": 7
+    },
+    {
+      "provinciaOrigen": "Corrientes",
+      "provinciaDestino": "Santa Fe",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "Tucumán",
+      "provinciaDestino": "Catamarca",
+      "similaridad": 3
+    },
+    {
+      "provinciaOrigen": "Tucumán",
+      "provinciaDestino": "Santiago del Estero",
+      "similaridad": 14
+    },
+    {
+      "provinciaOrigen": "Catamarca",
+      "provinciaDestino": "Santiago del Estero",
+      "similaridad": 14
+    },
+    {
+      "provinciaOrigen": "Catamarca",
+      "provinciaDestino": "Córdoba",
+      "similaridad": 3
+    },
+    {
+      "provinciaOrigen": "Catamarca",
+      "provinciaDestino": "La Rioja",
+      "similaridad": 8
+    },
+    {
+      "provinciaOrigen": "Santiago del Estero",
+      "provinciaDestino": "Córdoba",
+      "similaridad": 3
+    },
+    {
+      "provinciaOrigen": "Santiago del Estero",
+      "provinciaDestino": "Santa Fe",
+      "similaridad": 18
+    },
+    {
+      "provinciaOrigen": "La Rioja",
+      "provinciaDestino": "San Juan",
+      "similaridad": 14
+    },
+    {
+      "provinciaOrigen": "La Rioja",
+      "provinciaDestino": "San Luis",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "La Rioja",
+      "provinciaDestino": "Córdoba",
+      "similaridad": 19
+    },
+    {
+      "provinciaOrigen": "San Juan",
+      "provinciaDestino": "Mendoza",
+      "similaridad": 4
+    },
+    {
+      "provinciaOrigen": "San Juan",
+      "provinciaDestino": "San Luis",
+      "similaridad": 8
+    },
+    {
+      "provinciaOrigen": "Córdoba",
+      "provinciaDestino": "Santa Fe",
+      "similaridad": 19
+    },
+    {
+      "provinciaOrigen": "Córdoba",
+      "provinciaDestino": "San Luis",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "Córdoba",
+      "provinciaDestino": "La Pampa",
+      "similaridad": 19
+    },
+    {
+      "provinciaOrigen": "Córdoba",
+      "provinciaDestino": "Buenos Aires",
+      "similaridad": 19
+    },
+    {
+      "provinciaOrigen": "Santa Fe",
+      "provinciaDestino": "Entre Ríos",
+      "similaridad": 13
+    },
+    {
+      "provinciaOrigen": "Santa Fe",
+      "provinciaDestino": "Buenos Aires",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "Entre Ríos",
+      "provinciaDestino": "Buenos Aires",
+      "similaridad": 8
+    },
+    {
+      "provinciaOrigen": "Buenos Aires",
+      "provinciaDestino": "Ciudad Autónoma de Buenos Aires",
+      "similaridad": 2
+    },
+    {
+      "provinciaOrigen": "Buenos Aires",
+      "provinciaDestino": "La Pampa",
+      "similaridad": 18
+    },
+    {
+      "provinciaOrigen": "Buenos Aires",
+      "provinciaDestino": "Río Negro",
+      "similaridad": 5
+    },
+    {
+      "provinciaOrigen": "San Luis",
+      "provinciaDestino": "Mendoza",
+      "similaridad": 10
+    },
+    {
+      "provinciaOrigen": "San Luis",
+      "provinciaDestino": "La Pampa",
+      "similaridad": 14
+    },
+    {
+      "provinciaOrigen": "Mendoza",
+      "provinciaDestino": "La Pampa",
+      "similaridad": 5
+    },
+    {
+      "provinciaOrigen": "Mendoza",
+      "provinciaDestino": "Neuquén",
+      "similaridad": 18
+    },
+    {
+      "provinciaOrigen": "La Pampa",
+      "provinciaDestino": "Neuquén",
+      "similaridad": 4
+    },
+    {
+      "provinciaOrigen": "La Pampa",
+      "provinciaDestino": "Río Negro",
+      "similaridad": 19
+    },
+    {
+      "provinciaOrigen": "Neuquén",
+      "provinciaDestino": "Río Negro",
+      "similaridad": 10
+    },
+    {
+      "provinciaOrigen": "Río Negro",
+      "provinciaDestino": "Chubut",
+      "similaridad": 18
+    },
+    {
+      "provinciaOrigen": "Chubut",
+      "provinciaDestino": "Santa Cruz",
+      "similaridad": 6
+    },
+    {
+      "provinciaOrigen": "Santa Cruz",
+      "provinciaDestino": "Tierra del Fuego",
+      "similaridad": 4
+    }
+  ],
+  "cantidadRegiones": 5
+}
