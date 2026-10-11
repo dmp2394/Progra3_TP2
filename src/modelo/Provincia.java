@@ -43,10 +43,6 @@ public class Provincia {
 		return nombre;
 	}
 
-	public boolean estaUbicada() {
-		return latitud != null;
-	}
-
 	public double obtenerLatitud() {
 		verificarUbicada();
 		return latitud;
@@ -61,5 +57,9 @@ public class Provincia {
 		if (!estaUbicada()) {
 			throw new IllegalStateException("La provincia " + nombre + " no está ubicada.");
 		}
+	}
+
+	public boolean estaUbicada() {
+		return latitud != null;
 	}
 }

@@ -112,19 +112,6 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		return panelContenido;
 	}
 
-	private void mostrarMensaje(String mensaje) {
-		JOptionPane.showMessageDialog(frame, mensaje);
-	}
-
-	private void mostrarEstado(String estado) {
-		lblEstado.setText(estado);
-	}
-
-	private void crearEtiquetaEstado(JPanel panelSuperior) {
-		lblEstado = new JLabel("Agregá una provincia y ubicala en el mapa. Zoom con la rueda, mover con clic derecho.");
-		panelSuperior.add(lblEstado, BorderLayout.CENTER);
-	}
-
 	private void crearBotonModoOscuro(JPanel panelNavegacion) {
 		panelNavegacion.add(Tema.crearBotonTema(), BorderLayout.WEST);
 	}
@@ -250,18 +237,6 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		return selector.getSelectedFile().getAbsolutePath();
 	}
 
-	private void prepararUbicacion() {
-		String seleccionada = listaProvincias.getSelectedValue();
-		if (seleccionada == null) {
-			mostrarMensaje("Seleccioná una provincia de la lista.");
-			return;
-		}
-
-		provinciaPendiente = seleccionada;
-
-		iniciarUbicacion("Hacé clic en el mapa para ubicar: " + seleccionada);
-	}
-
 	private void crearListaProvincias(JPanel panelProvincias) {
 		modeloProvincias = new DefaultListModel<>();
 		listaProvincias = new JList<>(modeloProvincias);
@@ -293,6 +268,18 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
 		}
+	}
+
+	private void prepararUbicacion() {
+		String seleccionada = listaProvincias.getSelectedValue();
+		if (seleccionada == null) {
+			mostrarMensaje("Seleccioná una provincia de la lista.");
+			return;
+		}
+
+		provinciaPendiente = seleccionada;
+
+		iniciarUbicacion("Hacé clic en el mapa para ubicar: " + seleccionada);
 	}
 
 	private void crearSeccionConexiones(JPanel panelProvinciasYConexiones) {
@@ -451,6 +438,11 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		reenviarZoomYMovimientoAlMapa();
 	}
 
+	private void crearEtiquetaEstado(JPanel panelSuperior) {
+		lblEstado = new JLabel("Agregá una provincia y ubicala en el mapa. Zoom con la rueda, mover con clic derecho.");
+		panelSuperior.add(lblEstado, BorderLayout.CENTER);
+	}
+
 	// Mientras se ubica una provincia, la capa tapa al mapa y recibe el mouse.
 	// Se le reenvían al mapa la rueda (zoom) y el arrastre con clic derecho
 	// (mover), para poder acercarse antes de hacer clic. El clic izquierdo lo
@@ -528,6 +520,10 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		return panelNavegacion;
 	}
 
+	private void mostrarEstado(String estado) {
+		lblEstado.setText(estado);
+	}
+
 	private void crearBotonContinuar(JPanel panelNavegacion) {
 		JButton btnContinuar = new JButton("Continuar →");
 		panelNavegacion.add(btnContinuar, BorderLayout.EAST);
@@ -558,6 +554,10 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 		ventanaRegiones.mostrar();
 		frame.setVisible(false);
+	}
+
+	private void mostrarMensaje(String mensaje) {
+		JOptionPane.showMessageDialog(frame, mensaje);
 	}
 
 	@Override

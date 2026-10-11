@@ -1,14 +1,13 @@
 package controlador;
 
-import modelo.DisenioRegiones;
-import modelo.ProvinciaJSON;
 import modelo.AristaJSON;
 import modelo.DatosDeEntradaJSON;
+import modelo.DisenioRegiones;
+import modelo.ProvinciaJSON;
 
 public class ControladorVentanaConfigGrafo {
 
 	private final DisenioRegiones disenioRegiones;
-	private boolean jsonCargado;
 
 	public ControladorVentanaConfigGrafo(DisenioRegiones disenioRegiones) {
 		this.disenioRegiones = disenioRegiones;
@@ -35,8 +34,7 @@ public class ControladorVentanaConfigGrafo {
 		DatosDeEntradaJSON archivo = DatosDeEntradaJSON.leerJSON(ruta);
 
 		if (archivo == null || archivo.obtenerProvincias().isEmpty()) {
-			throw new IllegalArgumentException(
-					"El archivo JSON no tiene provincias.");
+			throw new IllegalArgumentException("El archivo JSON no tiene provincias.");
 		}
 
 		Integer k = archivo.obtenerCantidadRegiones();
@@ -61,17 +59,13 @@ public class ControladorVentanaConfigGrafo {
 			if (provincia.obtenerLatitud() == null) {
 				disenioRegiones.agregarProvincia(provincia.obtenerNombre());
 			} else {
-				disenioRegiones.agregarProvincia(
-						provincia.obtenerNombre(),
-						provincia.obtenerLatitud(),
+				disenioRegiones.agregarProvincia(provincia.obtenerNombre(), provincia.obtenerLatitud(),
 						provincia.obtenerLongitud());
 			}
 		}
 
 		for (AristaJSON conexion : archivo.obtenerConexiones()) {
-			disenioRegiones.agregarConexion(
-					conexion.obtenerProvinciaOrigen(),
-					conexion.obtenerProvinciaDestino(),
+			disenioRegiones.agregarConexion(conexion.obtenerProvinciaOrigen(), conexion.obtenerProvinciaDestino(),
 					conexion.obtenerSimilaridad());
 		}
 

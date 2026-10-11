@@ -93,6 +93,17 @@ public class Mapa extends JMapViewer {
 		});
 	}
 
+	public void procesarClickEnPanel(int xPanel, int yPanel) {
+		procesarClick(xPanel, yPanel);
+	}
+
+	public void setDatos(List<Provincia> provincias, List<Arista<String>> conexiones) {
+		this.provincias = new ArrayList<>(provincias);
+		this.conexiones = new ArrayList<>(conexiones);
+
+		repaint();
+	}
+
 	private void procesarClick(int xPanel, int yPanel) {
 		if (accionClick == null) {
 			return;
@@ -105,26 +116,6 @@ public class Mapa extends JMapViewer {
 		ICoordinate coordenada = getPosition(new Point(xPanel, yPanel));
 
 		accionClick.accept(coordenada.getLat(), coordenada.getLon());
-	}
-
-	public Rectangle obtenerAreaMapa() {
-		Insets bordes = getInsets();
-
-		int ancho = Math.max(0, getWidth() - bordes.left - bordes.right);
-		int alto = Math.max(0, getHeight() - bordes.top - bordes.bottom);
-
-		return new Rectangle(bordes.left, bordes.top, ancho, alto);
-	}
-
-	public void procesarClickEnPanel(int xPanel, int yPanel) {
-		procesarClick(xPanel, yPanel);
-	}
-
-	public void setDatos(List<Provincia> provincias, List<Arista<String>> conexiones) {
-		this.provincias = new ArrayList<>(provincias);
-		this.conexiones = new ArrayList<>(conexiones);
-
-		repaint();
 	}
 
 	public void setRegiones(List<List<String>> regiones) {
@@ -177,6 +168,15 @@ public class Mapa extends JMapViewer {
 		dibujarEtiquetasRegiones(dibujo, provinciasPorNombre);
 	}
 
+	public Rectangle obtenerAreaMapa() {
+		Insets bordes = getInsets();
+
+		int ancho = Math.max(0, getWidth() - bordes.left - bordes.right);
+		int alto = Math.max(0, getHeight() - bordes.top - bordes.bottom);
+
+		return new Rectangle(bordes.left, bordes.top, ancho, alto);
+	}
+
 	private Map<String, Provincia> indexarProvinciasPorNombre() {
 		Map<String, Provincia> provinciasPorNombre = new HashMap<>();
 
@@ -185,11 +185,6 @@ public class Mapa extends JMapViewer {
 		}
 
 		return provinciasPorNombre;
-	}
-
-	// Posición en pantalla de la provincia según el zoom y la posición actuales.
-	private Point posicionEnPantalla(Provincia provincia) {
-		return getMapPosition(provincia.obtenerLatitud(), provincia.obtenerLongitud(), false);
 	}
 
 	private void dibujarConexiones(Graphics2D dibujo, Map<String, Provincia> provinciasPorNombre) {
@@ -234,10 +229,6 @@ public class Mapa extends JMapViewer {
 		}
 
 		return colorDeRegion(regionPorProvincia.get(conexion.obtenerExtremo1()));
-	}
-
-	private Color colorDeRegion(int indice) {
-		return COLORES_REGION[indice % COLORES_REGION.length];
 	}
 
 	private void dibujarSimilaridad(Graphics2D dibujo, int similaridad, int centroX, int centroY) {
@@ -343,6 +334,10 @@ public class Mapa extends JMapViewer {
 		return new Point(sumaX / cantidad, sumaY / cantidad);
 	}
 
+	private Color colorDeRegion(int indice) {
+		return COLORES_REGION[indice % COLORES_REGION.length];
+	}
+
 	private void dibujarEtiquetaRegion(Graphics2D dibujo, String texto, int centroX, int centroY, Color color) {
 		FontMetrics metricas = dibujo.getFontMetrics();
 		int margen = 6;
@@ -360,5 +355,10 @@ public class Mapa extends JMapViewer {
 		dibujo.drawRoundRect(x, y, ancho, alto, 10, 10);
 
 		dibujo.drawString(texto, x + margen, y + margen + metricas.getAscent());
+	}
+
+	// Posición en pantalla de la provincia según el zoom y la posición actuales.
+	private Point posicionEnPantalla(Provincia provincia) {
+		return getMapPosition(provincia.obtenerLatitud(), provincia.obtenerLongitud(), false);
 	}
 }

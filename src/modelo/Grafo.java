@@ -1,7 +1,6 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +10,8 @@ public class Grafo<V> {
 
 	private Map<V, Set<Arista<V>>> listaDeAristasIncidentes;
 	private ArrayList<Arista<V>> aristas;
+
+	private final int ARISTA_PESO_FICTICIO = 100;
 
 	public Grafo() {
 		listaDeAristasIncidentes = new HashMap<>();
@@ -25,7 +26,6 @@ public class Grafo<V> {
 		if (listaDeAristasIncidentes.containsKey(vertice))
 			throw new IllegalArgumentException("Error: El vértice ya existe en el grafo.");
 
-		// Crear la lista de listaDeVecinos vacía para ese vértice
 		listaDeAristasIncidentes.put(vertice, new HashSet<>());
 	}
 
@@ -51,48 +51,22 @@ public class Grafo<V> {
 
 	}
 
-	public void eliminarArista(V vertice1, V vertice2) {
-		if (!listaDeAristasIncidentes.containsKey(vertice1) || !listaDeAristasIncidentes.containsKey(vertice2))
-			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
-
-		// los vertices se colocan en el objeto Arista en variable "buscada" para
-		// ejecutar el equals
-		int pesoFicticio = 100;
-		Arista<V> buscada = new Arista<V>(vertice1, vertice2, pesoFicticio);
-		Arista<V> arista = null;
-		for (Arista<V> aristaExistente : listaDeAristasIncidentes.get(vertice1))
-			if (aristaExistente.equals(buscada))
-				arista = aristaExistente;
-
-		if (arista == null)
-			throw new IllegalArgumentException("Error: La arista no existe entre estos vértices.");
-
-		listaDeAristasIncidentes.get(vertice1).remove(arista);
-		listaDeAristasIncidentes.get(vertice2).remove(arista);
-		aristas.remove(arista);
-	}
-
 	public Set<V> obtenerVecinos(V vertice) {
 		if (!existeVertice(vertice))
 			throw new IllegalArgumentException("Error: El vértice no existe en el grafo.");
 
-	    Set<V> vecinos = new HashSet<>();
+		Set<V> vecinos = new HashSet<>();
 
-	    for (Arista<V> arista : listaDeAristasIncidentes.get(vertice)) {
+		for (Arista<V> arista : listaDeAristasIncidentes.get(vertice)) {
 
-	        V vecino = arista.obtenerExtremo1().equals(vertice)
-	                ? arista.obtenerExtremo2()
-	                : arista.obtenerExtremo1();
+			V vecino = arista.obtenerExtremo1().equals(vertice) ? arista.obtenerExtremo2() : arista.obtenerExtremo1();
 
-	        vecinos.add(vecino);
-	    }
+			vecinos.add(vecino);
+		}
 
-	    return vecinos;
+		return vecinos;
 	}
-	
-	
 
-	
 	public ArrayList<Arista<V>> obtenerAristas() {
 		return new ArrayList<Arista<V>>(aristas);
 	}
@@ -116,13 +90,6 @@ public class Grafo<V> {
 			total += arista.devolverPeso();
 
 		return total;
-	}
-
-	public boolean existeVertice(V vertice) {
-		if (vertice == null)
-			throw new IllegalArgumentException("Error: El vértice no puede ser nulo.");
-
-		return listaDeAristasIncidentes.containsKey(vertice);
 	}
 
 	public boolean existeArista(V vertice1, V vertice2) {
@@ -157,6 +124,33 @@ public class Grafo<V> {
 		}
 
 		listaDeAristasIncidentes.remove(vertice);
+	}
+
+	public boolean existeVertice(V vertice) {
+		if (vertice == null)
+			throw new IllegalArgumentException("Error: El vértice no puede ser nulo.");
+
+		return listaDeAristasIncidentes.containsKey(vertice);
+	}
+
+	public void eliminarArista(V vertice1, V vertice2) {
+		if (!listaDeAristasIncidentes.containsKey(vertice1) || !listaDeAristasIncidentes.containsKey(vertice2))
+			throw new IllegalArgumentException("Error: Uno o ambos vértices no existen en el grafo.");
+
+		// los vertices se colocan en el objeto Arista en variable "buscada" para
+		// ejecutar el equals
+		Arista<V> buscada = new Arista<V>(vertice1, vertice2, ARISTA_PESO_FICTICIO);
+		Arista<V> arista = null;
+		for (Arista<V> aristaExistente : listaDeAristasIncidentes.get(vertice1))
+			if (aristaExistente.equals(buscada))
+				arista = aristaExistente;
+
+		if (arista == null)
+			throw new IllegalArgumentException("Error: La arista no existe entre estos vértices.");
+
+		listaDeAristasIncidentes.get(vertice1).remove(arista);
+		listaDeAristasIncidentes.get(vertice2).remove(arista);
+		aristas.remove(arista);
 	}
 
 }

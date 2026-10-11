@@ -65,26 +65,6 @@ public final class Tema {
 		boton.setBorderPainted(true);
 	}
 
-	private static void actualizarBoton(JToggleButton boton) {
-		boton.setSelected(oscuro);
-		boton.setText(oscuro ? "☀️" : "🌙");
-		boton.setBackground(fondoControl());
-		boton.setForeground(texto());
-
-		Color colorBorde = oscuro ? BORDE_BOTON_OSCURO : BORDE_BOTON_CLARO;
-
-		boton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(colorBorde),
-				BorderFactory.createEmptyBorder(5, 10, 5, 10)));
-	}
-
-	private static Color fondoControl() {
-		return oscuro ? CONTROL_OSCURO : CONTROL_CLARO;
-	}
-
-	private static Color texto() {
-		return oscuro ? TEXTO_OSCURO : TEXTO_CLARO;
-	}
-
 	private static void cambiarTema(boolean activarOscuro) {
 		oscuro = activarOscuro;
 
@@ -118,11 +98,27 @@ public final class Tema {
 		}
 	}
 
+	private static void actualizarBoton(JToggleButton boton) {
+		boton.setSelected(oscuro);
+		boton.setText(oscuro ? "☀️" : "🌙");
+		boton.setBackground(fondoControl());
+		boton.setForeground(texto());
+
+		Color colorBorde = oscuro ? BORDE_BOTON_OSCURO : BORDE_BOTON_CLARO;
+
+		boton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(colorBorde),
+				BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+	}
+
 	private static boolean usaFondoDeControl(Component componente) {
 		return componente instanceof JPanel || componente instanceof JScrollPane || componente instanceof JViewport
 				|| componente instanceof JTextField || componente instanceof JComboBox<?>
 				|| componente instanceof JSpinner || componente instanceof JTable || componente instanceof JList<?>
 				|| componente instanceof AbstractButton;
+	}
+
+	private static Color fondoControl() {
+		return oscuro ? CONTROL_OSCURO : CONTROL_CLARO;
 	}
 
 	private static void aplicarDetallesSegunTipo(Component componente) {
@@ -146,6 +142,10 @@ public final class Tema {
 				aplicar(hijo);
 			}
 		}
+	}
+
+	private static Color texto() {
+		return oscuro ? TEXTO_OSCURO : TEXTO_CLARO;
 	}
 
 	private static boolean esBotonTema(Component componente) {

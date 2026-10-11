@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +19,6 @@ public class GrafoTest {
 	private static String provincia2 = "Santa Fé";
 	private static String provincia3 = "La Pampa";
 	private static String provincia4 = "Entre Ríos";
-	
 
 	public static class AgregarVerticeExcepcionesYCasosBorde {
 
@@ -36,7 +34,7 @@ public class GrafoTest {
 			grafo.agregarVertice(provincia1);
 			grafo.agregarVertice(provincia1);
 		}
-	}	
+	}
 
 	public static class AgregarVerticeCasoFeliz {
 
@@ -378,7 +376,6 @@ public class GrafoTest {
 			assertTrue(grafo.existeArista(new String("Buenos Aires"), new String("Santa Fé")));
 		}
 	}
-	
 
 	public static class ExisteAristaCasoFeliz {
 
@@ -498,10 +495,10 @@ public class GrafoTest {
 			grafo.agregarArista(provincia1, provincia2, 4);
 			grafo.agregarArista(provincia3, provincia1, 7);
 
-			grafo.eliminarVertice(provincia1);		
+			grafo.eliminarVertice(provincia1);
 
 			assertTrue(grafo.obtenerAristas().isEmpty());
-			
+
 		}
 
 		@Test
@@ -516,7 +513,7 @@ public class GrafoTest {
 			grafo.eliminarVertice(provincia1);
 
 			assertTrue(grafo.existeArista(provincia2, provincia3));
-			
+
 		}
 	}
 

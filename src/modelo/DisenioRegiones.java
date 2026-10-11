@@ -50,12 +50,6 @@ public class DisenioRegiones {
 		notificarObservadores();
 	}
 
-	private void notificarObservadores() {
-		for (ObservadorDisenioRegiones observador : observadores)
-			observador.notificar(this);
-
-	}
-
 	public void eliminarProvincia(String nombre) {
 		Provincia provincia = obtenerProvincia(nombre);
 		String nombreProvincia = provincia.obtenerNombre();
@@ -73,17 +67,6 @@ public class DisenioRegiones {
 
 		provincias.put(provinciaActualizada.obtenerNombre(), provinciaActualizada);
 		notificarObservadores();
-	}
-
-	public Provincia obtenerProvincia(String nombre) {
-		String nombreProvincia = validarNombre(nombre);
-		Provincia provincia = provincias.get(nombreProvincia);
-
-		if (provincia == null) {
-			throw new IllegalArgumentException("La provincia no existe.");
-		}
-
-		return provincia;
 	}
 
 	public boolean existeProvincia(String nombre) {
@@ -120,6 +103,23 @@ public class DisenioRegiones {
 
 	public ArrayList<Arista<String>> obtenerConexiones() {
 		return provinciasYSimilaridades.obtenerAristas();
+	}
+
+	public Provincia obtenerProvincia(String nombre) {
+		String nombreProvincia = validarNombre(nombre);
+		Provincia provincia = provincias.get(nombreProvincia);
+
+		if (provincia == null) {
+			throw new IllegalArgumentException("La provincia no existe.");
+		}
+
+		return provincia;
+	}
+
+	private void notificarObservadores() {
+		for (ObservadorDisenioRegiones observador : observadores)
+			observador.notificar(this);
+
 	}
 
 	public void separarEnRegionesConexas(int k) {

@@ -5,18 +5,6 @@ import java.util.Set;
 
 public class DFS {
 
-	private static <V> void dfs(Grafo<V> grafo, V vertice, Set<V> visitados) {
-
-		visitados.add(vertice);
-
-		for (V vecino : grafo.obtenerVecinos(vertice)) {
-
-			if (!visitados.contains(vecino)) {
-				dfs(grafo, vecino, visitados);
-			}
-		}
-	}
-
 	public static <V> boolean esConexo(Grafo<V> grafo) {
 		if (grafo == null) {
 			throw new IllegalArgumentException("El grafo no puede ser null");
@@ -49,6 +37,18 @@ public class DFS {
 		dfs(grafo, origen, visitados);
 
 		return visitados;
+	}
+
+	private static <V> void dfs(Grafo<V> grafo, V vertice, Set<V> visitados) {
+
+		visitados.add(vertice);
+
+		for (V vecino : grafo.obtenerVecinos(vertice)) {
+
+			if (!visitados.contains(vecino)) {
+				dfs(grafo, vecino, visitados);
+			}
+		}
 	}
 
 }

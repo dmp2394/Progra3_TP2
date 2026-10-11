@@ -48,10 +48,8 @@ public class Kruskal<V> {
 			V raiz1 = buscarRaiz(padre, vertice1);
 			V raiz2 = buscarRaiz(padre, vertice2);
 
-			/*
-			 * Si tienen raíces diferentes, todavía no están conectados. Por lo tanto, la
-			 * arista no genera un ciclo.
-			 */
+			// Si tienen raíces diferentes, todavía no están conectados. Por lo tanto, la
+			// arista no genera un ciclo.
 			if (!raiz1.equals(raiz2)) {
 
 				arbolMinimo.agregarArista(vertice1, vertice2, arista.devolverPeso());
