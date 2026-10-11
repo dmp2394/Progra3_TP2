@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 public class VentanaBienvenida {
 
 	private JFrame frame;
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
@@ -78,7 +79,7 @@ public class VentanaBienvenida {
 				+ "3. Creá las conexiones entre provincias con su similaridad.<br><br>"
 				+ "<i>Opcional, carga desde archivo:</i> en lugar de los pasos 1 a 3, importá un archivo JSON "
 				+ "con las provincias (nombre y, opcionalmente, latitud y longitud), sus conexiones (origen, destino y "
-				+ "similaridad) y, si querés, la cantidad de regiones K.<br><br>"
+				+ "similaridad) y, si querés, podés precargar la cantidad de regiones K.<br><br>"
 				+ "4. Elegí la cantidad de regiones K y generá las regiones.</html>");
 		lblPasos.setVerticalAlignment(SwingConstants.TOP);
 
