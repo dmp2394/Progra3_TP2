@@ -49,8 +49,6 @@ public class Grafo<V> {
 		listaDeAristasIncidentes.get(vertice2).add(arista);
 		aristas.add(arista);
 
-		Collections.sort(aristas);
-
 	}
 
 	public void eliminarArista(V vertice1, V vertice2) {

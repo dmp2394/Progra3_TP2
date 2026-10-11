@@ -1,6 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class Kruskal<V> {
 			throw new IllegalArgumentException("El grafo debe ser conexo para crear su AGM.");
 
 		ArrayList<Arista<V>> aristasOriginales = grafo.obtenerAristas();
+		Collections.sort(aristasOriginales);
 
 		ArrayList<V> verticesGrafoMin = grafo.obtenerVertices();
 		Grafo<V> arbolMinimo = new Grafo<>();

@@ -3,6 +3,7 @@ package modelo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -107,6 +108,27 @@ public class KruskalTest {
 	}
 
 	public static class CrearArbolGeneradorMinimoCasoFeliz {
+		
+		@Test
+		public void obtenerAristasOrdenadasPorPesoTest() {
+			Grafo<String> grafo = creacionDeGrafo();
+			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+		    ArrayList<Arista<String>> aristas = resultado.obtenerAristas();
+
+		    ArrayList<Integer> pesosObtenidos = new ArrayList<>();
+
+		    for (Arista<String> arista : aristas) {
+		        pesosObtenidos.add(arista.devolverPeso());
+		    }
+
+		    ArrayList<Integer> pesosEsperados = new ArrayList<>();
+		    pesosEsperados.add(1);
+		    pesosEsperados.add(2);
+
+		    assertEquals(pesosEsperados, pesosObtenidos);
+		
+		}
 
 		@Test
 		public void kruskalConGrafoTriangularTest() {

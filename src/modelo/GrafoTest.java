@@ -266,33 +266,6 @@ public class GrafoTest {
 
 			assertEquals(2, grafo.obtenerAristas().size());
 		}
-
-		@Test
-		public void obtenerAristasOrdenadasPorPesoTest() {
-			grafo.agregarVertice(provincia1);
-			grafo.agregarVertice(provincia2);
-			grafo.agregarVertice(provincia3);
-			grafo.agregarVertice(provincia4);
-			grafo.agregarArista(provincia1, provincia2, 30);
-			grafo.agregarArista(provincia2, provincia3, 10);
-			grafo.agregarArista(provincia3, provincia4, 20);
-
-		    ArrayList<Arista<String>> aristas = grafo.obtenerAristas();
-
-		    ArrayList<Integer> pesosObtenidos = new ArrayList<>();
-
-		    for (Arista<String> arista : aristas) {
-		        pesosObtenidos.add(arista.devolverPeso());
-		    }
-
-		    ArrayList<Integer> pesosEsperados = new ArrayList<>();
-		    pesosEsperados.add(10);
-		    pesosEsperados.add(20);
-		    pesosEsperados.add(30);
-
-		    assertEquals(pesosEsperados, pesosObtenidos);
-		
-		}
 	}
 
 	public static class ObtenerVerticesExcepcionesYCasosBorde {
