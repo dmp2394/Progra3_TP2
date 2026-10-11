@@ -8,12 +8,15 @@ public class Kruskal<V> {
 
 	public static <V> Grafo<V> crearArbolGeneradorMinimo(Grafo<V> grafo) {
 
+		if (grafo == null)
+			throw new IllegalArgumentException("El grafo no puede ser null.");
+
 		if (grafo.esVacio())
-			throw new IllegalStateException("El grafo no debe estar vacío para crear su AGM.");
-		
+			throw new IllegalArgumentException("El grafo no debe estar vacío para crear su AGM.");
+
 		if (!DFS.esConexo(grafo))
-			throw new IllegalStateException("El grafo debe ser conexo para crear su AGM.");
-		
+			throw new IllegalArgumentException("El grafo debe ser conexo para crear su AGM.");
+
 		ArrayList<Arista<V>> aristasOriginales = grafo.obtenerAristas();
 
 		ArrayList<V> verticesGrafoMin = grafo.obtenerVertices();
@@ -66,15 +69,14 @@ public class Kruskal<V> {
 
 	static <V> void unir(Map<V, V> padre, Map<V, Integer> rango, V raiz1, V raiz2) {
 
-		if (!padre.containsKey(raiz1) || !padre.containsKey(raiz2) || !rango.containsKey(raiz1) || !rango.containsKey(raiz2)) {
-	        throw new IllegalArgumentException("Las raíces deben existir en los mapas de padre y rango.");
-	    }
-		
+		if (!padre.containsKey(raiz1) || !padre.containsKey(raiz2) || !rango.containsKey(raiz1)
+				|| !rango.containsKey(raiz2)) {
+			throw new IllegalArgumentException("Las raíces deben existir en los mapas de padre y rango.");
+		}
+
 		int rango1 = rango.get(raiz1);
 		int rango2 = rango.get(raiz2);
-		
-		 
-		
+
 		if (rango1 < rango2) {
 
 			padre.put(raiz1, raiz2);
@@ -92,7 +94,7 @@ public class Kruskal<V> {
 
 	static <V> V buscarRaiz(Map<V, V> padre, V vertice) {
 		if (!padre.containsKey(vertice)) {
-			throw new IllegalStateException("El vértice no existe en el conjunto.");
+			throw new IllegalArgumentException("El vértice no existe en el conjunto.");
 		}
 		if (!padre.get(vertice).equals(vertice)) {
 			V raiz = buscarRaiz(padre, padre.get(vertice));

@@ -22,6 +22,10 @@ public class DisenioRegiones {
 	}
 
 	public void registrar(ObservadorDisenioRegiones observador) {
+		if (observador == null) {
+			throw new IllegalArgumentException("El observador no puede ser null.");
+		}
+
 		observadores.add(observador);
 	}
 

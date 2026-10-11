@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.junit.Test;
@@ -20,7 +21,12 @@ public class KruskalTest {
 
 	public static class CrearArbolGeneradorMinimoExcepcionesYCasosBorde {
 
-		@Test(expected = IllegalStateException.class)
+		@Test(expected = IllegalArgumentException.class)
+		public void grafoNullTest() {
+			Kruskal.crearArbolGeneradorMinimo(null);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
 		public void grafoNoConexoTest() {
 			Grafo<String> grafo = new Grafo<>();
 			grafo.agregarVertice("A");
@@ -31,7 +37,7 @@ public class KruskalTest {
 			Kruskal.crearArbolGeneradorMinimo(grafo);
 		}
 
-		@Test(expected = IllegalStateException.class)
+		@Test(expected = IllegalArgumentException.class)
 		public void grafoVacioTest() {
 			Grafo<String> grafo = new Grafo<>();
 
@@ -89,8 +95,7 @@ public class KruskalTest {
 
 			assertEquals(5, agm.pesoTotal());
 		}
-		
-		
+
 		@Test
 		public void noModificaElGrafoOriginalTest() {
 			Grafo<String> grafo = creacionDeGrafo();
@@ -101,27 +106,41 @@ public class KruskalTest {
 		}
 	}
 
-	public static class CrearArbolGeneradorMinimo {
+	public static class CrearArbolGeneradorMinimoCasoFeliz {
 
 		@Test
-		public void testKruskalConGrafoTriangular() {
+		public void kruskalConGrafoTriangularTest() {
 			// creacionDeGrafo: A-B (1), B-C (2), A-C (3) => AGM A-B y B-C, peso total 3
 			Grafo<String> grafo = creacionDeGrafo();
 			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
 
-			assertEquals(grafo.obtenerVertices().size(), resultado.obtenerVertices().size());
 			assertEquals(3, resultado.pesoTotal());
 		}
 
 		@Test
-		public void testKruskalConGrafoDiapositiva() {
+		public void kruskalConGrafoTriangularConservaLosVerticesTest() {
+			Grafo<String> grafo = creacionDeGrafo();
+			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(new HashSet<>(grafo.obtenerVertices()), new HashSet<>(resultado.obtenerVertices()));
+		}
+
+		@Test
+		public void kruskalConGrafoDiapositivaTest() {
 			// AGM esperado: H-G (1), C-I (3), G-F (3), A-B (4), C-F (4), C-D (6), A-H (8),
 			// D-E (9)
 			Grafo<String> grafo = creacionDeGrafoDiapositiva();
 			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
 
-			assertEquals(grafo.obtenerVertices().size(), resultado.obtenerVertices().size());
 			assertEquals(38, resultado.pesoTotal());
+		}
+
+		@Test
+		public void kruskalConGrafoDiapositivaConservaLosVerticesTest() {
+			Grafo<String> grafo = creacionDeGrafoDiapositiva();
+			Grafo<String> resultado = Kruskal.crearArbolGeneradorMinimo(grafo);
+
+			assertEquals(new HashSet<>(grafo.obtenerVertices()), new HashSet<>(resultado.obtenerVertices()));
 		}
 
 		@Test
@@ -182,9 +201,10 @@ public class KruskalTest {
 		grafo.agregarArista("G", "F", 3);
 		return grafo;
 	}
+
 	public static class BuscarRaizExcepcionesYCasosBorde {
-		
-		@Test(expected = IllegalStateException.class)
+
+		@Test(expected = IllegalArgumentException.class)
 		public void verticeNoExisteTest() {
 			Map<String, String> padre = new HashMap<>();
 			padre.put("A", "A");
@@ -193,68 +213,127 @@ public class KruskalTest {
 			Kruskal.buscarRaiz(padre, "D");
 		}
 	}
-		
-	
-		
-		public static class BuscarRaiz{
-			
-			@Test
-			public void buscarRaizTest() {
-				Map<String, String> padre = new HashMap<>();
-				padre.put("A", "A");
-				padre.put("B", "A");
-				padre.put("C", "B");
 
-				String raiz = Kruskal.buscarRaiz(padre, "C");
-				assertEquals("A", raiz);
-			}
-			
-			public void buscarRaizDeVerticeQueEsRaizTest() {
-				Map<String, String> padre = new HashMap<>();
-				padre.put("A", "A");
-				padre.put("B", "A");
-				padre.put("C", "B");
+	public static class BuscarRaizCasoFeliz {
 
-				String raiz = Kruskal.buscarRaiz(padre, "A");
-				assertEquals("A", raiz);
-			}
-			
-			
+		@Test
+		public void buscarRaizTest() {
+			Map<String, String> padre = new HashMap<>();
+			padre.put("A", "A");
+			padre.put("B", "A");
+			padre.put("C", "B");
+
+			String raiz = Kruskal.buscarRaiz(padre, "C");
+			assertEquals("A", raiz);
 		}
-		
+
+		@Test
+		public void buscarRaizDeVerticeQueEsRaizTest() {
+			Map<String, String> padre = new HashMap<>();
+			padre.put("A", "A");
+			padre.put("B", "A");
+			padre.put("C", "B");
+
+			String raiz = Kruskal.buscarRaiz(padre, "A");
+			assertEquals("A", raiz);
+		}
+
+	}
+
 	public static class UnirExcepcionesYCasosBorde {
-		
+
 		@Test(expected = IllegalArgumentException.class)
 		public void unirRaicesQueNoExistenTest() {
 			Map<String, String> padre = new HashMap<>();
 			padre.put("A", "A");
 			padre.put("B", "A");
 			padre.put("C", "B");
-			
+
 			Map<String, Integer> rango = new HashMap<>();
 			rango.put("A", 1);
 			rango.put("B", 0);
 			rango.put("C", 0);
-			
+
 			Kruskal.unir(padre, rango, "D", "E");
 		}
 	}
-	public static class Unir {
+
+	public static class UnirCasoFeliz {
+
+		// Rango de raiz1 mayor: raiz2 pasa a colgar de raiz1.
 		@Test
 		public void unirRaicesTest() {
 			Map<String, String> padre = new HashMap<>();
 			padre.put("A", "A");
 			padre.put("B", "B");
-			
+
 			Map<String, Integer> rango = new HashMap<>();
 			rango.put("A", 1);
 			rango.put("B", 0);
-			
+
 			Kruskal.unir(padre, rango, "A", "B");
-			
+
 			assertEquals("A", padre.get("B"));
 		}
-		
+
+		// Rango de raiz1 menor: raiz1 pasa a colgar de raiz2.
+		@Test
+		public void unirRaizConMenorRangoTest() {
+			Map<String, String> padre = new HashMap<>();
+			padre.put("A", "A");
+			padre.put("B", "B");
+
+			Map<String, Integer> rango = new HashMap<>();
+			rango.put("A", 0);
+			rango.put("B", 1);
+
+			Kruskal.unir(padre, rango, "A", "B");
+
+			Map<String, String> padreEsperado = new HashMap<>();
+			padreEsperado.put("A", "B");
+			padreEsperado.put("B", "B");
+
+			assertEquals(padreEsperado, padre);
+		}
+
+		// Rangos iguales: raiz2 pasa a colgar de raiz1 y el rango de raiz1 aumenta en 1.
+		@Test
+		public void unirRaicesConIgualRangoTest() {
+			Map<String, String> padre = new HashMap<>();
+			padre.put("A", "A");
+			padre.put("B", "B");
+
+			Map<String, Integer> rango = new HashMap<>();
+			rango.put("A", 0);
+			rango.put("B", 0);
+
+			Kruskal.unir(padre, rango, "A", "B");
+
+			Map<String, String> padreEsperado = new HashMap<>();
+			padreEsperado.put("A", "A");
+			padreEsperado.put("B", "A");
+
+			assertEquals(padreEsperado, padre);
+		}
+
+		@Test
+		public void unirRaicesConIgualRangoAumentaElRangoTest() {
+			Map<String, String> padre = new HashMap<>();
+			padre.put("A", "A");
+			padre.put("B", "B");
+
+			Map<String, Integer> rango = new HashMap<>();
+			rango.put("A", 0);
+			rango.put("B", 0);
+
+			Kruskal.unir(padre, rango, "A", "B");
+
+			Map<String, Integer> rangoEsperado = new HashMap<>();
+			rangoEsperado.put("A", 1);
+			rangoEsperado.put("B", 0);
+
+			assertEquals(rangoEsperado, rango);
+		}
 	}
 
-	}
+}

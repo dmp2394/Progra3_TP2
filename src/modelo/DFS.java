@@ -5,49 +5,50 @@ import java.util.Set;
 
 public class DFS {
 
-    public static <V> boolean esConexo(Grafo<V> grafo) {
-        if (grafo == null) {
-            throw new IllegalArgumentException("El grafo no puede ser null");
-        }
-        
-        if (grafo.esVacio()) {
-            return true;
-            }
+	private static <V> void dfs(Grafo<V> grafo, V vertice, Set<V> visitados) {
 
-        V origen = grafo.obtenerVertices().iterator().next();
-        Set<V> visitados = recorrer(grafo, origen);
-        return visitados.size() == grafo.obtenerVertices().size();
-    }
+		visitados.add(vertice);
 
-    public static <V> Set<V> recorrer(Grafo<V> grafo, V origen) {
-    	
-    	   if (grafo == null) {
-    	        throw new IllegalArgumentException("El grafo no puede ser null");
-    	    }
+		for (V vecino : grafo.obtenerVecinos(vertice)) {
 
-    	    if (origen == null) {
-    	        throw new IllegalArgumentException("El vertice origen no puede ser null");
-    	    }
+			if (!visitados.contains(vecino)) {
+				dfs(grafo, vecino, visitados);
+			}
+		}
+	}
 
-    	    if (!grafo.existeVertice(origen)) {
-    	        throw new IllegalArgumentException("El vertice no pertenece al grafo");
-    	    }
+	public static <V> boolean esConexo(Grafo<V> grafo) {
+		if (grafo == null) {
+			throw new IllegalArgumentException("El grafo no puede ser null");
+		}
 
-        Set<V> visitados = new HashSet<>();
-        dfs(grafo, origen, visitados);
+		if (grafo.esVacio()) {
+			return true;
+		}
 
-        return visitados;
-    }
+		V origen = grafo.obtenerVertices().iterator().next();
+		Set<V> visitados = recorrer(grafo, origen);
+		return visitados.size() == grafo.obtenerVertices().size();
+	}
 
-    private static <V> void dfs(Grafo<V> grafo, V vertice, Set<V> visitados) {
+	public static <V> Set<V> recorrer(Grafo<V> grafo, V origen) {
 
-    	 visitados.add(vertice);
+		if (grafo == null) {
+			throw new IllegalArgumentException("El grafo no puede ser null");
+		}
 
-    	    for (V vecino : grafo.obtenerVecinos(vertice)) {
+		if (origen == null) {
+			throw new IllegalArgumentException("El vertice origen no puede ser null");
+		}
 
-    	        if (!visitados.contains(vecino)) {
-    	            dfs(grafo, vecino, visitados);
-            }
-        }
-    }
+		if (!grafo.existeVertice(origen)) {
+			throw new IllegalArgumentException("El vertice no pertenece al grafo");
+		}
+
+		Set<V> visitados = new HashSet<>();
+		dfs(grafo, origen, visitados);
+
+		return visitados;
+	}
+
 }

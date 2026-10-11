@@ -2,6 +2,8 @@ package modelo;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -40,12 +42,18 @@ public class ProvinciaTest {
 		public void coordenadasCeroTest() {
 			Provincia provincia = new Provincia("Córdoba", 0, 0);
 
-			assertEquals(0, provincia.obtenerX());
-			assertEquals(0, provincia.obtenerY());
+			assertEquals(Arrays.asList(0, 0), Arrays.asList(provincia.obtenerX(), provincia.obtenerY()));
+		}
+
+		@Test
+		public void nombreConEspaciosSeGuardaSinEspaciosTest() {
+			Provincia provincia = new Provincia("  Córdoba  ", 320, 180);
+
+			assertEquals("Córdoba", provincia.obtenerNombre());
 		}
 	}
 
-	public static class Constructor {
+	public static class ConstructorCasoFeliz {
 
 		@Test
 		public void constructorGuardaNombreTest() {

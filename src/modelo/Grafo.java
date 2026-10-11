@@ -75,6 +75,9 @@ public class Grafo<V> {
 	}
 
 	public Set<V> obtenerVecinos(V vertice) {
+		if (!existeVertice(vertice))
+			throw new IllegalArgumentException("Error: El vértice no existe en el grafo.");
+
 	    Set<V> vecinos = new HashSet<>();
 
 	    for (Arista<V> arista : listaDeAristasIncidentes.get(vertice)) {
@@ -118,6 +121,9 @@ public class Grafo<V> {
 	}
 
 	public boolean existeVertice(V vertice) {
+		if (vertice == null)
+			throw new IllegalArgumentException("Error: El vértice no puede ser nulo.");
+
 		return listaDeAristasIncidentes.containsKey(vertice);
 	}
 

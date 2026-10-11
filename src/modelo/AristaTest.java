@@ -55,7 +55,7 @@ public class AristaTest {
 		}
 	}
 
-	public static class GettersHappyPath {
+	public static class GettersCasoFeliz {
 
 		@Test
 		public void devolverPesoTest() {
@@ -86,7 +86,7 @@ public class AristaTest {
 		}
 	}
 
-	public static class CompareToHappyPath {
+	public static class CompareToCasoFeliz {
 
 		@Test
 		public void compareToMenorPesoTest() {
@@ -112,10 +112,13 @@ public class AristaTest {
 		}
 
 		@Test
-		public void equalsExtremosAlRevesTest() {
+		public void equalsSimetricoTest() {
 			Arista<String> arista12YPeso100AlReves = new Arista<>(extremo2, extremo1, 100);
 
-			assertTrue(arista12YPeso100.equals(arista12YPeso100AlReves));
+			boolean simetrico = arista12YPeso100.equals(arista12YPeso100AlReves)
+					&& arista12YPeso100AlReves.equals(arista12YPeso100);
+
+			assertTrue(simetrico);
 		}
 
 		@Test
@@ -124,7 +127,7 @@ public class AristaTest {
 		}
 	}
 
-	public static class EqualsHappyPath {
+	public static class EqualsCasoFeliz {
 
 		@Test
 		public void equalsMismosExtremosTest() {
@@ -136,14 +139,6 @@ public class AristaTest {
 		@Test
 		public void equalsDistintosExtremosTest() {
 			assertFalse(arista12YPeso100.equals(arista34YPeso100));
-		}
-
-		@Test
-		public void equalsSimetricoTest() {
-			Arista<String> arista12YPeso100AlReves = new Arista<>(extremo2, extremo1, 100);
-
-			assertTrue(arista12YPeso100.equals(arista12YPeso100AlReves));
-			assertTrue(arista12YPeso100AlReves.equals(arista12YPeso100));
 		}
 	}
 
@@ -158,14 +153,13 @@ public class AristaTest {
 		}
 	}
 
-	public static class HashCodeHappyPath {
+	public static class HashCodeCasoFeliz {
 
 		@Test
 		public void hashCodeAristasIgualesTest() {
 			Arista<String> arista1 = new Arista<>("A", "B", 4);
 			Arista<String> arista2 = new Arista<>("A", "B", 9);
 
-			assertEquals(arista1, arista2);
 			assertEquals(arista1.hashCode(), arista2.hashCode());
 		}
 
@@ -179,7 +173,16 @@ public class AristaTest {
 			aristas.add(arista1);
 
 			assertTrue(aristas.contains(arista2));
+		}
 
+		@Test
+		public void hashCodeNoDuplicaEnHashSetTest() {
+			HashSet<Arista<String>> aristas = new HashSet<>();
+
+			Arista<String> arista1 = new Arista<>("A", "B", 4);
+			Arista<String> arista2 = new Arista<>("B", "A", 9);
+
+			aristas.add(arista1);
 			aristas.add(arista2);
 
 			assertEquals(1, aristas.size());
