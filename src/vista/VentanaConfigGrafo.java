@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.FlowLayout;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -50,6 +52,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 	private DefaultListModel<String> modeloProvincias;
 	private JList<String> listaProvincias;
+	private final Set<String> provinciasSinUbicar = new HashSet<>();
 
 	private String provinciaPendiente;
 	private JComboBox<String> comboProvincia1;
@@ -241,12 +244,22 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void agregarProvincia() {
-		String nombreProvincia = txtProvincia.getText();
-		try {
-			controlador.agregarProvincia(nombreProvincia);
-		} catch (Exception e) {
-			e.printStackTrace();
+		String nombre = txtProvincia.getText().trim();
+
+		if (nombre.isEmpty()) {
+			mostrarMensaje("Escribí el nombre de la provincia.");
+			return;
 		}
+
+		if (controlador.existeProvincia(nombre)
+				|| provinciasSinUbicar.contains(nombre)) {
+			mostrarMensaje("La provincia ya existe.");
+			return;
+		}
+
+		provinciasSinUbicar.add(nombre);
+		modeloProvincias.addElement(nombre);
+		txtProvincia.setText("");
 	}
 
 	private void crearBotonesJsonYUbicar(JPanel panelCargaProvincia) {
@@ -292,8 +305,8 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 		if (seleccionada != null) {
 			provinciaPendiente = seleccionada;
-			reubicandoProvincia = true;
-			mostrarEstado("Hacé click en el mapa para reubicar: " + seleccionada);
+			reubicandoProvincia = !provinciasSinUbicar.contains(seleccionada);
+			mostrarEstado("Hacé click en el mapa para ubicar: " + seleccionada);
 			return;
 		}
 
@@ -304,8 +317,10 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 			return;
 		}
 
-		if (controlador.existeProvincia(nombre)) {
-			mostrarMensaje("La provincia ya existe. Seleccionala en la lista para reubicarla.");
+		if (controlador.existeProvincia(nombre)
+				|| provinciasSinUbicar.contains(nombre)) {
+			mostrarMensaje(
+					"La provincia ya existe. Seleccionala en la lista para reubicarla.");
 			return;
 		}
 
@@ -491,18 +506,19 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		try {
 			if (eraReubicacion) {
 				controlador.reubicarProvincia(provinciaPendiente, x, y);
-				listaProvincias.clearSelection();
 			} else {
+				provinciasSinUbicar.remove(provinciaPendiente);
 				controlador.ubicarProvincia(provinciaPendiente, x, y);
 				txtProvincia.setText("");
 			}
 
 			provinciaPendiente = null;
 			reubicandoProvincia = false;
+			listaProvincias.clearSelection();
+
 			mostrarEstado(eraReubicacion
 					? "Provincia reubicada."
-					: "Provincia agregada. Podés ubicar otra o crear conexiones.");
-
+					: "Provincia agregada y ubicada.");
 		} catch (IllegalArgumentException e) {
 			mostrarMensaje(e.getMessage());
 		}
