@@ -153,7 +153,16 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		JButton boton = new JButton("Importar datos desde JSON…");
 		boton.setFocusPainted(false);
 		boton.addActionListener(e -> cargarProvinciasDesdeJSON());
-		panelDatos.add(boton, BorderLayout.NORTH);
+
+		JButton botonAyuda = new JButton("?");
+		botonAyuda.setFocusPainted(false);
+		botonAyuda.setToolTipText("Ver el formato del archivo JSON");
+		botonAyuda.addActionListener(e -> mostrarAyudaConFormatoJSON());
+
+		JPanel panelBotones = new JPanel(new BorderLayout(6, 0));
+		panelBotones.add(boton, BorderLayout.CENTER);
+		panelBotones.add(botonAyuda, BorderLayout.EAST);
+		panelDatos.add(panelBotones, BorderLayout.NORTH);
 		panelDatos.add(new JLabel(
 				"<html>Cargá provincias y conexiones desde un archivo<br>" + "o agregalas manualmente abajo.</html>"),
 				BorderLayout.CENTER);
@@ -235,6 +244,20 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		}
 
 		return selector.getSelectedFile().getAbsolutePath();
+	}
+
+	private void mostrarAyudaConFormatoJSON() {
+		String formato = "Ejemplo de archivo:\n\n" + "{\n" + "  \"provincias\": [\n"
+				+ "    { \"nombre\": \"Buenos Aires\", \"latitud\": -36.6, \"longitud\": -60.0 },\n"
+				+ "    { \"nombre\": \"La Pampa\" }\n" + "  ],\n" + "  \"conexiones\": [\n"
+				+ "    { \"provinciaOrigen\": \"Buenos Aires\", \"provinciaDestino\": \"La Pampa\", \"similaridad\": 5 }\n"
+				+ "  ],\n" + "  \"cantidadRegiones\": 2\n" + "}\n\n"
+				+ "- latitud y longitud son opcionales: van las dos o ninguna.\n"
+				+ "  Las provincias sin coordenadas se ubican después en el mapa.\n"
+				+ "- similaridad: número entero mayor a 0.\n"
+				+ "- cantidadRegiones es opcional: entre 1 y la cantidad de provincias.";
+
+		JOptionPane.showMessageDialog(frame, formato, "Formato del archivo JSON", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void crearListaProvincias(JPanel panelProvincias) {
