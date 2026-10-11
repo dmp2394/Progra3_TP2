@@ -3,33 +3,37 @@ package modelo;
 public class Provincia {
 
 	private final String nombre;
-	private final int x;
-	private final int y;
+	private final double latitud;
+	private final double longitud;
 
-	public Provincia(String nombre, int x, int y) {
+	public Provincia(String nombre, double latitud, double longitud) {
 
 		if (nombre == null || nombre.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre de la provincia no puede ser nulo o estar vacío.");
 		}
 
-		if (x < 0 || y < 0) {
-			throw new IllegalArgumentException("Las coordenadas no pueden ser negativas.");
+		if (Double.isNaN(latitud) || latitud < -90 || latitud > 90) {
+			throw new IllegalArgumentException("La latitud debe estar entre -90 y 90.");
+		}
+
+		if (Double.isNaN(longitud) || longitud < -180 || longitud > 180) {
+			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180.");
 		}
 
 		this.nombre = nombre.trim();
-		this.x = x;
-		this.y = y;
+		this.latitud = latitud;
+		this.longitud = longitud;
 	}
 
 	public String obtenerNombre() {
 		return nombre;
 	}
 
-	public int obtenerX() {
-		return x;
+	public double obtenerLatitud() {
+		return latitud;
 	}
 
-	public int obtenerY() {
-		return y;
+	public double obtenerLongitud() {
+		return longitud;
 	}
-}
+}

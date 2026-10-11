@@ -15,10 +15,10 @@ import javax.swing.border.EmptyBorder;
 public class VentanaBienvenida {
 
 	// Instrucciones
-	private static final String[] PASOS = { "1. Cargar una imagen del mapa en formato PNG o JPG.",
-			"2. Escribir los nombres de las provincias o unidades.", "3. Ubicarlas haciendo click sobre el mapa.",
-			"4. Crear conexiones e indicar su similaridad.", "5. Elegir la cantidad de regiones K.",
-			"6. Generar y consultar las regiones resultantes." };
+	private static final String[] PASOS = { "1. Escribir los nombres de las provincias o unidades.",
+			"2. Ubicarlas haciendo click sobre el mapa (zoom con la rueda del mouse).",
+			"3. Crear conexiones e indicar su similaridad.", "4. Elegir la cantidad de regiones K.",
+			"5. Generar y consultar las regiones resultantes." };
 
 	private JFrame frame;
 	private VentanaConfigGrafo ventanaPrincipal;

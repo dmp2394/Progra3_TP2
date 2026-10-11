@@ -3,7 +3,6 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -28,15 +27,13 @@ public class VentanaResultado {
 	private JFrame frame;
 	private VentanaConfigRegiones ventanaAnterior;
 	private List<List<String>> regiones;
-	private BufferedImage imagen;
 	private List<Provincia> provincias;
 	private List<Arista<String>> conexiones;
 
-	public VentanaResultado(VentanaConfigRegiones ventanaAnterior, List<List<String>> regiones, BufferedImage imagen,
+	public VentanaResultado(VentanaConfigRegiones ventanaAnterior, List<List<String>> regiones,
 			List<Provincia> provincias, List<Arista<String>> conexiones) {
 		this.ventanaAnterior = ventanaAnterior;
 		this.regiones = regiones;
-		this.imagen = imagen;
 		this.provincias = provincias;
 		this.conexiones = conexiones;
 
@@ -88,14 +85,13 @@ public class VentanaResultado {
 		frame.getContentPane().add(panelMapaYRegiones, BorderLayout.CENTER);
 	}
 
-	private PanelGrafo crearPanelMapa() {
-		PanelGrafo panelGrafo = new PanelGrafo();
+	private Mapa crearPanelMapa() {
+		Mapa mapa = new Mapa();
 
-		panelGrafo.setImagen(imagen);
-		panelGrafo.setDatos(provincias, conexiones);
-		panelGrafo.setRegiones(regiones);
+		mapa.setDatos(provincias, conexiones);
+		mapa.setRegiones(regiones);
 
-		return panelGrafo;
+		return mapa;
 	}
 
 	private JScrollPane crearListaDeRegiones() {

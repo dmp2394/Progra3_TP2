@@ -15,39 +15,75 @@ public class ProvinciaTest {
 
 		@Test(expected = IllegalArgumentException.class)
 		public void nombreNuloTest() {
-			new Provincia(null, 320, 180);
+			new Provincia(null, -31.42, -64.18);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void nombreVacioTest() {
-			new Provincia("", 320, 180);
-		}
-
-		@Test(expected = IllegalArgumentException.class)
-		public void coordenadaXNegativaTest() {
-			new Provincia("Córdoba", -1, 180);
-		}
-
-		@Test(expected = IllegalArgumentException.class)
-		public void coordenadaYNegativaTest() {
-			new Provincia("Córdoba", 320, -1);
+			new Provincia("", -31.42, -64.18);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void nombreSoloEspaciosTest() {
-			new Provincia("   ", 320, 180);
+			new Provincia("   ", -31.42, -64.18);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void latitudMenorAMenos90Test() {
+			new Provincia("Córdoba", -90.1, -64.18);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void latitudMayorA90Test() {
+			new Provincia("Córdoba", 90.1, -64.18);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void latitudNaNTest() {
+			new Provincia("Córdoba", Double.NaN, -64.18);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void longitudMenorAMenos180Test() {
+			new Provincia("Córdoba", -31.42, -180.1);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void longitudMayorA180Test() {
+			new Provincia("Córdoba", -31.42, 180.1);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void longitudNaNTest() {
+			new Provincia("Córdoba", -31.42, Double.NaN);
 		}
 
 		@Test
 		public void coordenadasCeroTest() {
 			Provincia provincia = new Provincia("Córdoba", 0, 0);
 
-			assertEquals(Arrays.asList(0, 0), Arrays.asList(provincia.obtenerX(), provincia.obtenerY()));
+			assertEquals(Arrays.asList(0.0, 0.0), Arrays.asList(provincia.obtenerLatitud(), provincia.obtenerLongitud()));
+		}
+
+		@Test
+		public void coordenadasEnLosLimitesInferioresTest() {
+			Provincia provincia = new Provincia("Córdoba", -90, -180);
+
+			assertEquals(Arrays.asList(-90.0, -180.0),
+					Arrays.asList(provincia.obtenerLatitud(), provincia.obtenerLongitud()));
+		}
+
+		@Test
+		public void coordenadasEnLosLimitesSuperioresTest() {
+			Provincia provincia = new Provincia("Córdoba", 90, 180);
+
+			assertEquals(Arrays.asList(90.0, 180.0),
+					Arrays.asList(provincia.obtenerLatitud(), provincia.obtenerLongitud()));
 		}
 
 		@Test
 		public void nombreConEspaciosSeGuardaSinEspaciosTest() {
-			Provincia provincia = new Provincia("  Córdoba  ", 320, 180);
+			Provincia provincia = new Provincia("  Córdoba  ", -31.42, -64.18);
 
 			assertEquals("Córdoba", provincia.obtenerNombre());
 		}
@@ -57,16 +93,17 @@ public class ProvinciaTest {
 
 		@Test
 		public void constructorGuardaNombreTest() {
-			Provincia provincia = new Provincia("Córdoba", 320, 180);
+			Provincia provincia = new Provincia("Córdoba", -31.42, -64.18);
 
 			assertEquals("Córdoba", provincia.obtenerNombre());
 		}
+
 		@Test
 		public void constructorGuardaCoordenadasTest() {
-			Provincia provincia = new Provincia("Córdoba", 320, 180);
-			boolean coordenadasCorrectas = provincia.obtenerX() == 320 && provincia.obtenerY() == 180;
-			
-			assertEquals(true, coordenadasCorrectas);
+			Provincia provincia = new Provincia("Córdoba", -31.42, -64.18);
+
+			assertEquals(Arrays.asList(-31.42, -64.18),
+					Arrays.asList(provincia.obtenerLatitud(), provincia.obtenerLongitud()));
 		}
 	}
 }

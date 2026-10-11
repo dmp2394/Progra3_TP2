@@ -29,8 +29,8 @@ public class DisenioRegiones {
 		observadores.add(observador);
 	}
 
-	public void agregarProvincia(String nombre, int x, int y) {
-		Provincia provincia = new Provincia(nombre, x, y);
+	public void agregarProvincia(String nombre, double latitud, double longitud) {
+		Provincia provincia = new Provincia(nombre, latitud, longitud);
 		String nombreProvincia = provincia.obtenerNombre();
 
 		if (provincias.containsKey(nombreProvincia)) {
@@ -59,10 +59,10 @@ public class DisenioRegiones {
 		notificarObservadores();
 	}
 
-	public void setPosicionProvincia(String nombre, int x, int y) {
+	public void setPosicionProvincia(String nombre, double latitud, double longitud) {
 		Provincia provinciaActual = obtenerProvincia(nombre);
 
-		Provincia provinciaActualizada = new Provincia(provinciaActual.obtenerNombre(), x, y);
+		Provincia provinciaActualizada = new Provincia(provinciaActual.obtenerNombre(), latitud, longitud);
 
 		provincias.put(provinciaActualizada.obtenerNombre(), provinciaActualizada);
 		notificarObservadores();
@@ -194,4 +194,4 @@ public class DisenioRegiones {
 		return !provincias.isEmpty();
 
 	}
-}
+}

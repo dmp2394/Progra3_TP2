@@ -13,16 +13,12 @@ public class ControladorVentanaConfigGrafo {
 		this.disenioRegiones = disenioRegiones;
 	}
 
-	public boolean puedeCargarMapa() {
-		return disenioRegiones.obtenerProvincias().isEmpty();
+	public void ubicarProvincia(String provincia, double latitud, double longitud) {
+		disenioRegiones.agregarProvincia(provincia, latitud, longitud);
 	}
 
-	public void ubicarProvincia(String provincia, int x, int y) {
-		disenioRegiones.agregarProvincia(provincia, x, y);
-	}
-
-	public void reubicarProvincia(String nombre, int x, int y) {
-		disenioRegiones.setPosicionProvincia(nombre, x, y);
+	public void reubicarProvincia(String nombre, double latitud, double longitud) {
+		disenioRegiones.setPosicionProvincia(nombre, latitud, longitud);
 	}
 
 	public void eliminarProvincia(String nombre) {
@@ -56,8 +52,8 @@ public class ControladorVentanaConfigGrafo {
 		for (Provincia provincia : archivo.obtenerProvincias()) {
 			disenioRegiones.agregarProvincia(
 					provincia.obtenerNombre(),
-					provincia.obtenerX(),
-					provincia.obtenerY());
+					provincia.obtenerLatitud(),
+					provincia.obtenerLongitud());
 		}
 
 		for (ProvinciaJSON.ConexionJSON conexion : archivo.obtenerConexiones()) {

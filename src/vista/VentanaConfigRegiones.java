@@ -24,7 +24,7 @@ import modelo.Provincia;
 public class VentanaConfigRegiones {
 	private JFrame frame;
 	private VentanaConfigGrafo ventanaAnterior;
-	private PanelGrafo panelGrafo;
+	private Mapa mapa;
 	private JSpinner spinnerK;
 	private Integer cantidadRegionesInicial;
 	private final ControladorVentanaConfigRegiones controlador;
@@ -95,13 +95,11 @@ public class VentanaConfigRegiones {
 	}
 
 	private void crearPanelMapa(JPanel panelMapaYConfiguracion) {
-		panelGrafo = new PanelGrafo();
-		panelGrafo.setBorder(new TitledBorder("Mapa y conexiones"));
-
-		panelGrafo.setImagen(ventanaAnterior.getImagen());
+		mapa = new Mapa();
 
 		JPanel panelMapa = new JPanel(new BorderLayout());
-		panelMapa.add(panelGrafo, BorderLayout.CENTER);
+		panelMapa.setBorder(new TitledBorder("Mapa y conexiones"));
+		panelMapa.add(mapa, BorderLayout.CENTER);
 		panelMapaYConfiguracion.add(panelMapa);
 	}
 
@@ -180,8 +178,7 @@ public class VentanaConfigRegiones {
 
 	private void abrirResultado(List<List<String>> regiones, List<Provincia> provincias,
 			List<Arista<String>> conexiones) {
-		VentanaResultado resultado = new VentanaResultado(this, regiones, ventanaAnterior.getImagen(), provincias,
-				conexiones);
+		VentanaResultado resultado = new VentanaResultado(this, regiones, provincias, conexiones);
 
 		resultado.mostrar();
 		frame.setVisible(false);
@@ -214,7 +211,7 @@ public class VentanaConfigRegiones {
 	}
 
 	private void mostrarProvinciasYConexiones(ArrayList<Provincia> provincias, ArrayList<Arista<String>> conexiones) {
-		panelGrafo.setDatos(provincias, conexiones);
+		mapa.setDatos(provincias, conexiones);
 	}
 
 	public void mostrar() {

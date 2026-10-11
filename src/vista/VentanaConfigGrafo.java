@@ -6,16 +6,15 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import javax.swing.SwingUtilities;
 import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -48,8 +47,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	private final ControladorVentanaConfigGrafo controlador;
 	private final DisenioRegiones disenioRegiones;
 
-	private BufferedImage imagen;
-	private PanelGrafo panelGrafo;
+	private Mapa mapa;
 
 	private JTextField txtProvincia;
 	private JLabel lblEstado;
@@ -82,7 +80,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	// Estructura de la ventana:
 	// - Arriba: modo oscuro.
 	// - Izquierda: importación y carga manual.
-	// - Centro: carga de imagen, estado y mapa.
+	// - Centro: estado y mapa.
 	// - Abajo: navegación (continuar).
 	private void initialize() {
 		frame = new JFrame();
@@ -125,59 +123,8 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		crearBotonModoOscuro(panelSuperior, new Dimension(140, 30));
 	}
 
-	private JButton crearBotonCargarMapa(JPanel panelSuperior) {
-		JButton btnCargarMapa = new JButton("Cargar imagen del mapa…");
-		panelSuperior.add(btnCargarMapa, BorderLayout.WEST);
-		btnCargarMapa.addActionListener(e -> cargarMapa());
-		return btnCargarMapa;
-	}
-
-	private void cargarMapa() {
-		if (!controlador.puedeCargarMapa()) {
-			mostrarMensaje("Eliminá las provincias antes de cargar el mapa.");
-			return;
-		}
-
-		elegirImagen();
-	}
-
 	private void mostrarMensaje(String mensaje) {
 		JOptionPane.showMessageDialog(frame, mensaje);
-	}
-
-	private void elegirImagen() {
-		JFileChooser selector = new JFileChooser();
-		selector.setDialogTitle("Seleccionar imagen del mapa");
-		selector.setAcceptAllFileFilterUsed(false);
-		selector.setFileFilter(new FileNameExtensionFilter("Imágenes PNG y JPG", "png", "jpg", "jpeg"));
-
-		if (selector.showOpenDialog(frame) != JFileChooser.APPROVE_OPTION) {
-			return;
-		}
-
-		File archivo = selector.getSelectedFile();
-
-		try {
-			BufferedImage imagenCargada = ImageIO.read(archivo);
-
-			if (imagenCargada == null) {
-				mostrarMensaje("El archivo no contiene una imagen válida.");
-				return;
-			}
-
-			imagen = imagenCargada;
-			panelGrafo.setImagen(imagen);
-
-			mapaCargado();
-
-		} catch (IOException e) {
-			mostrarMensaje("No se pudo leer la imagen seleccionada.");
-		}
-	}
-
-	private void mapaCargado() {
-		provinciaPendiente = null;
-		mostrarEstado("Mapa cargado. Escribí una provincia y presioná Ubicar.");
 	}
 
 	private void mostrarEstado(String estado) {
@@ -185,7 +132,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void crearEtiquetaEstado(JPanel panelSuperior) {
-		lblEstado = new JLabel("Cargá una imagen para comenzar.");
+		lblEstado = new JLabel("Agregá una provincia y ubicala en el mapa. Zoom con la rueda, mover con clic derecho.");
 		panelSuperior.add(lblEstado, BorderLayout.CENTER);
 	}
 
@@ -220,7 +167,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		boton.addActionListener(e -> cargarProvinciasDesdeJSON());
 		panelDatos.add(boton, BorderLayout.NORTH);
 		panelDatos.add(new JLabel("<html>Cargá provincias y conexiones desde un archivo<br>"
-				+ "o agregalas manualmente abajo.<br>Cargá primero la imagen del mapa.</html>"),
+				+ "o agregalas manualmente abajo.</html>"),
 				BorderLayout.CENTER);
 		panelLateral.add(panelDatos, BorderLayout.NORTH);
 	}
@@ -304,11 +251,6 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void prepararUbicacion() {
-		if (!tieneImagen()) {
-			mostrarMensaje("Primero cargá una imagen del mapa.");
-			return;
-		}
-
 		String seleccionada = listaProvincias.getSelectedValue();
 		if (seleccionada == null) {
 			mostrarMensaje("Seleccioná una provincia de la lista.");
@@ -323,10 +265,6 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 				: "Hacé clic en el mapa para ubicar: ";
 
 		iniciarUbicacion(mensaje + seleccionada);
-	}
-
-	private boolean tieneImagen() {
-		return panelGrafo.tieneImagen();
 	}
 
 	private void crearListaProvincias(JPanel panelProvincias) {
@@ -500,29 +438,67 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		JPanel contenedor = new JPanel(new BorderLayout(0, 8));
 		contenedor.setBorder(new TitledBorder("Mapa"));
 		JPanel barraMapa = new JPanel(new BorderLayout(10, 0));
-		crearBotonCargarMapa(barraMapa);
 		crearEtiquetaEstado(barraMapa);
 		contenedor.add(barraMapa, BorderLayout.NORTH);
 
-		panelGrafo = new PanelGrafo();
-		contenedor.add(panelGrafo, BorderLayout.CENTER);
+		mapa = new Mapa();
+		contenedor.add(mapa, BorderLayout.CENTER);
 		panelContenido.add(contenedor, BorderLayout.CENTER);
-		panelGrafo.setAccionClick((x, y) -> ubicarProvincia(x, y));
+		mapa.setAccionClick((latitud, longitud) -> ubicarProvincia(latitud, longitud));
 	}
 
 	private void configurarCapaUbicacion() {
 		capaUbicacion = new PanelUbicacionMapa(this::areaMapaEnCapa,
 				punto -> {
 					java.awt.Point puntoPanel = SwingUtilities.convertPoint(
-							capaUbicacion, punto, panelGrafo);
-					panelGrafo.procesarClickEnPanel(puntoPanel.x, puntoPanel.y);
+							capaUbicacion, punto, mapa);
+					mapa.procesarClickEnPanel(puntoPanel.x, puntoPanel.y);
 				}, this::cancelarUbicacion);
 		frame.setGlassPane(capaUbicacion);
+		reenviarZoomYMovimientoAlMapa();
+	}
+
+	// Mientras se ubica una provincia, la capa tapa al mapa y recibe el mouse.
+	// Se le reenvían al mapa la rueda (zoom) y el arrastre con clic derecho
+	// (mover), para poder acercarse antes de hacer clic. El clic izquierdo lo
+	// sigue manejando la capa.
+	private void reenviarZoomYMovimientoAlMapa() {
+		MouseAdapter reenvio = new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent evento) {
+				reenviarAlMapa(evento);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent evento) {
+				reenviarAlMapa(evento);
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent evento) {
+				reenviarAlMapa(evento);
+			}
+
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent evento) {
+				reenviarAlMapa(evento);
+			}
+		};
+
+		capaUbicacion.addMouseListener(reenvio);
+		capaUbicacion.addMouseMotionListener(reenvio);
+		capaUbicacion.addMouseWheelListener(reenvio);
+	}
+
+	private void reenviarAlMapa(MouseEvent evento) {
+		if (!SwingUtilities.isLeftMouseButton(evento)) {
+			mapa.dispatchEvent(SwingUtilities.convertMouseEvent(capaUbicacion, evento, mapa));
+		}
 	}
 
 	private Rectangle areaMapaEnCapa() {
-		return SwingUtilities.convertRectangle(panelGrafo,
-				panelGrafo.obtenerAreaImagen(), capaUbicacion);
+		return SwingUtilities.convertRectangle(mapa,
+				mapa.obtenerAreaMapa(), capaUbicacion);
 	}
 
 	private void iniciarUbicacion(String mensaje) {
@@ -537,7 +513,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		mostrarEstado("Ubicación cancelada. Podés seleccionar otra provincia.");
 	}
 
-	private void ubicarProvincia(int x, int y) {
+	private void ubicarProvincia(double latitud, double longitud) {
 		if (provinciaPendiente == null) {
 			return;
 		}
@@ -546,10 +522,10 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 
 		try {
 			if (eraReubicacion) {
-				controlador.reubicarProvincia(provinciaPendiente, x, y);
+				controlador.reubicarProvincia(provinciaPendiente, latitud, longitud);
 			} else {
 				String nombreUbicado = provinciaPendiente;
-				controlador.ubicarProvincia(nombreUbicado, x, y);
+				controlador.ubicarProvincia(nombreUbicado, latitud, longitud);
 				provinciasSinUbicar.remove(nombreUbicado);
 				txtProvincia.setText("");
 			}
@@ -580,8 +556,8 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 	}
 
 	private void continuar() {
-		if (!tieneImagen() || !controlador.existenProvincias()) {
-			mostrarMensaje("Cargá un mapa y ubicá al menos una provincia.");
+		if (!controlador.existenProvincias()) {
+			mostrarMensaje("Ubicá al menos una provincia en el mapa.");
 			return;
 		}
 
@@ -646,7 +622,7 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 					new Object[] { conexion.obtenerExtremo1(), conexion.obtenerExtremo2(), conexion.devolverPeso() });
 		}
 
-		panelGrafo.setDatos(provincias, conexiones);
+		mapa.setDatos(provincias, conexiones);
 	}
 
 	public void mostrar() {
@@ -657,8 +633,4 @@ public class VentanaConfigGrafo implements ObservadorDisenioRegiones {
 		frame.setVisible(true);
 	}
 
-	public BufferedImage getImagen() {
-		return imagen;
-	}
-
-}
+}

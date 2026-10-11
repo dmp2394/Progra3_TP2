@@ -24,25 +24,25 @@ public class DisenioRegionesTest {
 
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarProvinciaNombreNuloTest() {
-			disenio.agregarProvincia(null, 320, 180);
+			disenio.agregarProvincia(null, -31.42, -64.18);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarProvinciaNombreVacioTest() {
-			disenio.agregarProvincia("", 320, 180);
+			disenio.agregarProvincia("", -31.42, -64.18);
 		}
 
 		@Test
 		public void agregarProvinciaConEspaciosTest() {
-			disenio.agregarProvincia("  Córdoba  ", 320, 180);
+			disenio.agregarProvincia("  Córdoba  ", -31.42, -64.18);
 
 			assertEquals("Córdoba", disenio.obtenerProvincia(" Córdoba ").obtenerNombre());
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarProvinciaYaExistenteTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia(" Córdoba ", 400, 200);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia(" Córdoba ", -31.0, -64.0);
 		}
 
 	}
@@ -53,16 +53,16 @@ public class DisenioRegionesTest {
 
 		@Test
 		public void agregarProvinciaGuardaDatosTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			Provincia provincia = disenio.obtenerProvincia("Córdoba");
 
-			assertEquals(Arrays.asList("Córdoba", 320, 180), datosDe(provincia));
+			assertEquals(Arrays.asList("Córdoba", -31.42, -64.18), datosDe(provincia));
 		}
 
 		@Test
 		public void agregarProvinciaSumaUnaProvinciaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			assertEquals(1, disenio.obtenerProvincias().size());
 		}
@@ -84,29 +84,29 @@ public class DisenioRegionesTest {
 		private DisenioRegiones disenio = new DisenioRegiones();
 
 		@Test(expected = IllegalArgumentException.class)
-		public void setPosicionCoordenadaNegativaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+		public void setPosicionLatitudFueraDeRangoTest() {
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
-			disenio.setPosicionProvincia("Córdoba", -1, 200);
+			disenio.setPosicionProvincia("Córdoba", -91.0, -64.5);
 		}
 
 		@Test
 		public void cambiarPosicionInvalidaNoCambiaDatosPreviosTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			try {
-				disenio.setPosicionProvincia("Córdoba", -1, 200);
+				disenio.setPosicionProvincia("Córdoba", -91.0, -64.5);
 			} catch (IllegalArgumentException esperada) {
-				// La excepción se prueba en setPosicionCoordenadaNegativaTest.
+				// La excepción se prueba en setPosicionLatitudFueraDeRangoTest.
 			}
 
-			assertEquals(Arrays.asList("Córdoba", 320, 180), datosDe(disenio.obtenerProvincia("Córdoba")));
+			assertEquals(Arrays.asList("Córdoba", -31.42, -64.18), datosDe(disenio.obtenerProvincia("Córdoba")));
 		}
 
 		// Comprueba que no se pueda mover una provincia que no existe.
 		@Test(expected = IllegalArgumentException.class)
 		public void setPosicionProvinciaInexistenteTest() {
-			disenio.setPosicionProvincia("Córdoba", 350, 200);
+			disenio.setPosicionProvincia("Córdoba", -31.0, -64.5);
 		}
 	}
 
@@ -117,30 +117,30 @@ public class DisenioRegionesTest {
 		// Comprueba que cambiar la posición conserve las conexiones.
 		@Test
 		public void cambiarPosicionConservaConexionTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
-			disenio.setPosicionProvincia("Córdoba", 350, 200);
+			disenio.setPosicionProvincia("Córdoba", -31.0, -64.5);
 
 			assertEquals(Arrays.asList(Arrays.asList("Córdoba", "Santa Fe", 4)), datosDeConexiones(disenio));
 		}
 
 		@Test
 		public void cambiarPosicionActualizaCoordenadasTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
-			disenio.setPosicionProvincia("Córdoba", 350, 200);
+			disenio.setPosicionProvincia("Córdoba", -31.0, -64.5);
 
-			assertEquals(Arrays.asList("Córdoba", 350, 200), datosDe(disenio.obtenerProvincia("Córdoba")));
+			assertEquals(Arrays.asList("Córdoba", -31.0, -64.5), datosDe(disenio.obtenerProvincia("Córdoba")));
 		}
 
 		@Test
 		public void cambiarPosicionNoDuplicaLaProvinciaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
-			disenio.setPosicionProvincia("Córdoba", 350, 200);
+			disenio.setPosicionProvincia("Córdoba", -31.0, -64.5);
 
 			assertEquals(2, disenio.obtenerProvincias().size());
 		}
@@ -153,7 +153,7 @@ public class DisenioRegionesTest {
 		// Comprueba que ambos extremos deban existir.
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarConexionProvinciaInexistenteTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 		}
@@ -161,8 +161,8 @@ public class DisenioRegionesTest {
 		// Comprueba que el peso no pueda ser nulo.
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarConexionPesoNuloTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", null);
 		}
@@ -170,8 +170,8 @@ public class DisenioRegionesTest {
 		// Comprueba que una conexión no pueda repetirse al revés.
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarConexionDuplicadaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 			disenio.agregarConexion("Santa Fe", "Córdoba", 9);
@@ -180,23 +180,23 @@ public class DisenioRegionesTest {
 		// Comprueba que una provincia no pueda conectarse consigo misma.
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarConexionMismaProvinciaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			disenio.agregarConexion("Córdoba", "Córdoba", 4);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarConexionPesoCeroTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 0);
 		}
 
 		@Test(expected = IllegalArgumentException.class)
 		public void agregarConexionPesoNegativoTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", -4);
 		}
@@ -209,8 +209,8 @@ public class DisenioRegionesTest {
 		// Comprueba que la conexión conserve sus extremos y peso.
 		@Test
 		public void agregarConexionGuardaDatosTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
@@ -225,8 +225,8 @@ public class DisenioRegionesTest {
 		// Comprueba que no se pueda eliminar una conexión que no existe.
 		@Test(expected = IllegalArgumentException.class)
 		public void eliminarConexionInexistenteTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.eliminarConexion("Córdoba", "Santa Fe");
 		}
@@ -234,7 +234,7 @@ public class DisenioRegionesTest {
 		// Comprueba que ambos extremos deban existir.
 		@Test(expected = IllegalArgumentException.class)
 		public void eliminarConexionProvinciaInexistenteTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			disenio.eliminarConexion("Córdoba", "Santa Fe");
 		}
@@ -247,8 +247,8 @@ public class DisenioRegionesTest {
 		// Comprueba que eliminar una conexión conserve las provincias.
 		@Test
 		public void eliminarConexionConservaProvinciasTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
 			disenio.eliminarConexion("Santa Fe", "Córdoba");
@@ -259,8 +259,8 @@ public class DisenioRegionesTest {
 		// Comprueba que la conexión ya no esté.
 		@Test
 		public void eliminarConexionLaQuitaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
 			disenio.eliminarConexion("Santa Fe", "Córdoba");
@@ -277,7 +277,7 @@ public class DisenioRegionesTest {
 		// ya no puedan consultarse.
 		@Test(expected = IllegalArgumentException.class)
 		public void provinciaEliminadaNoSePuedeConsultarTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			disenio.eliminarProvincia("Córdoba");
 
@@ -299,9 +299,9 @@ public class DisenioRegionesTest {
 		// y conserve las conexiones entre las demás provincias.
 		@Test
 		public void eliminarProvinciaEliminaSusConexionesTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
-			disenio.agregarProvincia("Entre Ríos", 500, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
+			disenio.agregarProvincia("Entre Ríos", -31.73, -60.53);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 			disenio.agregarConexion("Santa Fe", "Entre Ríos", 3);
@@ -314,9 +314,9 @@ public class DisenioRegionesTest {
 		// Comprueba que eliminar una provincia conserve las demás.
 		@Test
 		public void eliminarProvinciaConservaLasDemasTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
-			disenio.agregarProvincia("Entre Ríos", 500, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
+			disenio.agregarProvincia("Entre Ríos", -31.73, -60.53);
 
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 			disenio.agregarConexion("Santa Fe", "Entre Ríos", 3);
@@ -346,8 +346,8 @@ public class DisenioRegionesTest {
 		// no modifique las colecciones internas del modelo.
 		@Test
 		public void obtenerProvinciasDevuelveCopiaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 
 			disenio.obtenerProvincias().clear();
 
@@ -356,8 +356,8 @@ public class DisenioRegionesTest {
 
 		@Test
 		public void obtenerConexionesDevuelveCopiaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
-			disenio.agregarProvincia("Santa Fe", 420, 150);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+			disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
 			disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 
 			disenio.obtenerConexiones().clear();
@@ -397,9 +397,9 @@ public class DisenioRegionesTest {
 		@Test(expected = IllegalArgumentException.class)
 		public void separarConProvinciasSinConectarTest() {
 			DisenioRegiones sinConectar = new DisenioRegiones();
-			sinConectar.agregarProvincia("Córdoba", 320, 180);
-			sinConectar.agregarProvincia("Santa Fe", 420, 150);
-			sinConectar.agregarProvincia("Corrientes", 520, 80);
+			sinConectar.agregarProvincia("Córdoba", -31.42, -64.18);
+			sinConectar.agregarProvincia("Santa Fe", -31.63, -60.7);
+			sinConectar.agregarProvincia("Corrientes", -27.47, -58.83);
 			sinConectar.agregarConexion("Córdoba", "Santa Fe", 4);
 
 			sinConectar.separarEnRegionesConexas(2);
@@ -435,7 +435,7 @@ public class DisenioRegionesTest {
 		@Test
 		public void separarUnaSolaProvinciaTest() {
 			DisenioRegiones unaProvincia = new DisenioRegiones();
-			unaProvincia.agregarProvincia("Córdoba", 320, 180);
+			unaProvincia.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			unaProvincia.separarEnRegionesConexas(1);
 
@@ -579,21 +579,21 @@ public class DisenioRegionesTest {
 
 		@Test
 		public void existeProvinciaConEspaciosTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			assertTrue(disenio.existeProvincia("  Córdoba  "));
 		}
 
 		@Test
 		public void existeProvinciaDistingueMayusculasTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			assertFalse(disenio.existeProvincia("córdoba"));
 		}
 
 		@Test
 		public void existeProvinciaEliminadaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 			disenio.eliminarProvincia("Córdoba");
 
 			assertFalse(disenio.existeProvincia("Córdoba"));
@@ -606,14 +606,14 @@ public class DisenioRegionesTest {
 
 		@Test
 		public void existeProvinciaAgregadaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			assertTrue(disenio.existeProvincia("Córdoba"));
 		}
 
 		@Test
 		public void existeProvinciaNoAgregadaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			assertFalse(disenio.existeProvincia("Santa Fe"));
 		}
@@ -630,7 +630,7 @@ public class DisenioRegionesTest {
 
 		@Test
 		public void existenProvinciasDespuesDeEliminarLaUnicaTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 			disenio.eliminarProvincia("Córdoba");
 
 			assertFalse(disenio.existenProvincias());
@@ -643,7 +643,7 @@ public class DisenioRegionesTest {
 
 		@Test
 		public void existenProvinciasConProvinciasTest() {
-			disenio.agregarProvincia("Córdoba", 320, 180);
+			disenio.agregarProvincia("Córdoba", -31.42, -64.18);
 
 			assertTrue(disenio.existenProvincias());
 		}
@@ -653,10 +653,10 @@ public class DisenioRegionesTest {
 	// Córdoba-Entre Ríos (8), Entre Ríos-Corrientes (10).
 	private static DisenioRegiones crearDisenioDeCuatroProvincias() {
 		DisenioRegiones disenio = new DisenioRegiones();
-		disenio.agregarProvincia("Córdoba", 320, 180);
-		disenio.agregarProvincia("Santa Fe", 420, 150);
-		disenio.agregarProvincia("Entre Ríos", 500, 150);
-		disenio.agregarProvincia("Corrientes", 520, 80);
+		disenio.agregarProvincia("Córdoba", -31.42, -64.18);
+		disenio.agregarProvincia("Santa Fe", -31.63, -60.7);
+		disenio.agregarProvincia("Entre Ríos", -31.73, -60.53);
+		disenio.agregarProvincia("Corrientes", -27.47, -58.83);
 		disenio.agregarConexion("Córdoba", "Santa Fe", 4);
 		disenio.agregarConexion("Santa Fe", "Entre Ríos", 3);
 		disenio.agregarConexion("Córdoba", "Entre Ríos", 8);
@@ -664,12 +664,12 @@ public class DisenioRegionesTest {
 		return disenio;
 	}
 
-	// Nombre, x e y de una provincia, para comparar todo junto.
+	// Nombre, latitud y longitud de una provincia, para comparar todo junto.
 	private static List<Object> datosDe(Provincia provincia) {
 		List<Object> datos = new ArrayList<>();
 		datos.add(provincia.obtenerNombre());
-		datos.add(provincia.obtenerX());
-		datos.add(provincia.obtenerY());
+		datos.add(provincia.obtenerLatitud());
+		datos.add(provincia.obtenerLongitud());
 		return datos;
 	}
 
